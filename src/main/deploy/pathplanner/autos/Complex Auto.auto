@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Figure Infinite"
+            "pathName": "Complex Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Complex Path 2 Electric Boogaloo"
           }
         }
       ]
