@@ -89,8 +89,8 @@ public class RobotContainer {
                 double deadband = 0.2;
                 double multiplier = .8;
 
-                double velocityX = -joystick.getLeftY() * multiplier;
-                double velocityY = -joystick.getLeftX() * multiplier;
+                double velocityX = joystick.getLeftY() * multiplier;
+                double velocityY = joystick.getLeftX() * multiplier;
                 double rotationalRate = joystick.getRightX();
     
                 // Apply deadband to velocityX
