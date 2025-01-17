@@ -12,7 +12,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
-  public Limelight() {}
+  public Limelight() {
+
+  }
 
   @Override
   public void periodic() {
@@ -34,4 +36,30 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("LimelightArea", area);
 
   }
+
+  // strictly for auton
+  public double autoEstimateDistance() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry ty = table.getEntry("ty");
+    double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+
+    // how many degrees back is your limelight rotated from perfectly vertical
+    double limelightMountAngleDegrees = 0.0; // grab later
+
+    // distance from the center of the limelight lens to the floor
+    double limelightLensHeightInches = 0.0; // grab later
+
+    // distance from the targets center to the floor 
+    double goalHeightInches = 0; // grab later
+
+    double angelToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+    double angleToGoalRadians = angelToGoalDegrees * (3.14159 / 180.0);
+
+    // calculate distance
+    double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+
+    // return distance
+    return distanceFromLimelightToGoalInches;
+  }
+
 }
