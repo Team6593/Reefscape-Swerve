@@ -8,9 +8,9 @@ package frc.robot;
 public final class OtherConstants {
     
     public static class LimelightConstants {
-        public static final double mountAngleDegrees = 0; // grab later
-        public static final double lensHeightInches = 0; // grab later
-        public static final double goalHeightInches = 0; // grab later
+        public static final double mountAngleDegrees = 3.27797175506; // grab later
+        public static final double lensHeightInches = 15.5; // grab later
+        public static final double goalHeightInches = 10.125; // grab later
     }
 
 }

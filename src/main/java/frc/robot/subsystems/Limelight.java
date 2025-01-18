@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import frc.robot.OtherConstants.LimelightConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,10 +11,18 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+
 public class Limelight extends SubsystemBase {
+
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry ty = table.getEntry("ty");
+  NetworkTableEntry ta = table.getEntry("ta");
+
   /** Creates a new Limelight. */
   public Limelight() {
     setToAprilTagPipeline();
+    System.out.println("Limelight initialized!");
   }
 
   /**
@@ -27,20 +36,22 @@ public class Limelight extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-
     //read values periodically
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
 
     //post to smart dashboard periodically
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
+    SmartDashboard.putNumber("tx", x);
+    SmartDashboard.putNumber("ty", y);
+    SmartDashboard.putNumber("ta", area);
+
+    System.out.println("x:"+ x);
+    System.out.println("y:"+ y);
+    System.out.println("area:"+ area);
+
+
+    SmartDashboard.putNumber("Distance,", estimateDistance(LimelightConstants.mountAngleDegrees, LimelightConstants.lensHeightInches, LimelightConstants.goalHeightInches));
 
   }
 
@@ -130,19 +141,17 @@ public class Limelight extends SubsystemBase {
 
   /**
    * Distance estimation
-   * @param mountAngleDegrees
-   * @param lensHeightInches
-   * @param goalHeightInches
+   * @param mountAngleDegrees - Degrees backwards the mount is from being perfectly vertical
+   * @param lensHeightInches - Height from ground to camera lens
+   * @param goalHeightInches - Height from ground to apriltag
    * @return distance
    */
-  public static double estimateDistance(double mountAngleDegrees, double lensHeightInches, 
-  double goalHeightInches) {
+  public static double estimateDistance(double mountAngleDegrees, double lensHeightInches, double goalheightInches) {
     double verticalOffset = getVerticalOffset();
     double angleToGoalDegrees = mountAngleDegrees + verticalOffset;
     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180);
-    double distance = (goalHeightInches - lensHeightInches) / Math.tan(angleToGoalRadians);
-
-    return distance;
+    double distance = Math.abs((goalheightInches - lensHeightInches) / Math.tan(angleToGoalRadians));
+    return distance; 
   }
 
 }
