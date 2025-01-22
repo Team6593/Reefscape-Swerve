@@ -58,12 +58,13 @@ public class RobotContainer {
     }
 
     double aim() {
+        //System.out.println("AIMING");
         // kP (constant of proportionality)
         // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
         // if it is too high, the robot will oscillate around.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .035;
+        double kP = .0095;
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -136,16 +137,22 @@ public class RobotContainer {
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+
+        joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+            final double rotation = aim();
+            final double forward = range() * .5;
+            return forwardStraight.withVelocityX(forward)
+                .withVelocityY(0)
+                .withRotationalRate(rotation);
+        })
         );
 
         joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> {
-            final double rotation = -aim() * .5;
-            final double forward = -range() * .5;
+            final double rotation = aim();
+            final double forward = range();
             return forwardStraight.withVelocityX(forward)
                 .withVelocityY(0)
-                .withRotationalRate(rotation * MaxAngularRate);
+                .withRotationalRate(rotation);
         }));
 
         // Run SysId routines when holding back/start and X/Y.
