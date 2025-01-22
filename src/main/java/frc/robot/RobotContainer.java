@@ -86,17 +86,6 @@ public class RobotContainer {
         return targetingForwardSpeed;
     }
 
-    public void stopMotors() {
-      drivetrain.getModule(0).getDriveMotor().stopMotor();
-      drivetrain.getModule(0).getSteerMotor().stopMotor();
-      drivetrain.getModule(1).getDriveMotor().stopMotor();
-      drivetrain.getModule(1).getSteerMotor().stopMotor();
-      drivetrain.getModule(2).getDriveMotor().stopMotor();
-      drivetrain.getModule(2).getSteerMotor().stopMotor();
-      drivetrain.getModule(3).getDriveMotor().stopMotor();
-      drivetrain.getModule(3).getSteerMotor().stopMotor();
-    }
-
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
