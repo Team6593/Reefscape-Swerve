@@ -13,30 +13,29 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.RobotContainer;
 import frc.robot.OtherConstants.LimelightConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GetInRange extends Command {
 
-  private Limelight limelight;
-  private RobotContainer robotContainer;
   private CommandSwerveDrivetrain drivetrain;
   private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private boolean isWithinRange = false;
 
   /** Creates a new GetInRange. */
-  public GetInRange(Limelight limelight, CommandSwerveDrivetrain drivetrain) {
-    this.limelight = limelight;
+  public GetInRange(CommandSwerveDrivetrain drivetrain) {
     this.drivetrain = drivetrain;
 
-    addRequirements(limelight, drivetrain);
+    addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -45,7 +44,7 @@ public class GetInRange extends Command {
     if (Limelight.estimateDistance(LimelightConstants.mountAngleDegrees, LimelightConstants.lensHeightInches, LimelightConstants.goalHeightInches) > 10) {
       forwardStraight.withVelocityX(.5);
     } else {
-      
+      isWithinRange = true;
     }
   }
 
@@ -58,6 +57,10 @@ public class GetInRange extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (isWithinRange) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

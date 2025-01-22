@@ -12,12 +12,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 
-public class Limelight extends SubsystemBase {
+public class Limelight {
 
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
+  static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  static NetworkTableEntry tx = table.getEntry("tx");
+  static NetworkTableEntry ty = table.getEntry("ty");
+  static NetworkTableEntry ta = table.getEntry("ta");
 
   /** Creates a new Limelight. */
   public Limelight() {
@@ -32,8 +32,7 @@ public class Limelight extends SubsystemBase {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
   }
 
-  @Override
-  public void periodic() {
+  public static void update() {
     // This method will be called once per scheduler run
 
     //read values periodically

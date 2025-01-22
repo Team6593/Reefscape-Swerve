@@ -304,6 +304,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
         SmartDashboard.putNumber("Speed (ft/s)", robotSpeeds);
         SmartDashboard.putNumber("Match Time", Timer.getMatchTime());
+        Limelight.update();
     }
 
     
