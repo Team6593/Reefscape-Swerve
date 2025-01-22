@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
+import frc.robot.commands.GetInRange;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -85,6 +86,17 @@ public class RobotContainer {
         return targetingForwardSpeed;
     }
 
+    public void stopMotors() {
+      drivetrain.getModule(0).getDriveMotor().stopMotor();
+      drivetrain.getModule(0).getSteerMotor().stopMotor();
+      drivetrain.getModule(1).getDriveMotor().stopMotor();
+      drivetrain.getModule(1).getSteerMotor().stopMotor();
+      drivetrain.getModule(2).getDriveMotor().stopMotor();
+      drivetrain.getModule(2).getSteerMotor().stopMotor();
+      drivetrain.getModule(3).getDriveMotor().stopMotor();
+      drivetrain.getModule(3).getSteerMotor().stopMotor();
+    }
+
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -130,6 +142,7 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        joystick.x().whileTrue(new GetInRange(limelight, drivetrain));
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))

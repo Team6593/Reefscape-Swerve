@@ -149,7 +149,7 @@ public class Limelight extends SubsystemBase {
   public static double estimateDistance(double mountAngleDegrees, double lensHeightInches, double goalheightInches) {
     double verticalOffset = getVerticalOffset();
     double angleToGoalDegrees = mountAngleDegrees + verticalOffset;
-    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180);
+    double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180);// was 3.14159
     double distance = Math.abs((goalheightInches - lensHeightInches) / Math.tan(angleToGoalRadians));
     return distance; 
   }
