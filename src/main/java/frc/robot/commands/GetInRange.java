@@ -41,8 +41,10 @@ public class GetInRange extends Command {
   @Override
   public void execute() {
 
+    double kP = .2;
+
     if (Limelight.estimateDistance(LimelightConstants.mountAngleDegrees, LimelightConstants.lensHeightInches, LimelightConstants.goalHeightInches) > 10) {
-      forwardStraight.withVelocityX(.5);
+      forwardStraight.withVelocityX(.5 * kP);
     } else {
       isWithinRange = true;
     }

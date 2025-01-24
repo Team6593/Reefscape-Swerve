@@ -83,10 +83,10 @@ public class RobotContainer {
     }
 
     double range() {
-        double kP = .2;
+        double kP = .02;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= MaxSpeed;
-        //targetingForwardSpeed *= -1.0;
+        targetingForwardSpeed *= -1.0;
         return targetingForwardSpeed;
     }
 
@@ -175,9 +175,22 @@ public class RobotContainer {
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
 
+        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+        //     final double rotation = aim();
+        //     final double forward = range();
+        //     return forwardStraight.withVelocityX(forward)
+        //         .withVelocityY(0)
+        //         .withRotationalRate(rotation);
+        // })
+        // );
         joystick.y().whileTrue(drivetrain.applyRequest(() -> {
             final double rotation = aim();
-            final double forward = range();
+            final double forward;
+            if (Limelight.hasValidTargets() == 1) {
+                forward = range();
+            } else {
+                forward = 0;
+            }
             return forwardStraight.withVelocityX(forward)
                 .withVelocityY(0)
                 .withRotationalRate(rotation);
