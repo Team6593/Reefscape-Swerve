@@ -13,6 +13,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -80,11 +83,45 @@ public class RobotContainer {
     }
 
     double range() {
-        double kP = .1;
+        double kP = .2;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= MaxSpeed;
         //targetingForwardSpeed *= -1.0;
         return targetingForwardSpeed;
+    }
+
+    double estimateDistance() {
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        NetworkTableEntry ty = table.getEntry("ty");
+        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+
+        // how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightMountAngleDegrees = 0; 
+
+        // distance from the center of the Limelight lens to the floor
+        double limelightLensHeightInches = 15.5; 
+
+        // distance from the target to the floor
+        double goalHeightInches = 14.0; 
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+        
+        //calculate distance
+        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+        //return Math.abs(distanceFromLimelightToGoalInches);
+        System.out.println(distanceFromLimelightToGoalInches);
+        return distanceFromLimelightToGoalInches;
+    }
+
+    double getInRange() {
+        double kP = .1;
+        double currentDistance = estimateDistance();
+        double desiredDistance = 10;
+        double error = currentDistance - desiredDistance;
+        double movement = kP * error;
+        //movement = 0;
+        return movement;
     }
 
     private void configureBindings() {
@@ -140,20 +177,12 @@ public class RobotContainer {
 
         joystick.y().whileTrue(drivetrain.applyRequest(() -> {
             final double rotation = aim();
-            final double forward = range() * .5;
+            final double forward = range();
             return forwardStraight.withVelocityX(forward)
                 .withVelocityY(0)
                 .withRotationalRate(rotation);
         })
         );
-
-        joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> {
-            final double rotation = aim();
-            final double forward = range();
-            return forwardStraight.withVelocityX(forward)
-                .withVelocityY(0)
-                .withRotationalRate(rotation);
-        }));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
