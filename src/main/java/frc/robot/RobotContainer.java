@@ -31,8 +31,6 @@ public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    private Limelight limelight;
-
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -54,8 +52,6 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        limelight = new Limelight();
 
         configureBindings();
     }
@@ -83,45 +79,11 @@ public class RobotContainer {
     }
 
     double range() {
-        double kP = .02;
+        double kP = .1;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= MaxSpeed;
-        targetingForwardSpeed *= -1.0;
+        //targetingForwardSpeed *= -1.0;
         return targetingForwardSpeed;
-    }
-
-    double estimateDistance() {
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        NetworkTableEntry ty = table.getEntry("ty");
-        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-
-        // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 0; 
-
-        // distance from the center of the Limelight lens to the floor
-        double limelightLensHeightInches = 15.5; 
-
-        // distance from the target to the floor
-        double goalHeightInches = 14.0; 
-
-        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-        
-        //calculate distance
-        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
-        //return Math.abs(distanceFromLimelightToGoalInches);
-        System.out.println(distanceFromLimelightToGoalInches);
-        return distanceFromLimelightToGoalInches;
-    }
-
-    double getInRange() {
-        double kP = .1;
-        double currentDistance = estimateDistance();
-        double desiredDistance = 10;
-        double error = currentDistance - desiredDistance;
-        double movement = kP * error;
-        //movement = 0;
-        return movement;
     }
 
     private void configureBindings() {
@@ -183,15 +145,17 @@ public class RobotContainer {
         //         .withRotationalRate(rotation);
         // })
         // );
+
         joystick.y().whileTrue(drivetrain.applyRequest(() -> {
             final double rotation = aim();
-            final double forward;
-            if (Limelight.hasValidTargets() == 1) {
-                forward = range();
+            double forwardspeed = 0;
+            if(Limelight.hasValidTargets() == 1) {
+                forwardspeed = .2;
             } else {
-                forward = 0;
+                forwardspeed = 0;
             }
-            return forwardStraight.withVelocityX(forward)
+            //final double forward = range();
+            return forwardStraight.withVelocityX(forwardspeed)
                 .withVelocityY(0)
                 .withRotationalRate(rotation);
         })

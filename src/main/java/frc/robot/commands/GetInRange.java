@@ -13,7 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.OtherConstants.LimelightConstants;
+import frc.robot.Constants.LimelightConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GetInRange extends Command {
