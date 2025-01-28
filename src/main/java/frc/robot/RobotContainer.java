@@ -13,6 +13,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Limelight;
+import frc.robot.commands.GetInRange;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -52,12 +57,13 @@ public class RobotContainer {
     }
 
     double aim() {
+        //System.out.println("AIMING");
         // kP (constant of proportionality)
         // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
         // if it is too high, the robot will oscillate around.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .035;
+        double kP = .0095;
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -89,8 +95,8 @@ public class RobotContainer {
                 double deadband = 0.2;
                 double multiplier = .8;
 
-                double velocityX = -joystick.getLeftY() * multiplier;
-                double velocityY = -joystick.getLeftX() * multiplier;
+                double velocityX = joystick.getLeftY() * multiplier;
+                double velocityY = joystick.getLeftX() * multiplier;
                 double rotationalRate = joystick.getRightX();
     
                 // Apply deadband to velocityX
@@ -113,7 +119,7 @@ public class RobotContainer {
                 } else {
                     rotationalRate = (rotationalRate - Math.signum(rotationalRate) * deadband) / (1 - deadband);
                 }
-    
+                
                 return drive
                     .withVelocityX(velocityX * MaxSpeed)
                     .withVelocityY(velocityY * MaxSpeed)
@@ -125,21 +131,35 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        joystick.x().whileTrue(new GetInRange(drivetrain));
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
         );
-        joystick.pov(180).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        );
 
-        joystick.leftBumper().whileTrue(drivetrain.applyRequest(() -> {
-            final double rotation = -aim() * .5;
-            final double forward = -range() * .5;
-            return forwardStraight.withVelocityX(forward)
+        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+        //     final double rotation = aim();
+        //     final double forward = range();
+        //     return forwardStraight.withVelocityX(forward)
+        //         .withVelocityY(0)
+        //         .withRotationalRate(rotation);
+        // })
+        // );
+
+        joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+            final double rotation = aim();
+            double forwardspeed = 0;
+            if(Limelight.hasValidTargets() == 1) {
+                forwardspeed = .2;
+            } else {
+                forwardspeed = 0;
+            }
+            //final double forward = range();
+            return forwardStraight.withVelocityX(forwardspeed)
                 .withVelocityY(0)
-                .withRotationalRate(rotation * MaxAngularRate);
-        }));
+                .withRotationalRate(rotation);
+        })
+        );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
