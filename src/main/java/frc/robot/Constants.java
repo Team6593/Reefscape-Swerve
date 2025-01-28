@@ -8,7 +8,9 @@ package frc.robot;
 public final class Constants {
     
     public static class CoralIntakeConstants {
-        public static final int coralIntakeID = 21;
+        public static final int rightCoralMotorID = 21;
+        public static final int leftCoralMotorID = 22;
+        public static final int beamBreakID = 0;
     }
 
     public static class ClimberConstants {
