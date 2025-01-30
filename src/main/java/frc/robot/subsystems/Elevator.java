@@ -14,7 +14,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.EleavtorConstants;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
@@ -26,7 +25,6 @@ public class Elevator extends SubsystemBase {
   private SparkMaxConfig leftConfig = new SparkMaxConfig();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
   private RelativeEncoder leftEncoder = leftMotor.getEncoder();
-  private RelativeEncoder rightEncoder = rightMotor.getEncoder();
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -36,7 +34,7 @@ public class Elevator extends SubsystemBase {
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     leftController.setReference(30, ControlType.kCurrent);
-    rightController.setReference(30, ControlType.kCurrent);
+    rightController.setReference(30, ControlType.kCurrent);    
   }
 
   public void MoveUp(double speed) {
@@ -50,12 +48,20 @@ public class Elevator extends SubsystemBase {
   }
 
   public void MoveToSetpoint(double setpoint, double speed) {
-    
+    if (leftEncoder.getPosition() > setpoint) {
+      MoveDown(speed);
+    } else if (leftEncoder.getPosition() < setpoint) {
+      MoveUp(speed);
+    } else if(leftEncoder.getPosition() == setpoint) {
+      leftMotor.set(0);
+      rightMotor.set(0);
+    }
   }
-
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+
 }
