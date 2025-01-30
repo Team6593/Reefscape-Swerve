@@ -17,6 +17,11 @@ public final class Constants {
         public static final int climberID = 20;
     }
 
+    public static class EleavtorConstants {
+        public static final int leftElevatorMotorID = 31;
+        public static final int rightElevatorMotorID = 32;
+    }
+
     public static class LimelightConstants {
         public static final double mountAngleDegrees = 0; // grab later
         public static final double lensHeightInches = 15.5; // grab later
