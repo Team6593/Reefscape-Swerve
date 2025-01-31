@@ -4,17 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -26,79 +22,82 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
-public class SimulatedElevator extends SubsystemBase {
-
-  // This gearbox represents a gearbox containing 4 Vex 775pro motors.
-  private final DCMotor m_elevatorGearBox = DCMotor.getVex775Pro(4);
+public class SimElevator implements AutoCloseable {
+  
+  private final DCMotor m_elevatorGearbox = DCMotor.getKrakenX60(1);
+  private Constants.ClimberConstants Constants = new Constants.ClimberConstants();
 
   // Standard classes for controlling our elevator
   private final ProfiledPIDController m_controller =
-    new ProfiledPIDController(5, 0, 0, 
-    new TrapezoidProfile.Constraints(2.45, 2.45));
-
-  ElevatorFeedforward m_feedForward =
-    new ElevatorFeedforward(0, 0.762, 0.762, 0);
-  
-  private final Encoder m_encoder = new Encoder(0, 1);
-  private final PWMSparkMax m_motor = new PWMSparkMax(0);
+      new ProfiledPIDController(
+          Constants.kElevatorKp,
+          Constants.kElevatorKi,
+          Constants.kElevatorKd,
+          new TrapezoidProfile.Constraints(2.45, 2.45));
+  ElevatorFeedforward m_feedforward =
+      new ElevatorFeedforward(
+          Constants.kElevatorkS,
+          Constants.kElevatorkG,
+          Constants.kElevatorkV,
+          Constants.kElevatorkA);
+  private final Encoder m_encoder =
+      new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel);
+  //private TalonFX m_motor = new TalonFX(Constants.climberID);
+    private PWMSparkMax m_motor = new PWMSparkMax(Constants.climberID);
 
   // Simulation classes help us simulate what's going on, including gravity.
-  private final ElevatorSim m_ElevatorSim =
-    new ElevatorSim(LinearSystemId.createElevatorSystem(m_elevatorGearBox, 4.0, Units.inchesToMeters(2), 10), 
-    m_elevatorGearBox, 0.0, 1.25, true, 0, 2);
-  
+  private final ElevatorSim m_elevatorSim =
+      new ElevatorSim(
+          m_elevatorGearbox,
+          Constants.kElevatorGearing,
+          Constants.kCarriageMass,
+          Constants.kElevatorDrumRadius,
+          Constants.kMinElevatorHeightMeters,
+          Constants.kMaxElevatorHeightMeters,
+          true,
+          0,
+          0.01,
+          0.0);
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
   private final PWMSim m_motorSim = new PWMSim(m_motor);
 
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 10, 0);
-  private final MechanismLigament2d m_elevatorMech2d = 
-    m_mech2dRoot.append(new MechanismLigament2d("Elevator", m_ElevatorSim.getPositionMeters(), 90));
+  private final MechanismLigament2d m_elevatorMech2d =
+      m_mech2dRoot.append(
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
 
-  // Create a real encoder object on DIO 2,3
-  Encoder encoder = new Encoder(2, 3);
-  // Create a sim controller for the encoder
-  EncoderSim simEncoder = new EncoderSim(encoder);
+  /** Subsystem constructor. */
+  public SimElevator() {
+    m_encoder.setDistancePerPulse(Constants.kElevatorEncoderDistPerPulse);
 
-  /** Creates a new SimulatedElevator. */
-  public SimulatedElevator() {
-    m_encoderSim.setDistancePerPulse(2.0 * Math.PI * Units.inchesToMeters(2) / 4096);
-
-    // Publish Mechanism2d to Smartboard
+    // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     SmartDashboard.putData("Elevator Sim", m_mech2d);
   }
-  
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run
 
+  /** Advance the simulation. */
+  public void simulationPeriodic() {
     // In this method, we update our simulation of what our elevator is doing
-    // First, we set our "inputs" (voltage)
-    m_ElevatorSim.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    // First, we set our "inputs" (voltages)
+    m_elevatorSim.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
 
     // Next, we update it. The standard loop time is 20ms.
-    m_ElevatorSim.update(0.020);
+    m_elevatorSim.update(0.020);
 
     // Finally, we set our simulated encoder's readings and simulated battery voltage
-    m_encoderSim.setDistancePerPulse(m_ElevatorSim.getPositionMeters());
-
+    m_encoderSim.setDistance(m_elevatorSim.getPositionMeters());
     // SimBattery estimates loaded battery voltages
     RoboRioSim.setVInVoltage(
-      BatterySim.calculateDefaultBatteryLoadedVoltage(m_ElevatorSim.getCurrentDrawAmps())
-    );
-
-    simEncoder.setCount(100);
-    encoder.get(); // 100
-    simEncoder.getCount(); // 100
+        BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
   }
 
   /**
    * Run control loop to reach and maintain goal.
-   * 
+   *
    * @param goal the position to maintain
    */
   public void reachGoal(double goal) {
@@ -106,20 +105,23 @@ public class SimulatedElevator extends SubsystemBase {
 
     // With the setpoint value we run PID control like normal
     double pidOutput = m_controller.calculate(m_encoder.getDistance());
-    double feedForwardOutput = m_feedForward.calculate(m_controller.getSetpoint().velocity);
-    m_motor.setVoltage(pidOutput + feedForwardOutput); 
+    double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
+    m_motor.setVoltage(pidOutput + feedforwardOutput);
   }
 
+  /** Stop the control loop and motor output. */
   public void stop() {
     m_controller.setGoal(0.0);
     m_motor.set(0.0);
   }
 
+  /** Update telemetry, including the mechanism visualization. */
   public void updateTelemetry() {
     // Update elevator visualization with position
     m_elevatorMech2d.setLength(m_encoder.getDistance());
   }
 
+  @Override
   public void close() {
     m_encoder.close();
     m_motor.close();

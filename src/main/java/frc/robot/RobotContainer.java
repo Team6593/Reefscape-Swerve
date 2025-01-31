@@ -27,8 +27,10 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.SimElevator;
 import frc.robot.commands.GetInRange;
 import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.SetElevator;
 import frc.robot.commands.ShootCoral;
 
 public class RobotContainer {
@@ -47,6 +49,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final Coral outtake = new Coral();
+
+    public final SimElevator elevator = new SimElevator();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -141,9 +145,10 @@ public class RobotContainer {
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
-        joystick.x().whileTrue(new GetInRange(drivetrain));
-        joystick.a().onTrue(new IntakeCoral(outtake));
-        joystick.b().onTrue(new ShootCoral(outtake));
+        
+        //joystick.x().whileTrue(new GetInRange(drivetrain));
+        //joystick.a().onTrue(new IntakeCoral(outtake));
+        //joystick.b().onTrue(new ShootCoral(outtake));
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -184,6 +189,8 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        joystick.a().onTrue(new SetElevator(elevator, Constants.ClimberConstants.kSetpointMeters));
     }
 
     public Command getAutonomousCommand() {
