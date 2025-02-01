@@ -26,10 +26,16 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
-import frc.robot.commands.GetInRange;
-import frc.robot.commands.IntakeCoral;
-import frc.robot.commands.ShootCoral;
+import frc.robot.commands.Coral.IntakeCoral;
+import frc.robot.commands.Coral.ShootCoral;
+import frc.robot.commands.Elevator.ElevatorBrake;
+import frc.robot.commands.Elevator.ElevatorCoast;
+import frc.robot.commands.Elevator.ElevatorDown;
+import frc.robot.commands.Elevator.ElevatorToSetpoint;
+import frc.robot.commands.Elevator.ElevatorUp;
+import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -47,6 +53,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final Coral outtake = new Coral();
+
+    private final Elevator elevator = new Elevator();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -141,9 +149,14 @@ public class RobotContainer {
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
-        joystick.x().whileTrue(new GetInRange(drivetrain));
-        joystick.a().onTrue(new IntakeCoral(outtake));
-        joystick.b().onTrue(new ShootCoral(outtake));
+        // joystick.x().whileTrue(new GetInRange(drivetrain));
+        // joystick.a().onTrue(new IntakeCoral(outtake));
+        // joystick.b().onTrue(new ShootCoral(outtake));
+        joystick.x().whileTrue(new ElevatorUp(elevator));
+        joystick.a().whileTrue(new ElevatorDown(elevator));
+        //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
+        joystick.y().whileTrue(new ElevatorCoast(elevator));
+        joystick.y().whileFalse(new ElevatorBrake(elevator));
 
         joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -158,20 +171,20 @@ public class RobotContainer {
         // })
         // );
 
-        joystick.y().whileTrue(drivetrain.applyRequest(() -> {
-            final double rotation = aim();
-            double forwardspeed = 0;
-            if(Limelight.hasValidTargets() == 1) {
-                forwardspeed = .2;
-            } else {
-                forwardspeed = 0;
-            }
-            //final double forward = range();
-            return forwardStraight.withVelocityX(forwardspeed)
-                .withVelocityY(0)
-                .withRotationalRate(rotation);
-        })
-        );
+        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+        //     final double rotation = aim();
+        //     double forwardspeed = 0;
+        //     if(Limelight.hasValidTargets() == 1) {
+        //         forwardspeed = .2;
+        //     } else {
+        //         forwardspeed = 0;
+        //     }
+        //     //final double forward = range();
+        //     return forwardStraight.withVelocityX(forwardspeed)
+        //         .withVelocityY(0)
+        //         .withRotationalRate(rotation);
+        // })
+        // );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

@@ -7,6 +7,13 @@ package frc.robot;
 /** Add your docs here. */
 public final class Constants {
     
+    public static class ElevatorConstants {
+        public static final int rightElevatorMotorID = 31;
+        public static final int leftElevatorMotorID = 32;
+        public static final double minTick = 0;
+        public static final double maxTick = 250; // grab this immediatly!!
+    }
+
     public static class CoralIntakeConstants {
         public static final int rightCoralMotorID = 21;
         public static final int leftCoralMotorID = 22;

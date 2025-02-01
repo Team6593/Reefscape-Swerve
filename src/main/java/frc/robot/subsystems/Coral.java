@@ -26,7 +26,7 @@ public class Coral extends SubsystemBase {
   private SparkClosedLoopController rightPIDConfig = rightMotor.getClosedLoopController();
   private SparkClosedLoopController leftPIDConfig = leftMotor.getClosedLoopController();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
-  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.beamBreakID);
+  private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
   /** Creates a new Coral. */
   public Coral() {
@@ -39,17 +39,17 @@ public class Coral extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Outtake BB", beamBreak.get());
+    SmartDashboard.putBoolean("Outtake BB", beamBrake.get());
   }
 
   /**
    * Intake the coral.
    */
   public void intakeCoral(double speed) {
-    if (beamBreak.get()) {
+    if (beamBrake.get()) {
       rightMotor.set(speed);
       leftMotor.set(speed);
-    } else if (!beamBreak.get()) {
+    } else if (!beamBrake.get()) {
       rightMotor.set(0);
       leftMotor.set(0);
     }
@@ -59,10 +59,10 @@ public class Coral extends SubsystemBase {
    * Output the coral
    */
   public void shootCoral(double speed) {
-    if (!beamBreak.get()) {
+    if (!beamBrake.get()) {
       rightMotor.set(speed);
       leftMotor.set(speed);
-    } else if (beamBreak.get()) {
+    } else if (beamBrake.get()) {
       rightMotor.set(0);
       leftMotor.set(0);
     }
