@@ -14,7 +14,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -36,22 +35,29 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     rightConfig.inverted(true).idleMode(IdleMode.kBrake);
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
+
+    rightConfig.closedLoop
+      .p(.1)
+      .i(0)
+      .d(0)
+      .outputRange(-.3, .3);
+    leftConfig.closedLoop
+      .p(.1)
+      .i(0)
+      .d(0)
+      .outputRange(-.3, .3);
+
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     rightController.setReference(20, ControlType.kCurrent);
     leftController.setReference(20, ControlType.kCurrent);
-    // rightConfig.closedLoop
-    //   .p(.1)
-    //   .i(0)
-    //   .d(0)
-    //   .outputRange(-.3, .3);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+
     SmartDashboard.putNumber("Right Encoder Position", rightEncoder.getPosition());
     SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
