@@ -23,8 +23,8 @@ public class Coral extends SubsystemBase {
 
   private SparkMax rightMotor = new SparkMax(CoralIntakeConstants.rightCoralMotorID, MotorType.kBrushless);
   private SparkMax leftMotor = new SparkMax(CoralIntakeConstants.leftCoralMotorID, MotorType.kBrushless);
-  private SparkClosedLoopController rightPIDConfig = rightMotor.getClosedLoopController();
-  private SparkClosedLoopController leftPIDConfig = leftMotor.getClosedLoopController();
+  private SparkClosedLoopController rightController = rightMotor.getClosedLoopController();
+  private SparkClosedLoopController leftController = leftMotor.getClosedLoopController();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
   private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
@@ -33,8 +33,8 @@ public class Coral extends SubsystemBase {
     rightConfig.inverted(true);
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    rightPIDConfig.setReference(10, ControlType.kCurrent);
-    leftPIDConfig.setReference(10, ControlType.kCurrent);
+    rightController.setReference(10, ControlType.kCurrent);
+    leftController.setReference(10, ControlType.kCurrent);
   }
 
   @Override
@@ -43,7 +43,17 @@ public class Coral extends SubsystemBase {
   }
 
   /**
-   * Intake the coral.
+   * Manually intake the coral without a beam brake.
+   * @param speed
+   */
+  public void manualIntakeCoral(double speed) {
+    rightMotor.set(speed);
+    leftMotor.set(speed);
+  }
+
+  /**
+   * Intake the coral with the beam brake.
+   * @param speed
    */
   public void intakeCoral(double speed) {
     if (beamBrake.get()) {
@@ -67,5 +77,4 @@ public class Coral extends SubsystemBase {
       leftMotor.set(0);
     }
   }
-
 }

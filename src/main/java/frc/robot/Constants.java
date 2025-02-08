@@ -17,11 +17,18 @@ public final class Constants {
     public static class CoralIntakeConstants {
         public static final int rightCoralMotorID = 21;
         public static final int leftCoralMotorID = 22;
-        public static final int beamBreakID = 0;
+        public static final int beamBreakID = 23;
+    }
+
+    public static class AlgaeConstants {
+        public static final int pivotMotorID = 51;
+        public static final int topMotorID = 52;
+        public static final int bottomMotorID = 53;
+        public static final int beamBrakeID = 54;
     }
 
     public static class ClimberConstants {
-        public static final int climberID = 20;
+        public static final int climberID = 41;
     }
 
     public static class LimelightConstants {

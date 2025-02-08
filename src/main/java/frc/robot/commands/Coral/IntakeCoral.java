@@ -27,7 +27,7 @@ public class IntakeCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coral.intakeCoral(.2);
+    coral.manualIntakeCoral(.5);
   }
 
   // Called once the command ends or is interrupted.

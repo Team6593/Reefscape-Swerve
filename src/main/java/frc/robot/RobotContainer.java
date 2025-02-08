@@ -30,11 +30,9 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
+import frc.robot.commands.Elevator.Elevate;
 import frc.robot.commands.Elevator.ElevatorBrake;
 import frc.robot.commands.Elevator.ElevatorCoast;
-import frc.robot.commands.Elevator.ElevatorDown;
-import frc.robot.commands.Elevator.ElevatorToSetpoint;
-import frc.robot.commands.Elevator.ElevatorUp;
 import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
@@ -150,17 +148,14 @@ public class RobotContainer {
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
         // joystick.x().whileTrue(new GetInRange(drivetrain));
-        // joystick.a().onTrue(new IntakeCoral(outtake));
         // joystick.b().onTrue(new ShootCoral(outtake));
-        joystick.x().whileTrue(new ElevatorUp(elevator));
-        joystick.a().whileTrue(new ElevatorDown(elevator));
         //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
+        joystick.x().whileTrue(new IntakeCoral(outtake));
         joystick.y().whileTrue(new ElevatorCoast(elevator));
         joystick.y().whileFalse(new ElevatorBrake(elevator));
-
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        );
+        joystick.a().whileTrue(new Elevate(elevator, .2));
+        joystick.b().whileTrue(new Elevate(elevator, -.2));
+        
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();

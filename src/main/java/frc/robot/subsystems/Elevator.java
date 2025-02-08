@@ -36,16 +36,16 @@ public class Elevator extends SubsystemBase {
     rightConfig.inverted(true).idleMode(IdleMode.kBrake);
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
 
-    rightConfig.closedLoop
-      .p(.1)
-      .i(0)
-      .d(0)
-      .outputRange(-.3, .3);
-    leftConfig.closedLoop
-      .p(.1)
-      .i(0)
-      .d(0)
-      .outputRange(-.3, .3);
+    // rightConfig.closedLoop
+    //   .p(.1)
+    //   .i(0)
+    //   .d(0)
+    //   .outputRange(-.3, .3);
+    // leftConfig.closedLoop
+    //   .p(.1)
+    //   .i(0)
+    //   .d(0)
+    //   .outputRange(-.3, .3);
 
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -80,29 +80,24 @@ public class Elevator extends SubsystemBase {
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void up(double speed) {
+  // public void up(double speed) {
+  //   rightMotor.set(speed);
+  //   leftMotor.set(speed);
+  // }
+
+  // public void down(double speed) {
+  //   rightMotor.set(-speed);
+  //   leftMotor.set(-speed);
+  // }
+
+  public void elevate(double speed) {
     rightMotor.set(speed);
     leftMotor.set(speed);
-  }
-
-  public void down(double speed) {
-    rightMotor.set(-speed);
-    leftMotor.set(-speed);
   }
 
   public void stop() {
     rightMotor.set(0);
     leftMotor.set(0);
-  }
-
-  public void moveToSetpoint(double speed, double setpoint) {
-    if (setpoint > leftEncoder.getPosition()) {
-      up(speed);
-    } else if (setpoint == leftEncoder.getPosition()) {
-      stop();
-    } else if (setpoint < leftEncoder.getPosition()) {
-      down(speed);
-    }
   }
 
 }
