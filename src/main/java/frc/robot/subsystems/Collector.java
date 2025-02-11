@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
 
-public class Algae extends SubsystemBase {
+public class Collector extends SubsystemBase {
 
   private SparkMax pivotMotor = new SparkMax(AlgaeConstants.pivotMotorID, MotorType.kBrushless);
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
@@ -33,10 +33,10 @@ public class Algae extends SubsystemBase {
   private SparkClosedLoopController bottomMotorController = bottomMotor.getClosedLoopController();
   private RelativeEncoder bottomEncoder = bottomMotor.getEncoder();
 
-  private DigitalInput beamBrake = new DigitalInput(AlgaeConstants.beamBrakeID);
+  private DigitalInput limitSwitch = new DigitalInput(AlgaeConstants.limitSwitchID);
 
   /** Creates a new Algae. */
-  public Algae() {
+  public Collector() {
     pivotConfig.idleMode(IdleMode.kBrake);
     //pivotConfig.closedLoop.p(.1).i(0).d(0);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -49,18 +49,24 @@ public class Algae extends SubsystemBase {
     bottomMotorController.setReference(20, ControlType.kCurrent);
   }
 
-  public void IntakeAlgae(double speed) {
+  public void intakeAlgae(double speed) {
     topMotor.set(speed);
     bottomMotor.set(speed);
   }
 
-  public void MovePivot(double speed) {
+  public void movePivot(double speed) {
     pivotMotor.set(speed);
   }
 
   // public void ToSetpoint(double setpoint) {
   //   pivotController.setReference(setpoint, ControlType.kPosition);
   // }
+
+  public void stop() {
+    pivotMotor.set(0);
+    topMotor.set(0);
+    bottomMotor.set(0);
+  }
 
   @Override
   public void periodic() {

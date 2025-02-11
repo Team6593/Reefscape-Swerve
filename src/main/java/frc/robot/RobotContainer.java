@@ -17,10 +17,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
@@ -50,9 +52,9 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final Coral outtake = new Coral();
+    // private final Coral outtake = new Coral();
 
-    private final Elevator elevator = new Elevator();
+    // private final Elevator elevator = new Elevator();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -62,8 +64,8 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
-        NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
+        //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
+        //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -150,11 +152,13 @@ public class RobotContainer {
         // joystick.x().whileTrue(new GetInRange(drivetrain));
         // joystick.b().onTrue(new ShootCoral(outtake));
         //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
-        joystick.x().whileTrue(new IntakeCoral(outtake));
-        joystick.y().whileTrue(new ElevatorCoast(elevator));
-        joystick.y().whileFalse(new ElevatorBrake(elevator));
-        joystick.a().whileTrue(new Elevate(elevator, .2));
-        joystick.b().whileTrue(new Elevate(elevator, -.2));
+
+        
+        // joystick.x().whileTrue(new IntakeCoral(outtake));
+        // joystick.y().whileTrue(new ElevatorCoast(elevator));
+        // joystick.y().whileFalse(new ElevatorBrake(elevator));
+        // joystick.a().whileTrue(new Elevate(elevator, .2));
+        // joystick.b().whileTrue(new Elevate(elevator, -.2));
         
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {

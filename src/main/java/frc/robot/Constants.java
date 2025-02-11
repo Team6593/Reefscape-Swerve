@@ -7,6 +7,13 @@ package frc.robot;
 /** Add your docs here. */
 public final class Constants {
     
+    public static class OperatorConstants {
+        public static final int L3 = 1;
+        public static final int L2 = 2;
+        public static final int L1 = 3;
+        public static final int StopAll = 6;
+    }
+
     public static class ElevatorConstants {
         public static final int rightElevatorMotorID = 31;
         public static final int leftElevatorMotorID = 32;
@@ -24,7 +31,7 @@ public final class Constants {
         public static final int pivotMotorID = 51;
         public static final int topMotorID = 52;
         public static final int bottomMotorID = 53;
-        public static final int beamBrakeID = 54;
+        public static final int limitSwitchID = 54;
     }
 
     public static class ClimberConstants {

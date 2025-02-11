@@ -63,7 +63,7 @@ public class Coral extends SubsystemBase {
       rightMotor.set(0);
       leftMotor.set(0);
     }
-}
+  }
 
   /**
    * Output the coral
@@ -76,5 +76,10 @@ public class Coral extends SubsystemBase {
       rightMotor.set(0);
       leftMotor.set(0);
     }
+  }
+
+  public void stop() {
+    rightMotor.set(0);
+    leftMotor.set(0);
   }
 }
