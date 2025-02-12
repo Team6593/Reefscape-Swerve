@@ -24,16 +24,12 @@ public class Collector extends SubsystemBase {
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
-  private SparkMax topMotor = new SparkMax(AlgaeConstants.topMotorID, MotorType.kBrushless);
-  private SparkMaxConfig topConfig = new SparkMaxConfig();
-  private SparkClosedLoopController topMotorController = topMotor.getClosedLoopController();
-  private RelativeEncoder topEncoder = topMotor.getEncoder();
+  // private SparkMax collectorMotor = new SparkMax(AlgaeConstants.topMotorID, MotorType.kBrushless);
+  // private SparkMaxConfig topConfig = new SparkMaxConfig();
+  // private SparkClosedLoopController topMotorController = collectorMotor.getClosedLoopController();
+  // private RelativeEncoder collectorEncoder = collectorMotor.getEncoder();
 
-  private SparkMax bottomMotor = new SparkMax(AlgaeConstants.bottomMotorID, MotorType.kBrushless);
-  private SparkClosedLoopController bottomMotorController = bottomMotor.getClosedLoopController();
-  private RelativeEncoder bottomEncoder = bottomMotor.getEncoder();
-
-  private DigitalInput limitSwitch = new DigitalInput(AlgaeConstants.limitSwitchID);
+  // DigitalInput limitSwitch = new DigitalInput(AlgaeConstants.limitSwitchID);
 
   /** Creates a new Algae. */
   public Collector() {
@@ -41,17 +37,15 @@ public class Collector extends SubsystemBase {
     //pivotConfig.closedLoop.p(.1).i(0).d(0);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    topConfig.inverted(true);
-    topMotor.configure(topConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    // topConfig.inverted(true);
+    // collectorMotor.configure(topConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    pivotController.setReference(20, ControlType.kCurrent);
-    topMotorController.setReference(20, ControlType.kCurrent);
-    bottomMotorController.setReference(20, ControlType.kCurrent);
+    // pivotController.setReference(20, ControlType.kCurrent);
+    // topMotorController.setReference(20, ControlType.kCurrent);
   }
 
   public void intakeAlgae(double speed) {
-    topMotor.set(speed);
-    bottomMotor.set(speed);
+    //collectorMotor.set(speed);
   }
 
   public void movePivot(double speed) {
@@ -64,8 +58,7 @@ public class Collector extends SubsystemBase {
 
   public void stop() {
     pivotMotor.set(0);
-    topMotor.set(0);
-    bottomMotor.set(0);
+    //collectorMotor.set(0);
   }
 
   @Override

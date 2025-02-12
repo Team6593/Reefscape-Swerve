@@ -36,6 +36,7 @@ public final class Constants {
 
     public static class ClimberConstants {
         public static final int climberID = 41;
+        public static final int winchID = 42;
     }
 
     public static class LimelightConstants {

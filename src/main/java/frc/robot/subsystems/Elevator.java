@@ -35,23 +35,26 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     rightConfig.inverted(true).idleMode(IdleMode.kBrake);
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
+    leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
-    // rightConfig.closedLoop
-    //   .p(.1)
-    //   .i(0)
-    //   .d(0)
-    //   .outputRange(-.3, .3);
+    rightConfig.closedLoop
+      .p(.1)
+      .i(0)
+      .d(0)
+      .outputRange(-.2, .2);
     // leftConfig.closedLoop
     //   .p(.1)
     //   .i(0)
-    //   .d(0)
-    //   .outputRange(-.3, .3);
+    //   .d(0);
 
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    rightController.setReference(20, ControlType.kCurrent);
-    leftController.setReference(20, ControlType.kCurrent);
+    rightController.setReference(40, ControlType.kCurrent);
+    leftController.setReference(40, ControlType.kCurrent);
+
+    rightEncoder.setPosition(0);
+    leftEncoder.setPosition(0);
   }
 
   @Override
@@ -60,8 +63,12 @@ public class Elevator extends SubsystemBase {
 
     SmartDashboard.putNumber("Right Encoder Position", rightEncoder.getPosition());
     SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
-    SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
+  }
+
+  public void goToSetpoint(double setpoint) {
+    rightController.setReference(setpoint, ControlType.kPosition);
   }
 
   public void changeToCoastMode() {
@@ -92,12 +99,12 @@ public class Elevator extends SubsystemBase {
 
   public void elevate(double speed) {
     rightMotor.set(speed);
-    leftMotor.set(speed);
+    //leftMotor.set(speed);
   }
 
   public void stop() {
     rightMotor.set(0);
-    leftMotor.set(0);
+    //leftMotor.set(0);
   }
 
 }
