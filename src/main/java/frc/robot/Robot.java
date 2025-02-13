@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.stopElevator();
+    m_robotContainer.stopElevator();
     //m_robotContainer.drivetrain.resetGyro();
     //Pose2d position = new Pose2d(8.785, 5.062, Rotation2d.k180deg);
     //m_robotContainer.drivetrain.resetOdometryForAuto(position);
@@ -84,6 +85,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     m_robotContainer.stopElevator();
+    m_robotContainer.stopCollector();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

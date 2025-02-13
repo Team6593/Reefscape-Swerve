@@ -19,6 +19,7 @@ public final class Constants {
         public static final int leftElevatorMotorID = 32;
         public static final double minTick = 0;
         public static final double maxTick = 250; // grab this immediatly!!
+        public static final double L4Tick = 0;
     }
 
     public static class CoralIntakeConstants {
@@ -29,9 +30,8 @@ public final class Constants {
 
     public static class AlgaeConstants {
         public static final int pivotMotorID = 51;
-        public static final int topMotorID = 52;
-        public static final int bottomMotorID = 53;
-        public static final int limitSwitchID = 54;
+        public static final int intakeMotorID = 52;
+        //public static final int limitSwitchID = 54;
     }
 
     public static class ClimberConstants {

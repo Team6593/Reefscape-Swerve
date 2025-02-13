@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeConstants;
 
@@ -24,24 +25,33 @@ public class Collector extends SubsystemBase {
   private SparkMaxConfig pivotConfig = new SparkMaxConfig();
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
-  // private SparkMax collectorMotor = new SparkMax(AlgaeConstants.topMotorID, MotorType.kBrushless);
-  // private SparkMaxConfig topConfig = new SparkMaxConfig();
-  // private SparkClosedLoopController topMotorController = collectorMotor.getClosedLoopController();
-  // private RelativeEncoder collectorEncoder = collectorMotor.getEncoder();
+  private SparkMax collectorMotor = new SparkMax(AlgaeConstants.intakeMotorID, MotorType.kBrushless);
+  private SparkMaxConfig topConfig = new SparkMaxConfig();
+  private SparkClosedLoopController topMotorController = collectorMotor.getClosedLoopController();
+  private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
 
-  // DigitalInput limitSwitch = new DigitalInput(AlgaeConstants.limitSwitchID);
+  public DigitalInput limitSwitch = new DigitalInput(1);
 
   /** Creates a new Algae. */
   public Collector() {
     pivotConfig.idleMode(IdleMode.kBrake);
-    //pivotConfig.closedLoop.p(.1).i(0).d(0);
+    topConfig.idleMode(IdleMode.kBrake);
+    pivotConfig.closedLoop.p(.02).i(0).d(0);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    pivotEncoder.setPosition(0);
 
-    // topConfig.inverted(true);
-    // collectorMotor.configure(topConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    collectorMotor.configure(topConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    // pivotController.setReference(20, ControlType.kCurrent);
-    // topMotorController.setReference(20, ControlType.kCurrent);
+    pivotController.setReference(40, ControlType.kCurrent);
+    //topMotorController.setReference(20, ControlType.kCurrent);
+  }
+
+  public void intakeUntilSwitch(double speed) {
+    if (limitSwitch.get()) {
+      collectorMotor.set(speed);
+    } else if (!limitSwitch.get()) {
+      collectorMotor.stopMotor();
+    }
   }
 
   public void intakeAlgae(double speed) {
@@ -52,17 +62,27 @@ public class Collector extends SubsystemBase {
     pivotMotor.set(speed);
   }
 
+  public void pivotToSetpoint() {
+    pivotController.setReference(15.8, ControlType.kPosition);
+  }
+
+  public void pivotBack() {
+    pivotController.setReference(0, ControlType.kPosition);
+  }
+
   // public void ToSetpoint(double setpoint) {
   //   pivotController.setReference(setpoint, ControlType.kPosition);
   // }
 
   public void stop() {
     pivotMotor.set(0);
-    //collectorMotor.set(0);
+    collectorMotor.set(0);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("switch", limitSwitch.get());
+    SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
     // This method will be called once per scheduler run
   }
 }

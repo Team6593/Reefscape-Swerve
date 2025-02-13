@@ -26,19 +26,26 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.commands.StopAll;
+import frc.robot.commands.Climber.Pivot;
+import frc.robot.commands.Collector.IntakeUntilSwitch;
 import frc.robot.commands.Collector.MovePivot;
+import frc.robot.commands.Collector.PivotToSetpoint;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
 import frc.robot.commands.Elevator.Elevate;
 
 import frc.robot.commands.Elevator.ElevatorBrake;
 import frc.robot.commands.Elevator.ElevatorCoast;
+import frc.robot.commands.Elevator.L0;
 import frc.robot.commands.Elevator.L1;
+import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.Limelight.GetInRange;
 
@@ -61,7 +68,11 @@ public class RobotContainer {
 
     private final Elevator elevator = new Elevator();
 
-    //private final Collector collector = new Collector();
+    private final Coral coral = new Coral();
+
+    private final Climber climber = new Climber();
+
+    private final Collector collector = new Collector();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -83,6 +94,10 @@ public class RobotContainer {
 
     public void stopElevator() {
         elevator.stop();
+    }
+
+    public void stopCollector() {
+        collector.stop();
     }
 
     double aim() {
@@ -203,13 +218,18 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        joystick.b().onTrue(new StopElevator(elevator));
+        joystick.b().onTrue(new PivotToSetpoint(collector));
 
-        joystick.y().whileTrue(new Elevate(elevator, .3));
-        joystick.a().whileTrue(new Elevate(elevator, -.3));
-        joystick.x().onTrue(new L1(elevator));
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // joystick.y().whileTrue(new Elevate(elevator, .3));
+        // joystick.a().whileTrue(new Elevate(elevator, -.3));
+        //joystick.x().onTrue(new L3(elevator));
+        joystick.y().whileTrue(new Pivot(climber, .1));
+        joystick.a().whileTrue(new Pivot(climber, -.1));
+        joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
+        
+        // reset the field-centric heading on left bumper 
+        joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
+        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
