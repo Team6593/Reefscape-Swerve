@@ -67,6 +67,10 @@ public class Elevator extends SubsystemBase {
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
   }
 
+  public double getRightEncoderReading() {
+    return Math.round(rightEncoder.getPosition());
+  }
+
   public void goToSetpoint(double setpoint) {
     rightController.setReference(setpoint, ControlType.kPosition);
   }

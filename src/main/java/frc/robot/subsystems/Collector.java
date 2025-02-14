@@ -36,7 +36,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
     pivotConfig.idleMode(IdleMode.kBrake);
     topConfig.idleMode(IdleMode.kBrake);
-    pivotConfig.closedLoop.p(.02).i(0).d(0);
+    pivotConfig.closedLoop.p(.02).i(0).d(0).outputRange(-.1, .1);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     pivotEncoder.setPosition(0);
 
@@ -63,11 +63,11 @@ public class Collector extends SubsystemBase {
   }
 
   public void pivotToSetpoint() {
-    pivotController.setReference(15.8, ControlType.kPosition);
+    pivotController.setReference(13, ControlType.kPosition);
   }
 
   public void pivotBack() {
-    pivotController.setReference(0, ControlType.kPosition);
+    pivotController.setReference(-0.35, ControlType.kPosition);
   }
 
   // public void ToSetpoint(double setpoint) {

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -32,10 +33,12 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.Pivot;
 import frc.robot.commands.Collector.IntakeUntilSwitch;
 import frc.robot.commands.Collector.MovePivot;
+import frc.robot.commands.Collector.PivotBack;
 import frc.robot.commands.Collector.PivotToSetpoint;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
@@ -70,11 +73,13 @@ public class RobotContainer {
 
     private final Coral coral = new Coral();
 
-    private final Climber climber = new Climber();
+    //private final Climber climber = new Climber();
 
     private final Collector collector = new Collector();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+
+    private final CommandJoystick buttonBoard  = new CommandJoystick(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -137,7 +142,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0.2;
-                double multiplier = .8;
+                double multiplier = 0;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -218,17 +223,31 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        joystick.b().onTrue(new PivotToSetpoint(collector));
+        //joystick.b().onTrue(new PivotToSetpoint(collector));
 
-        // joystick.y().whileTrue(new Elevate(elevator, .3));
-        // joystick.a().whileTrue(new Elevate(elevator, -.3));
-        //joystick.x().onTrue(new L3(elevator));
-        joystick.y().whileTrue(new Pivot(climber, .1));
-        joystick.a().whileTrue(new Pivot(climber, -.1));
-        joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
-        
+        joystick.y().whileTrue(new Elevate(elevator, .3));
+        joystick.a().whileTrue(new Elevate(elevator, -.3));
+        buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L0(elevator));
+        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
+
+        //joystick.x().onTrue(new L1(elevator));
+        // joystick.y().whileTrue(new Pivot(climber, .1));
+        // joystick.a().whileTrue(new Pivot(climber, -.1));
+
+        //joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
         // reset the field-centric heading on left bumper 
-        joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
+
+
+        // joystick.a().whileTrue(new PivotToSetpoint(collector).withTimeout(2.5)
+        //     .andThen(new IntakeUntilSwitch(collector, .50)));
+        
+        // along with doesn't work here
+        // joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
+        // .alongWith(new PivotToSetpoint(collector)));
+
+        //joystick.y().onTrue(new PivotBack(collector));
+        //joystick.x().onTrue(new StopAll(collector, coral, elevator));
         //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
