@@ -11,21 +11,50 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Coral;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
-import frc.robot.commands.GetInRange;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.StopAll;
+import frc.robot.commands.Climber.Pivot;
+import frc.robot.commands.Collector.IntakeAlgae;
+import frc.robot.commands.Collector.IntakeAndPivot;
+import frc.robot.commands.Collector.IntakeUntilSwitch;
+import frc.robot.commands.Collector.MovePivot;
+import frc.robot.commands.Collector.PivotBack;
+import frc.robot.commands.Collector.PivotToSetpoint;
+import frc.robot.commands.Collector.SpitAlgae;
+import frc.robot.commands.Coral.IntakeCoral;
+import frc.robot.commands.Coral.ShootCoral;
+import frc.robot.commands.Elevator.Elevate;
+
+import frc.robot.commands.Elevator.ElevatorBrake;
+import frc.robot.commands.Elevator.ElevatorCoast;
+import frc.robot.commands.Elevator.HumanStation;
+import frc.robot.commands.Elevator.L0;
+import frc.robot.commands.Elevator.L2;
+import frc.robot.commands.Elevator.L3;
+import frc.robot.commands.Elevator.StopElevator;
+import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -42,7 +71,19 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    // private final Coral outtake = new Coral();
+
+    private final Elevator elevator = new Elevator();
+
+    private final Coral coral = new Coral();
+
+    //private final Climber climber = new Climber();
+
+    private final Collector collector = new Collector();
+
     private final CommandXboxController joystick = new CommandXboxController(0);
+
+    private final CommandJoystick buttonBoard  = new CommandJoystick(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -50,10 +91,22 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
+        //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
+
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        
 
         configureBindings();
+    }
+
+    public void stopElevator() {
+        elevator.stop();
+    }
+
+    public void stopCollector() {
+        collector.stop();
     }
 
     double aim() {
@@ -93,11 +146,12 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0.2;
-                double multiplier = .8;
+                double multiplier = 0;
+                double rotationalMultiplier = 0;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
-                double rotationalRate = joystick.getRightX();
+                double rotationalRate = joystick.getRightX() * rotationalMultiplier;
     
                 // Apply deadband to velocityX
                 if (Math.abs(velocityX) < deadband) {
@@ -127,15 +181,21 @@ public class RobotContainer {
             })
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
-        joystick.x().whileTrue(new GetInRange(drivetrain));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // ));
+        // joystick.x().whileTrue(new GetInRange(drivetrain));
+        // joystick.b().onTrue(new ShootCoral(outtake));
+        //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
 
-        joystick.pov(0).whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        );
+
+        // joystick.x().whileTrue(new IntakeCoral(outtake));
+        // joystick.y().whileTrue(new ElevatorCoast(elevator));
+        // joystick.y().whileFalse(new ElevatorBrake(elevator));
+        // joystick.a().whileTrue(new Elevate(elevator, .2));
+        // joystick.b().whileTrue(new Elevate(elevator, -.2));
+        
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -146,20 +206,20 @@ public class RobotContainer {
         // })
         // );
 
-        joystick.y().whileTrue(drivetrain.applyRequest(() -> {
-            final double rotation = aim();
-            double forwardspeed = 0;
-            if(Limelight.hasValidTargets() == 1) {
-                forwardspeed = .2;
-            } else {
-                forwardspeed = 0;
-            }
-            //final double forward = range();
-            return forwardStraight.withVelocityX(forwardspeed)
-                .withVelocityY(0)
-                .withRotationalRate(rotation);
-        })
-        );
+        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
+        //     final double rotation = aim();
+        //     double forwardspeed = 0;
+        //     if(Limelight.hasValidTargets() == 1) {
+        //         forwardspeed = .2;
+        //     } else {
+        //         forwardspeed = 0;
+        //     }
+        //     //final double forward = range();
+        //     return forwardStraight.withVelocityX(forwardspeed)
+        //         .withVelocityY(0)
+        //         .withRotationalRate(rotation);
+        // })
+        // );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -167,9 +227,52 @@ public class RobotContainer {
         joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        
+        //joystick.b().onTrue(new PivotToSetpoint(collector));
 
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //joystick.y().whileTrue(new Elevate(elevator, .3));
+        //joystick.a().whileTrue(new Elevate(elevator, -.3));
+        //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
+        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
+        buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
+        buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+
+        joystick.a().whileTrue(new Elevate(elevator, -.2));
+        joystick.y().whileTrue(new Elevate(elevator, .3));
+
+        //joystick.x().onTrue(new L1(elevator));
+        // joystick.y().whileTrue(new Pivot(climber, .1));
+        // joystick.a().whileTrue(new Pivot(climber, -.1));
+
+        //joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
+        // reset the field-centric heading on left bumper 
+
+        // NOTE: This code works pretty good
+        // joystick.a().onTrue(new PivotToSetpoint(collector).withTimeout(1.75)
+        //    .andThen(new IntakeUntilSwitch(collector, .50))
+        //    .andThen(new PivotBack(collector).withTimeout(2.5))
+        // );
+
+        //THIS WORKS USE THIS ONE
+        // joystick.a().onTrue(new IntakeAndPivot(collector, .5)
+        // .until( () -> !collector.hasAlgae())
+        // .andThen(new PivotBack(collector)));
+
+        //joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
+        
+        // along with doesn't work here
+        //joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
+         //.alongWith(new PivotToSetpoint(collector)));
+
+         //joystick.y().onTrue(new PivotBack(collector));
+
+         joystick.x().onTrue(new StopAll(collector, coral, elevator));
+
+        //joystick.y().onTrue(new PivotBack(collector));
+        //joystick.x().onTrue(new StopAll(collector, coral, elevator));
+        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
