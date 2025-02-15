@@ -49,8 +49,9 @@ import frc.robot.commands.Elevator.Elevate;
 
 import frc.robot.commands.Elevator.ElevatorBrake;
 import frc.robot.commands.Elevator.ElevatorCoast;
+import frc.robot.commands.Elevator.HumanStation;
 import frc.robot.commands.Elevator.L0;
-import frc.robot.commands.Elevator.L1;
+import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.Limelight.GetInRange;
@@ -146,10 +147,11 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
                 double deadband = 0.2;
                 double multiplier = 0;
+                double rotationalMultiplier = 0;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
-                double rotationalRate = joystick.getRightX();
+                double rotationalRate = joystick.getRightX() * rotationalMultiplier;
     
                 // Apply deadband to velocityX
                 if (Math.abs(velocityX) < deadband) {
@@ -230,9 +232,15 @@ public class RobotContainer {
 
         //joystick.y().whileTrue(new Elevate(elevator, .3));
         //joystick.a().whileTrue(new Elevate(elevator, -.3));
-        buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
-        buttonBoard.button(OperatorConstants.L2).onTrue(new L0(elevator));
+        //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
         buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
+        buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
+        buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+
+        joystick.a().whileTrue(new Elevate(elevator, -.2));
+        joystick.y().whileTrue(new Elevate(elevator, .3));
 
         //joystick.x().onTrue(new L1(elevator));
         // joystick.y().whileTrue(new Pivot(climber, .1));
@@ -247,22 +255,18 @@ public class RobotContainer {
         //    .andThen(new PivotBack(collector).withTimeout(2.5))
         // );
 
-        joystick.a().onTrue(new IntakeAndPivot(collector, .5)
-        .until( () -> !collector.hasAlgae())
-        .andThen(new PivotBack(collector)));
-        
-        // doesn't work
-        // joystick.a().onTrue(new IntakeAlgae(collector, .50)
-        //     .alongWith(new PivotToSetpoint(collector).withTimeout(1.75))
-        //     .until(() -> !collector.hasAlgae()).andThen(new PivotBack(collector)));
+        //THIS WORKS USE THIS ONE
+        // joystick.a().onTrue(new IntakeAndPivot(collector, .5)
+        // .until( () -> !collector.hasAlgae())
+        // .andThen(new PivotBack(collector)));
 
-        joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
+        //joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
         
         // along with doesn't work here
         //joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
          //.alongWith(new PivotToSetpoint(collector)));
 
-         joystick.y().onTrue(new PivotBack(collector));
+         //joystick.y().onTrue(new PivotBack(collector));
 
          joystick.x().onTrue(new StopAll(collector, coral, elevator));
 

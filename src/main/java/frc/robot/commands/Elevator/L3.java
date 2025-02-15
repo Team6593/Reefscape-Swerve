@@ -20,7 +20,7 @@ public class L3 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.goToSetpoint(278);
+    elevator.goToSetpoint(320);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

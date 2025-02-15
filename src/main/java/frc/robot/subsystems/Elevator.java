@@ -37,6 +37,8 @@ public class Elevator extends SubsystemBase {
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
     leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
+    //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
+
     rightConfig.closedLoop
       .p(.1)
       .i(0)
@@ -45,7 +47,8 @@ public class Elevator extends SubsystemBase {
     // leftConfig.closedLoop
     //   .p(.1)
     //   .i(0)
-    //   .d(0);
+    //   .d(0)
+    //   .outputRange(-.2, .2);
 
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -56,7 +59,6 @@ public class Elevator extends SubsystemBase {
     rightEncoder.setPosition(0);
     leftEncoder.setPosition(0);
 
-    changeToCoastMode();
   }
 
   @Override
@@ -83,6 +85,7 @@ public class Elevator extends SubsystemBase {
    */
   public void goToSetpoint(double setpoint) {
     rightController.setReference(setpoint, ControlType.kPosition);
+    //leftController.setReference(setpoint, ControlType.kPosition);
   }
 
   /**
