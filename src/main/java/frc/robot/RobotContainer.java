@@ -36,10 +36,13 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.Pivot;
+import frc.robot.commands.Collector.IntakeAlgae;
+import frc.robot.commands.Collector.IntakeAndPivot;
 import frc.robot.commands.Collector.IntakeUntilSwitch;
 import frc.robot.commands.Collector.MovePivot;
 import frc.robot.commands.Collector.PivotBack;
 import frc.robot.commands.Collector.PivotToSetpoint;
+import frc.robot.commands.Collector.SpitAlgae;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
 import frc.robot.commands.Elevator.Elevate;
@@ -225,8 +228,8 @@ public class RobotContainer {
         
         //joystick.b().onTrue(new PivotToSetpoint(collector));
 
-        joystick.y().whileTrue(new Elevate(elevator, .3));
-        joystick.a().whileTrue(new Elevate(elevator, -.3));
+        //joystick.y().whileTrue(new Elevate(elevator, .3));
+        //joystick.a().whileTrue(new Elevate(elevator, -.3));
         buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
         buttonBoard.button(OperatorConstants.L2).onTrue(new L0(elevator));
         buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
@@ -238,13 +241,30 @@ public class RobotContainer {
         //joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
         // reset the field-centric heading on left bumper 
 
+        // NOTE: This code works pretty good
+        // joystick.a().onTrue(new PivotToSetpoint(collector).withTimeout(1.75)
+        //    .andThen(new IntakeUntilSwitch(collector, .50))
+        //    .andThen(new PivotBack(collector).withTimeout(2.5))
+        // );
 
-        // joystick.a().whileTrue(new PivotToSetpoint(collector).withTimeout(2.5)
-        //     .andThen(new IntakeUntilSwitch(collector, .50)));
+        joystick.a().onTrue(new IntakeAndPivot(collector, .5)
+        .until( () -> !collector.hasAlgae())
+        .andThen(new PivotBack(collector)));
+        
+        // doesn't work
+        // joystick.a().onTrue(new IntakeAlgae(collector, .50)
+        //     .alongWith(new PivotToSetpoint(collector).withTimeout(1.75))
+        //     .until(() -> !collector.hasAlgae()).andThen(new PivotBack(collector)));
+
+        joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
         
         // along with doesn't work here
-        // joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
-        // .alongWith(new PivotToSetpoint(collector)));
+        //joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
+         //.alongWith(new PivotToSetpoint(collector)));
+
+         joystick.y().onTrue(new PivotBack(collector));
+
+         joystick.x().onTrue(new StopAll(collector, coral, elevator));
 
         //joystick.y().onTrue(new PivotBack(collector));
         //joystick.x().onTrue(new StopAll(collector, coral, elevator));

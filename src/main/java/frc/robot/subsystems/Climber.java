@@ -17,8 +17,6 @@ public class Climber extends SubsystemBase {
   private TalonFX pivotMotor = new TalonFX(ClimberConstants.climberID);
   private TalonFX winchMotor = new TalonFX(ClimberConstants.winchID);
 
-  private PositionVoltage positionVoltage = new PositionVoltage(0);
-
   /** Creates a new Climber. */
   public Climber() {
     var slot0Configs = new Slot0Configs();
@@ -49,10 +47,6 @@ public class Climber extends SubsystemBase {
     pivotMotor.set(.27 * -speed);
     winchMotor.set(speed);
   }
-
-  // public void pivotToSetpoint(double setpoint) {
-  //   pivotMotor.setControl(positionVoltage.withPosition(setpoint));
-  // }
 
   @Override
   public void periodic() {

@@ -55,6 +55,8 @@ public class Elevator extends SubsystemBase {
 
     rightEncoder.setPosition(0);
     leftEncoder.setPosition(0);
+
+    changeToCoastMode();
   }
 
   @Override
@@ -67,14 +69,25 @@ public class Elevator extends SubsystemBase {
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
   }
 
+  /**
+   * Returns the encoder reading from the right motor on the elevator.
+   * @return Right encoder position
+   */
   public double getRightEncoderReading() {
     return Math.round(rightEncoder.getPosition());
   }
 
+  /**
+   * Moves the elevator to a specified encoder position.
+   * @param setpoint - Desired encoder position.
+   */
   public void goToSetpoint(double setpoint) {
     rightController.setReference(setpoint, ControlType.kPosition);
   }
 
+  /**
+   * Changes the elevators motors to coast mode.
+   */
   public void changeToCoastMode() {
     rightConfig.idleMode(IdleMode.kCoast);
     leftConfig.idleMode(IdleMode.kCoast);
@@ -83,6 +96,9 @@ public class Elevator extends SubsystemBase {
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  /**
+   * Changes the elevators motors to brake mode.
+   */
   public void changeToBrakeMode() {
     rightConfig.idleMode(IdleMode.kBrake);
     leftConfig.idleMode(IdleMode.kBrake);
@@ -91,21 +107,18 @@ public class Elevator extends SubsystemBase {
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  // public void up(double speed) {
-  //   rightMotor.set(speed);
-  //   leftMotor.set(speed);
-  // }
-
-  // public void down(double speed) {
-  //   rightMotor.set(-speed);
-  //   leftMotor.set(-speed);
-  // }
-
+  /**
+   * Elevates the elevator.
+   * @param speed - Positive = Up, Negative = Down
+   */
   public void elevate(double speed) {
     rightMotor.set(speed);
     //leftMotor.set(speed);
   }
 
+  /**
+   * Stops the elevator.
+   */
   public void stop() {
     rightMotor.set(0);
     //leftMotor.set(0);

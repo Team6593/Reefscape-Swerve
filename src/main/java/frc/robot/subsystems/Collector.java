@@ -28,7 +28,7 @@ public class Collector extends SubsystemBase {
   private SparkMax collectorMotor = new SparkMax(AlgaeConstants.intakeMotorID, MotorType.kBrushless);
   private SparkMaxConfig topConfig = new SparkMaxConfig();
   private SparkClosedLoopController topMotorController = collectorMotor.getClosedLoopController();
-  private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
+  public RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
 
   public DigitalInput limitSwitch = new DigitalInput(1);
 
@@ -36,7 +36,8 @@ public class Collector extends SubsystemBase {
   public Collector() {
     pivotConfig.idleMode(IdleMode.kBrake);
     topConfig.idleMode(IdleMode.kBrake);
-    pivotConfig.closedLoop.p(.02).i(0).d(0).outputRange(-.1, .1);
+    topConfig.inverted(true);
+    pivotConfig.closedLoop.p(.3).i(0).d(0).outputRange(-.2, .2);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     pivotEncoder.setPosition(0);
 
@@ -44,6 +45,14 @@ public class Collector extends SubsystemBase {
 
     pivotController.setReference(40, ControlType.kCurrent);
     //topMotorController.setReference(20, ControlType.kCurrent);
+  }
+
+  /**
+   * Checks if the limit switch on the collector is pressed
+   * @return - true if there is no algae, false if there is algae
+   */
+  public boolean hasAlgae() {
+    return limitSwitch.get();
   }
 
   public void intakeUntilSwitch(double speed) {
@@ -55,7 +64,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void intakeAlgae(double speed) {
-    //collectorMotor.set(speed);
+    collectorMotor.set(speed);
   }
 
   public void movePivot(double speed) {
@@ -63,7 +72,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void pivotToSetpoint() {
-    pivotController.setReference(13, ControlType.kPosition);
+    pivotController.setReference(16.5, ControlType.kPosition);
   }
 
   public void pivotBack() {
@@ -77,6 +86,10 @@ public class Collector extends SubsystemBase {
   public void stop() {
     pivotMotor.set(0);
     collectorMotor.set(0);
+  }
+
+  public void stopTopMotor() {
+    collectorMotor.stopMotor();
   }
 
   @Override
