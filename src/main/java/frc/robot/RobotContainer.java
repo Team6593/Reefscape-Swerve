@@ -36,6 +36,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.Pivot;
+import frc.robot.commands.Climber.WinchOnly;
 import frc.robot.commands.Collector.IntakeAlgae;
 import frc.robot.commands.Collector.IntakeAndPivot;
 import frc.robot.commands.Collector.IntakeUntilSwitch;
@@ -45,6 +46,7 @@ import frc.robot.commands.Collector.PivotToSetpoint;
 import frc.robot.commands.Collector.SpitAlgae;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
+import frc.robot.commands.Coral.ShootWithoutBrake;
 import frc.robot.commands.Elevator.Elevate;
 
 import frc.robot.commands.Elevator.ElevatorBrake;
@@ -75,6 +77,8 @@ public class RobotContainer {
 
     private final Elevator elevator = new Elevator();
 
+    private final Climber climber = new Climber();
+
     private final Coral coral = new Coral();
 
     //private final Climber climber = new Climber();
@@ -99,6 +103,10 @@ public class RobotContainer {
         
 
         configureBindings();
+    }
+
+    public void stopClimber() {
+        climber.stopClimber();
     }
 
     public void stopElevator() {
@@ -235,12 +243,23 @@ public class RobotContainer {
         //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
         buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
-        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
-        buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
+        buttonBoard.button(5).onTrue(new IntakeAndPivot(collector, .5)
+                                                            .until( () -> !collector.hasAlgae())
+                                                            .andThen(new PivotBack(collector)));
+        buttonBoard.button(6).onTrue(new SpitAlgae(collector).withTimeout(.25));
+        //buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
         buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+        buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
 
         joystick.a().whileTrue(new Elevate(elevator, -.2));
+        //joystick.a().whileTrue(new WinchOnly(climber, -.05));
+        //joystick.y().whileTrue(new WinchOnly(climber, .05));
         joystick.y().whileTrue(new Elevate(elevator, .3));
+        
+        joystick.x().whileTrue(new IntakeCoral(coral));
+        joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
+
+        joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
 
         //joystick.x().onTrue(new L1(elevator));
         // joystick.y().whileTrue(new Pivot(climber, .1));
@@ -268,7 +287,7 @@ public class RobotContainer {
 
          //joystick.y().onTrue(new PivotBack(collector));
 
-         joystick.x().onTrue(new StopAll(collector, coral, elevator));
+         //joystick.x().onTrue(new StopAll(collector, coral, elevator));
 
         //joystick.y().onTrue(new PivotBack(collector));
         //joystick.x().onTrue(new StopAll(collector, coral, elevator));

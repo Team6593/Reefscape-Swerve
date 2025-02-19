@@ -37,6 +37,8 @@ public class Elevator extends SubsystemBase {
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
     leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
+    rightConfig.signals.primaryEncoderPositionPeriodMs(1);
+
     //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
 
     rightConfig.closedLoop

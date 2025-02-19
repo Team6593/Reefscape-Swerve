@@ -72,7 +72,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void pivotToSetpoint() {
-    pivotController.setReference(16.5, ControlType.kPosition);
+    pivotController.setReference(13, ControlType.kPosition);
   }
 
   public void pivotBack() {

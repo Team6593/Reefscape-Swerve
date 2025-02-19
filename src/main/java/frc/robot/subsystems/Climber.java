@@ -43,9 +43,18 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public void moveReeler(double speed) {
+    winchMotor.set(speed);
+  }
+
   public void pivot(double speed) {
     pivotMotor.set(.27 * -speed);
     winchMotor.set(speed);
+  }
+
+  public void stopClimber() {
+    pivotMotor.stopMotor();
+    winchMotor.stopMotor();
   }
 
   @Override

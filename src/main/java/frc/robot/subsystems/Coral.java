@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,12 +25,18 @@ public class Coral extends SubsystemBase {
   private SparkClosedLoopController rightController = rightMotor.getClosedLoopController();
   private SparkClosedLoopController leftController = leftMotor.getClosedLoopController();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
+  private SparkMaxConfig leftConfig = new SparkMaxConfig();
   private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
   /** Creates a new Coral. */
   public Coral() {
     rightConfig.inverted(true);
+
+    rightConfig.idleMode(IdleMode.kBrake);
+    leftConfig.idleMode(IdleMode.kBrake);
+
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     rightController.setReference(10, ControlType.kCurrent);
     leftController.setReference(10, ControlType.kCurrent);
@@ -45,8 +52,8 @@ public class Coral extends SubsystemBase {
    * @param speed
    */
   public void manualIntakeCoral(double speed) {
-    rightMotor.set(speed);
-    leftMotor.set(speed);
+    rightMotor.set(-speed);
+    leftMotor.set(-speed);
   }
 
   /**
@@ -74,6 +81,12 @@ public class Coral extends SubsystemBase {
       rightMotor.set(0);
       leftMotor.set(0);
     }
+  }
+
+
+  public void shootWithoutBrake(double speed) {
+    rightMotor.set(speed);
+    leftMotor.set(speed);
   }
 
   public void stop() {
