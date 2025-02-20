@@ -11,12 +11,14 @@ import frc.robot.subsystems.Climber;
 public class Pivot extends Command {
 
   private Climber climber;
-  private double speed;
+  private double pivotSpeed;
+  private double winchSpeed;
 
   /** Creates a new Pivot. */
-  public Pivot(Climber climber, double speed) {
+  public Pivot(Climber climber, double wichSpeed, double pivotSpeed) {
     this.climber = climber;
-    this.speed = speed;
+    this.winchSpeed = wichSpeed;
+    this.pivotSpeed = pivotSpeed;
 
     addRequirements(climber);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,12 +31,14 @@ public class Pivot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.pivot(speed);
+    climber.pivot(winchSpeed, pivotSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climber.stopClimber();
+  }
 
   // Returns true when the command should end.
   @Override

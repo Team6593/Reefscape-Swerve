@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,6 +39,8 @@ public class Climber extends SubsystemBase {
 
     setpoint = profile.calculate(.020, setpoint, goal);
 
+    pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+
     request.Position = setpoint.position;
     request.Velocity = setpoint.velocity;
     pivotMotor.setControl(request);
@@ -47,9 +51,9 @@ public class Climber extends SubsystemBase {
     winchMotor.set(speed);
   }
 
-  public void pivot(double speed) {
-    pivotMotor.set(.27 * -speed);
-    winchMotor.set(speed);
+  public void pivot(double winchSpeed, double pivotSpeed) {
+    pivotMotor.set(-pivotSpeed);
+    winchMotor.set(winchSpeed);
   }
 
   public void stopClimber() {

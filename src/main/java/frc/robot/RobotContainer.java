@@ -190,9 +190,9 @@ public class RobotContainer {
         );
 
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
         // joystick.x().whileTrue(new GetInRange(drivetrain));
         // joystick.b().onTrue(new ShootCoral(outtake));
         //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
@@ -251,19 +251,19 @@ public class RobotContainer {
         buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
         buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
 
-        joystick.a().whileTrue(new Elevate(elevator, -.2));
+        //joystick.a().whileTrue(new Elevate(elevator, -.2));// last attempted //
         //joystick.a().whileTrue(new WinchOnly(climber, -.05));
         //joystick.y().whileTrue(new WinchOnly(climber, .05));
-        joystick.y().whileTrue(new Elevate(elevator, .3));
+        //joystick.y().whileTrue(new Elevate(elevator, .3));// last attempted //
         
         joystick.x().whileTrue(new IntakeCoral(coral));
-        joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
+        //joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
 
-        joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
+        //joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
 
         //joystick.x().onTrue(new L1(elevator));
-        // joystick.y().whileTrue(new Pivot(climber, .1));
-        // joystick.a().whileTrue(new Pivot(climber, -.1));
+        joystick.y().whileTrue(new Pivot(climber, 0.20, -.15));
+        joystick.a().whileTrue(new Pivot(climber, -0.20, 0.15));
 
         //joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
         // reset the field-centric heading on left bumper 
@@ -291,7 +291,7 @@ public class RobotContainer {
 
         //joystick.y().onTrue(new PivotBack(collector));
         //joystick.x().onTrue(new StopAll(collector, coral, elevator));
-        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
