@@ -31,7 +31,7 @@ public class PivotBack extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if ((Math.round(collector.pivotEncoder.getPosition() * 100) / 100) == -.35) {
+    if ((Math.round(collector.pivotEncoder.getPosition() * 100) / 100) == 1) {
       done = true;
     }
     System.out.println("PIVOTING BACK");
@@ -39,7 +39,9 @@ public class PivotBack extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    collector.stop();
+  }
 
   // Returns true when the command should end.
   @Override

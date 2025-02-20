@@ -154,8 +154,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0.2;
-                double multiplier = 0;
-                double rotationalMultiplier = 0;
+                double multiplier = .8;
+                double rotationalMultiplier = -.8;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -243,12 +243,15 @@ public class RobotContainer {
         //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
         buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
-        buttonBoard.button(5).onTrue(new IntakeAndPivot(collector, .5)
-                                                            .until( () -> !collector.hasAlgae())
-                                                            .andThen(new PivotBack(collector)));
-        buttonBoard.button(6).onTrue(new SpitAlgae(collector).withTimeout(.25));
+        // buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .5)
+        //                                                     .until( () -> !collector.hasAlgae())
+        //                                                     .andThen(new PivotBack(collector)
+        //                                                     .withTimeout(1)
+        //                                                     .andThen(new StopAll(collector, coral, elevator))));                          
+        buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.25));
+        buttonBoard.button(6).onTrue(new PivotBack(collector));
         //buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
-        buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+        //buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
         buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
 
         joystick.a().whileTrue(new Elevate(elevator, -.2));
@@ -259,7 +262,7 @@ public class RobotContainer {
         joystick.x().whileTrue(new IntakeCoral(coral));
         joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
 
-        joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
+        //joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
 
         //joystick.x().onTrue(new L1(elevator));
         // joystick.y().whileTrue(new Pivot(climber, .1));
@@ -275,9 +278,9 @@ public class RobotContainer {
         // );
 
         //THIS WORKS USE THIS ONE
-        // joystick.a().onTrue(new IntakeAndPivot(collector, .5)
-        // .until( () -> !collector.hasAlgae())
-        // .andThen(new PivotBack(collector)));
+        buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .5)
+        .until( () -> !collector.hasAlgae())
+        .andThen(new PivotBack(collector)));
 
         //joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
         
@@ -291,7 +294,7 @@ public class RobotContainer {
 
         //joystick.y().onTrue(new PivotBack(collector));
         //joystick.x().onTrue(new StopAll(collector, coral, elevator));
-        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

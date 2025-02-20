@@ -72,7 +72,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void pivotToSetpoint() {
-    pivotController.setReference(13, ControlType.kPosition);
+    pivotController.setReference(15, ControlType.kPosition);
   }
 
   public void pivotBack() {
@@ -90,6 +90,17 @@ public class Collector extends SubsystemBase {
 
   public void stopTopMotor() {
     collectorMotor.stopMotor();
+  }
+
+  public boolean atStartingPoint() {
+    // if ((Math.round(pivotEncoder.getPosition() * 100) / 100) == 1) {
+
+    // }
+    return Math.round(pivotEncoder.getPosition()) == 1;
+  }
+
+  public boolean hasAlgaeAtStart() {
+    return atStartingPoint() && hasAlgae();
   }
 
   @Override
