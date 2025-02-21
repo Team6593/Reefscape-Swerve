@@ -4,18 +4,19 @@
 
 package frc.robot.commands.Elevator;
 
+import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.subsystems.Elevator;
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCoast extends Command {
+public class ElevatorToZero extends Command {
 
-  public Elevator elevator;
+  private Elevator elevator;
+  private double speed;
 
-  /** Creates a new ElevatorCoast. */
-  public ElevatorCoast(Elevator elevator) {
+  /** Creates a new ElevatorToZero. */
+  public ElevatorToZero(Elevator elevator, double speed) {
     this.elevator = elevator;
+    this.speed = speed;
 
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,16 +29,24 @@ public class ElevatorCoast extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.changeToCoastMode();
+    if (elevator.limitSwitch.get()) {
+      elevator.elevate(-speed);
+    } else {
+      elevator.stop();
+      elevator.resetEncoder();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    elevator.stop();
+    elevator.resetEncoder();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !elevator.limitSwitch.get();
   }
 }

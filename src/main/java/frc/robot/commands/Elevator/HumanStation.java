@@ -20,16 +20,20 @@ public class HumanStation extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.goToSetpoint(37);
+    elevator.goToSetpoint(21.8);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 
+
+  // 214
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override

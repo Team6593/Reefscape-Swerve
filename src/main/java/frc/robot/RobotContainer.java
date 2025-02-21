@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import frc.robot.commands.Coral.IntakeWithoutBrake;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
@@ -48,11 +49,12 @@ import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
 import frc.robot.commands.Coral.ShootWithoutBrake;
 import frc.robot.commands.Elevator.Elevate;
+import frc.robot.commands.Elevator.ElevatorToZero;
 
 import frc.robot.commands.Elevator.ElevatorBrake;
-import frc.robot.commands.Elevator.ElevatorCoast;
 import frc.robot.commands.Elevator.HumanStation;
 import frc.robot.commands.Elevator.L0;
+import frc.robot.commands.Elevator.L1;
 import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
@@ -198,7 +200,8 @@ public class RobotContainer {
         //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
 
 
-        // joystick.x().whileTrue(new IntakeCoral(outtake));
+        joystick.x().whileTrue(new IntakeWithoutBrake(coral, .2));
+
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
         // joystick.a().whileTrue(new Elevate(elevator, .2));
@@ -241,26 +244,38 @@ public class RobotContainer {
         //joystick.y().whileTrue(new Elevate(elevator, .3));
         //joystick.a().whileTrue(new Elevate(elevator, -.3));
         //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
-        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
+        // buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator)
+        //             .andThen(new ElevatorToZero(elevator, 1))
+        //             .andThen(new HumanStation(elevator)));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
+
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        
         // buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .5)
         //                                                     .until( () -> !collector.hasAlgae())
         //                                                     .andThen(new PivotBack(collector)
         //                                                     .withTimeout(1)
-        //                                                     .andThen(new StopAll(collector, coral, elevator))));                          
-        buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.25));
+        //                                                     .andThen(new StopAll(collector, coral, elevator))));    
+        buttonBoard.button(7).onTrue(new HumanStation(elevator));                      
+        buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.50));
         buttonBoard.button(6).onTrue(new PivotBack(collector));
         //buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
         //buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+        buttonBoard.button(8).onTrue(new ElevatorToZero(elevator, 1));
         buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
 
-        joystick.a().whileTrue(new Elevate(elevator, -.2));
+        joystick.b().onTrue(new ElevatorToZero(elevator, .8));
+        joystick.a().whileTrue(new Elevate(elevator, -.5));
         //joystick.a().whileTrue(new WinchOnly(climber, -.05));
         //joystick.y().whileTrue(new WinchOnly(climber, .05));
-        joystick.y().whileTrue(new Elevate(elevator, .3));
+        joystick.y().whileTrue(new Elevate(elevator, .5));
         
-        joystick.x().whileTrue(new IntakeCoral(coral));
-        joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
+        //joystick.x().whileTrue(new Pivot(climber, .2));
+        //joystick.b().whileTrue(new Pivot(climber, -.2));
+
+        //joystick.x().whileTrue(new IntakeCoral(coral));
+        //joystick.b().whileTrue(new ShootWithoutBrake(coral, .1));
 
         //joystick.leftBumper().onTrue(new StopAll(collector, coral, elevator));
 
@@ -278,10 +293,14 @@ public class RobotContainer {
         // );
 
         //THIS WORKS USE THIS ONE
-        buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .5)
-        .until( () -> !collector.hasAlgae())
-        .andThen(new PivotBack(collector)));
+        // buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .5)
+        // .until( () -> !collector.hasAlgae())
+        // .andThen(new PivotBack(collector)));
 
+        buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .7)
+            .until( () -> !collector.hasAlgae())
+            .andThen(new PivotBack(collector)));
+        
         //joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
         
         // along with doesn't work here

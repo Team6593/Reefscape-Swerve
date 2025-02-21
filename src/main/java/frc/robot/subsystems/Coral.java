@@ -85,8 +85,8 @@ public class Coral extends SubsystemBase {
 
 
   public void shootWithoutBrake(double speed) {
-    rightMotor.set(speed);
-    leftMotor.set(speed);
+    rightMotor.set(-speed);
+    leftMotor.set(-speed);
   }
 
   public void stop() {
