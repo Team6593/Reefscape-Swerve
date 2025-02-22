@@ -249,8 +249,8 @@ public class RobotContainer {
         joystick.y().whileTrue(new Elevate(elevator, .5));
         // joystick.a().whileTrue(new WinchOnly(climber, -.2));
         // joystick.y().whileTrue(new WinchOnly(climber, .2));
-        joystick.x().whileTrue(new ClimberPivot(climber, .3));
-        joystick.b().whileTrue(new WinchOnly(climber, -.3));
+        joystick.x().whileTrue(new ClimberPivot(climber, .8));
+        joystick.b().whileTrue(new WinchOnly(climber, .6));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

@@ -83,6 +83,10 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Motor Output", rightMotor.getOutputCurrent());
     SmartDashboard.putNumber("Left Motor Output", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("El Right Velocity", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("El Left Velocity", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("El Right Speed", rightMotor.getAppliedOutput());
+    SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
   }

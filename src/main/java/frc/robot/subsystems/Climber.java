@@ -34,37 +34,37 @@ public class Climber extends SubsystemBase {
     pivotMotor.getConfigurator().apply(motorConfigs);
     winchMotor.getConfigurator().apply(motorConfigs);
 
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = .25;
-    slot0Configs.kV = .12;
-    slot0Configs.kP = .1;
-    slot0Configs.kI = 0;
-    slot0Configs.kD = .1;
-    pivotMotor.getConfigurator().apply(slot0Configs);
+    // var slot0Configs = new Slot0Configs();
+    // slot0Configs.kS = .25;
+    // slot0Configs.kV = .12;
+    // slot0Configs.kP = .1;
+    // slot0Configs.kI = 0;
+    // slot0Configs.kD = .1;
+    // pivotMotor.getConfigurator().apply(slot0Configs);
 
-    final TrapezoidProfile profile = new TrapezoidProfile(
-      new TrapezoidProfile.Constraints(1, 4)
-    );
-    TrapezoidProfile.State goal = new TrapezoidProfile.State(4, 0);
-    TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+    // final TrapezoidProfile profile = new TrapezoidProfile(
+    //   new TrapezoidProfile.Constraints(1, 4)
+    // );
+    // TrapezoidProfile.State goal = new TrapezoidProfile.State(4, 0);
+    // TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    final PositionVoltage request = new PositionVoltage(0).withSlot(0);
+    // final PositionVoltage request = new PositionVoltage(0).withSlot(0);
 
-    setpoint = profile.calculate(.020, setpoint, goal);
+    // setpoint = profile.calculate(.020, setpoint, goal);
 
-    request.Position = setpoint.position;
-    request.Velocity = setpoint.velocity;
-    pivotMotor.setControl(request);
+    // request.Position = setpoint.position;
+    // request.Velocity = setpoint.velocity;
+    // pivotMotor.setControl(request);
 
   }
 
-  public void moveReeler(double speed) {
+  public void moveWinch(double speed) {
     winchMotor.set(speed);
   }
 
   public void pivot(double speed) {
-    pivotMotor.set(.27 * -speed);
-    winchMotor.set(speed);
+    pivotMotor.set(.1*speed);
+    winchMotor.set(-speed -.15);
   }
 
   public void stopClimber() {
