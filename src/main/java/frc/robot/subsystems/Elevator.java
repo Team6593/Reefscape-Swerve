@@ -39,22 +39,24 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     rightConfig.inverted(true).idleMode(IdleMode.kBrake);
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
-    leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
-
-    rightConfig.signals.primaryEncoderPositionPeriodMs(1);
+    //leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
     //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
 
-    rightConfig.closedLoop
-      .p(.5)
-      .i(0)
-      .d(0)
-      .outputRange(-1.0, 1.0);
-    // leftConfig.closedLoop
-    //   .p(.1)
+    // rightConfig.closedLoop
+    //   .p(.5)
     //   .i(0)
     //   .d(0)
-    //   .outputRange(-.2, .2);
+    //   .outputRange(-1.0, 1.0);
+    rightConfig.closedLoop.maxMotion
+      .maxVelocity(4000)
+      .maxAcceleration(6000)
+      .allowedClosedLoopError(.5);
+    
+    leftConfig.closedLoop.maxMotion
+      .maxVelocity(4000)
+      .maxAcceleration(6000)
+      .allowedClosedLoopError(.5);
 
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -104,7 +106,9 @@ public class Elevator extends SubsystemBase {
    * @param setpoint - Desired encoder position.
    */
   public void goToSetpoint(double setpoint) {
-    rightController.setReference(setpoint, ControlType.kPosition);
+    //rightController.setReference(setpoint, ControlType.kPosition);
+    rightController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
+    leftController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
     //leftController.setReference(setpoint, ControlType.kPosition);
   }
 
@@ -125,7 +129,7 @@ public class Elevator extends SubsystemBase {
    */
   public void elevate(double speed) {
     rightMotor.set(speed);
-    //leftMotor.set(speed);
+    leftMotor.set(speed);
   }
 
   /**
@@ -133,6 +137,7 @@ public class Elevator extends SubsystemBase {
    */
   public void stop() {
     rightMotor.set(0);
+    leftMotor.set(0);
     //leftMotor.set(0);
   }
 

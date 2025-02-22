@@ -22,13 +22,14 @@ public class L2 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.goToSetpoint(175.7);
+    elevator.goToSetpoint(-175.7);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(elevator.getRightEncoderReading() == 175) {
+    //System.out.println("MOVING TO L2");
+    if(elevator.getRightEncoderReading() == -175) {
       done = true;
     }
   }
@@ -36,6 +37,7 @@ public class L2 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //System.out.println("FINISHED.");
     elevator.stop();
   }
 
