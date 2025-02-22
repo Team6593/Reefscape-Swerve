@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -17,8 +19,21 @@ public class Climber extends SubsystemBase {
   private TalonFX pivotMotor = new TalonFX(ClimberConstants.climberID);
   private TalonFX winchMotor = new TalonFX(ClimberConstants.winchID);
 
+  private TalonFXConfiguration motorConfigs = new TalonFXConfiguration()
+                                                  .withCurrentLimits(
+                                                    new CurrentLimitsConfigs()
+                                                      .withStatorCurrentLimit(40)
+                                                      .withStatorCurrentLimitEnable(true)
+                                                      .withSupplyCurrentLimit(40)
+                                                      .withSupplyCurrentLimitEnable(true)
+                                                  );
+
   /** Creates a new Climber. */
   public Climber() {
+
+    pivotMotor.getConfigurator().apply(motorConfigs);
+    winchMotor.getConfigurator().apply(motorConfigs);
+
     var slot0Configs = new Slot0Configs();
     slot0Configs.kS = .25;
     slot0Configs.kV = .12;

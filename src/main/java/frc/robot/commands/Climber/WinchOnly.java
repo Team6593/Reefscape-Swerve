@@ -13,7 +13,10 @@ public class WinchOnly extends Command {
   private Climber climber;
   private double speed;
 
-  /** Creates a new WinchOnly. */
+  /** Command that only moves the winch on the climber.
+   * @param Climber - Climber object of the subsystem.
+   * @param Speed - -1 to 1, - is backwards and + is forward. 
+  */
   public WinchOnly(Climber climber, double speed) {
     this.climber = climber;
     this.speed = speed;

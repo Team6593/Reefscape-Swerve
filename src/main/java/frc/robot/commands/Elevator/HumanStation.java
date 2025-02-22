@@ -10,7 +10,9 @@ import frc.robot.subsystems.Elevator;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HumanStation extends Command {
   private Elevator elevator;
-  /** Creates a new HumanStation. */
+  /** Command that elevates the robot to human/coral station.
+   * @param Elevator - Elevator object of the subsytem
+  */
   public HumanStation(Elevator elevator) {
     this.elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.

@@ -14,7 +14,9 @@ public class PivotBack extends Command {
 
   private boolean done = false;
 
-  /** Creates a new PivotBack. */
+  /** Command that pivots the collector back to 
+   * 
+  */
   public PivotBack(Collector collector) {
     this.collector = collector;
 
