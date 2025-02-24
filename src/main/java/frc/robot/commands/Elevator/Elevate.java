@@ -13,7 +13,11 @@ public class Elevate extends Command {
   public Elevator elevator;
   private double speed;
 
-  /** Creates a new Elevate. */
+  /** 
+   * Command that elevates the robot.
+   * @param Elevator - Elevator object for the subsystem
+   * @param Speed - -1 to 1, - goes down and + goes up
+   * */
   public Elevate(Elevator elevator, double speed) {
     this.elevator = elevator;
     this.speed = speed;

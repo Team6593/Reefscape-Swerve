@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import frc.robot.commands.Coral.IntakeWithoutBrake;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
@@ -35,7 +36,8 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
-import frc.robot.commands.Climber.Pivot;
+import frc.robot.commands.Climber.ClimberPivot;
+import frc.robot.commands.Climber.WinchOnly;
 import frc.robot.commands.Collector.IntakeAlgae;
 import frc.robot.commands.Collector.IntakeAndPivot;
 import frc.robot.commands.Collector.IntakeUntilSwitch;
@@ -45,12 +47,14 @@ import frc.robot.commands.Collector.PivotToSetpoint;
 import frc.robot.commands.Collector.SpitAlgae;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
+import frc.robot.commands.Coral.ShootWithoutBrake;
 import frc.robot.commands.Elevator.Elevate;
+import frc.robot.commands.Elevator.ElevatorToZero;
 
 import frc.robot.commands.Elevator.ElevatorBrake;
-import frc.robot.commands.Elevator.ElevatorCoast;
 import frc.robot.commands.Elevator.HumanStation;
 import frc.robot.commands.Elevator.L0;
+import frc.robot.commands.Elevator.L1;
 import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
@@ -74,6 +78,8 @@ public class RobotContainer {
     // private final Coral outtake = new Coral();
 
     private final Elevator elevator = new Elevator();
+
+    private final Climber climber = new Climber();
 
     private final Coral coral = new Coral();
 
@@ -99,6 +105,10 @@ public class RobotContainer {
         
 
         configureBindings();
+    }
+
+    public void stopClimber() {
+        climber.stopClimber();
     }
 
     public void stopElevator() {
@@ -146,8 +156,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0.2;
-                double multiplier = 0;
-                double rotationalMultiplier = 0;
+                double multiplier = .8;
+                double rotationalMultiplier = -.8;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -181,21 +191,12 @@ public class RobotContainer {
             })
         );
 
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-        // joystick.x().whileTrue(new GetInRange(drivetrain));
-        // joystick.b().onTrue(new ShootCoral(outtake));
-        //joystick.b().whileTrue(new ElevatorToSetpoint(elevator, 0));
+        //.x().whileTrue(new IntakeWithoutBrake(coral, .2));
 
-
-        // joystick.x().whileTrue(new IntakeCoral(outtake));
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
         // joystick.a().whileTrue(new Elevate(elevator, .2));
         // joystick.b().whileTrue(new Elevate(elevator, -.2));
-        
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -228,51 +229,30 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        //joystick.b().onTrue(new PivotToSetpoint(collector));
-
-        //joystick.y().whileTrue(new Elevate(elevator, .3));
-        //joystick.a().whileTrue(new Elevate(elevator, -.3));
-        //buttonBoard.button(OperatorConstants.L1).onTrue(new L2(elevator));
-        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
-        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
-        buttonBoard.button(5).onTrue(new L0(elevator)); // right of l2
-        buttonBoard.button(4).onTrue(new HumanStation(elevator)); // right of l3
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
 
-        joystick.a().whileTrue(new Elevate(elevator, -.2));
-        joystick.y().whileTrue(new Elevate(elevator, .3));
-
-        //joystick.x().onTrue(new L1(elevator));
-        // joystick.y().whileTrue(new Pivot(climber, .1));
-        // joystick.a().whileTrue(new Pivot(climber, -.1));
-
-        //joystick.x().onTrue(new IntakeUntilSwitch(collector, .25));
-        // reset the field-centric heading on left bumper 
-
-        // NOTE: This code works pretty good
-        // joystick.a().onTrue(new PivotToSetpoint(collector).withTimeout(1.75)
-        //    .andThen(new IntakeUntilSwitch(collector, .50))
-        //    .andThen(new PivotBack(collector).withTimeout(2.5))
-        // );
-
-        //THIS WORKS USE THIS ONE
-        // joystick.a().onTrue(new IntakeAndPivot(collector, .5)
-        // .until( () -> !collector.hasAlgae())
-        // .andThen(new PivotBack(collector)));
-
-        //joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.25));
+        // buttonBoard.button(OperatorConstants.L1).onTrue(new WinchOnly(climber, -.2));
+        // buttonBoard.button(OperatorConstants.L2).onTrue(new WinchOnly(climber, .2));
+        buttonBoard.button(7).onTrue(new HumanStation(elevator));                      
+        buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.50));
+        buttonBoard.button(6).onTrue(new PivotBack(collector));
+        buttonBoard.button(8).onTrue(new ElevatorToZero(elevator, 1));
+        buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
+        buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .7)
+            .until( () -> !collector.hasAlgae())
+            .andThen(new PivotBack(collector)));
+        buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
         
-        // along with doesn't work here
-        //joystick.a().whileTrue(new IntakeUntilSwitch(collector, .50)
-         //.alongWith(new PivotToSetpoint(collector)));
+        joystick.a().whileTrue(new Elevate(elevator, -.5));
+        joystick.y().whileTrue(new Elevate(elevator, .5));
+        // joystick.a().whileTrue(new WinchOnly(climber, -.2));
+        // joystick.y().whileTrue(new WinchOnly(climber, .2));
+        joystick.x().whileTrue(new ClimberPivot(climber, .8));
+        joystick.b().whileTrue(new WinchOnly(climber, .6));
 
-         //joystick.y().onTrue(new PivotBack(collector));
-
-         joystick.x().onTrue(new StopAll(collector, coral, elevator));
-
-        //joystick.y().onTrue(new PivotBack(collector));
-        //joystick.x().onTrue(new StopAll(collector, coral, elevator));
-        //joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

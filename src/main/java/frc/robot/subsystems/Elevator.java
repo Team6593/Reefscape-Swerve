@@ -14,7 +14,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -31,24 +33,30 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder leftEncoder = leftMotor.getEncoder();
   private RelativeEncoder rightEncoder = rightMotor.getEncoder();
 
+  public DigitalInput limitSwitch = new DigitalInput(3);
+
   /** Creates a new Elevator. */
   public Elevator() {
     rightConfig.inverted(true).idleMode(IdleMode.kBrake);
     leftConfig.inverted(false).idleMode(IdleMode.kBrake);
-    leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
+    //leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
     //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
 
-    rightConfig.closedLoop
-      .p(.1)
-      .i(0)
-      .d(0)
-      .outputRange(-.2, .2);
-    // leftConfig.closedLoop
-    //   .p(.1)
+    // rightConfig.closedLoop
+    //   .p(.5)
     //   .i(0)
     //   .d(0)
-    //   .outputRange(-.2, .2);
+    //   .outputRange(-1.0, 1.0);
+    rightConfig.closedLoop.maxMotion
+      .maxVelocity(4000)
+      .maxAcceleration(6000)
+      .allowedClosedLoopError(.5);
+    
+    leftConfig.closedLoop.maxMotion
+      .maxVelocity(4000)
+      .maxAcceleration(6000)
+      .allowedClosedLoopError(.5);
 
     rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -63,10 +71,24 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if(!limitSwitch.get()) {
+      resetEncoder();
+    }
+
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("Right Motor Temp", rightMotor.getMotorTemperature());
+    SmartDashboard.putNumber("Left Motor Temperature", rightMotor.getMotorTemperature());
+    SmartDashboard.putBoolean("Elevator Switch", limitSwitch.get());
     SmartDashboard.putNumber("Right Encoder Position", rightEncoder.getPosition());
     SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
+    SmartDashboard.putNumber("Right Motor Output", rightMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Left Motor Output", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("El Right Velocity", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("El Left Velocity", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("El Right Speed", rightMotor.getAppliedOutput());
+    SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
   }
@@ -76,7 +98,7 @@ public class Elevator extends SubsystemBase {
    * @return Right encoder position
    */
   public double getRightEncoderReading() {
-    return Math.round(rightEncoder.getPosition());
+    return Math.floor(rightEncoder.getPosition());
   }
 
   /**
@@ -84,19 +106,10 @@ public class Elevator extends SubsystemBase {
    * @param setpoint - Desired encoder position.
    */
   public void goToSetpoint(double setpoint) {
-    rightController.setReference(setpoint, ControlType.kPosition);
+    //rightController.setReference(setpoint, ControlType.kPosition);
+    rightController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
+    leftController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
     //leftController.setReference(setpoint, ControlType.kPosition);
-  }
-
-  /**
-   * Changes the elevators motors to coast mode.
-   */
-  public void changeToCoastMode() {
-    rightConfig.idleMode(IdleMode.kCoast);
-    leftConfig.idleMode(IdleMode.kCoast);
-
-    rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
@@ -116,7 +129,7 @@ public class Elevator extends SubsystemBase {
    */
   public void elevate(double speed) {
     rightMotor.set(speed);
-    //leftMotor.set(speed);
+    leftMotor.set(speed);
   }
 
   /**
@@ -124,7 +137,13 @@ public class Elevator extends SubsystemBase {
    */
   public void stop() {
     rightMotor.set(0);
+    leftMotor.set(0);
     //leftMotor.set(0);
+  }
+
+  public void resetEncoder() {
+    rightEncoder.setPosition(0);
+    leftEncoder.setPosition(0);
   }
 
 }

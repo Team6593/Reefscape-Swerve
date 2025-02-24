@@ -14,7 +14,9 @@ public class PivotBack extends Command {
 
   private boolean done = false;
 
-  /** Creates a new PivotBack. */
+  /** Command that pivots the collector back to 
+   * 
+  */
   public PivotBack(Collector collector) {
     this.collector = collector;
 
@@ -31,15 +33,27 @@ public class PivotBack extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if ((Math.round(collector.pivotEncoder.getPosition() * 100) / 100) == -.35) {
+    // if ((Math.round(collector.pivotEncoder.getPosition() * 100) / 100) == 0) {
+    //   done = true;
+    // } else {
+    //   done = false;
+    // }
+
+    if (Math.round(collector.pivotEncoder.getPosition()) == 0) {
       done = true;
+    } else {
+      done = false;
     }
+
     System.out.println("PIVOTING BACK");
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    collector.stop();
+    System.out.println("DONE PIVOTING");
+  }
 
   // Returns true when the command should end.
   @Override
