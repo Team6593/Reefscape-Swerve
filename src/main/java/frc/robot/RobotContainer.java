@@ -6,6 +6,10 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -60,7 +64,8 @@ import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.Limelight.GetInRange;
 
-public class RobotContainer {
+public class RobotContainer {    
+
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -103,6 +108,11 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         
+        CameraServer.startAutomaticCapture();
+
+        CvSink cvSink = CameraServer.getVideo();
+
+        CvSource outputStream = CameraServer.putVideo("Fish Eye", 640, 480);
 
         configureBindings();
     }

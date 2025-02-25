@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,8 +38,8 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
-    rightConfig.inverted(true).idleMode(IdleMode.kBrake);
-    leftConfig.inverted(false).idleMode(IdleMode.kBrake);
+    rightConfig.inverted(false).idleMode(IdleMode.kBrake);
+    leftConfig.inverted(true).idleMode(IdleMode.kBrake);
     //leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
 
     //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
