@@ -15,7 +15,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class KrakenElevator extends SubsystemBase {
 
-  private TalonFX rightMotor = new TalonFX(ElevatorConstants.rightElevatorMotorID);
+  private TalonFX rightMotor = new TalonFX(ElevatorConstants.mainElevatorID);
   private TalonFX leftMotor = new TalonFX(ElevatorConstants.leftElevatorMotorID);
 
   /** Creates a new KrakenElevator. */

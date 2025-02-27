@@ -15,7 +15,7 @@ public final class Constants {
     }
 
     public static class ElevatorConstants {
-        public static final int rightElevatorMotorID = 31;
+        public static final int mainElevatorID = 31;
         public static final int leftElevatorMotorID = 32;
         public static final double minTick = 0;
         public static final double maxTick = 250; // grab this immediatly!!

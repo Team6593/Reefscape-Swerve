@@ -96,6 +96,8 @@ public class RobotContainer {
 
     private final Collector collector = new Collector();
 
+    private final Camera camera = new Camera();
+
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     private final CommandJoystick buttonBoard  = new CommandJoystick(1);
@@ -106,17 +108,14 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        
-        CameraServer.startAutomaticCapture();
 
-        CvSink cvSink = CameraServer.getVideo();
-
-        CvSource outputStream = CameraServer.putVideo("Fish Eye", 640, 480);
+        camera.streamVideo();
 
         configureBindings();
     }
@@ -274,6 +273,9 @@ public class RobotContainer {
         //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
 
         joystick.b().whileTrue(new WinchOnly(climber, .6));
+
+        joystick.a().whileTrue(new Elevate(elevator, .5));
+        joystick.y().whileTrue(new Elevate(elevator, .5));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
