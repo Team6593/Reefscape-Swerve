@@ -37,6 +37,7 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
@@ -62,6 +63,7 @@ import frc.robot.commands.Elevator.L1;
 import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
+import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {    
@@ -83,6 +85,8 @@ public class RobotContainer {
     // private final Coral outtake = new Coral();
 
     private final Elevator elevator = new Elevator();
+
+    //private final KrakenElevator krakenElevator = new KrakenElevator();
 
     private final Climber climber = new Climber();
 
@@ -124,6 +128,10 @@ public class RobotContainer {
     public void stopElevator() {
         elevator.stop();
     }
+
+    // public void stopKrakenElevator() {
+    //     krakenElevator.stop();
+    // }
 
     public void stopCollector() {
         collector.stop();
@@ -255,11 +263,16 @@ public class RobotContainer {
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
         
-        joystick.a().whileTrue(new Elevate(elevator, -.5));
-        joystick.y().whileTrue(new Elevate(elevator, .5));
+        //joystick.a().whileTrue(new Elevate(elevator, -.5));
+        //joystick.y().whileTrue(new Elevate(elevator, .5));
         // joystick.a().whileTrue(new WinchOnly(climber, -.2));
         // joystick.y().whileTrue(new WinchOnly(climber, .2));
         joystick.x().whileTrue(new ClimberPivot(climber, .8));
+
+        //joystick.a().whileTrue(new KrakenElevate(krakenElevator, -.1));
+
+        //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
+
         joystick.b().whileTrue(new WinchOnly(climber, .6));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
