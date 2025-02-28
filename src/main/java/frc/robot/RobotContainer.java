@@ -90,7 +90,7 @@ public class RobotContainer {
 
     private final Climber climber = new Climber();
 
-    private final Coral coral = new Coral();
+    public final Coral coral = new Coral();
 
     //private final Climber climber = new Climber();
 
@@ -119,6 +119,7 @@ public class RobotContainer {
 
         configureBindings();
     }
+
 
     public void stopClimber() {
         climber.stopClimber();
@@ -172,9 +173,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                double deadband = 0.2;
-                double multiplier = .8;
-                double rotationalMultiplier = -.8;
+                double deadband = 0;
+                double multiplier = 1;
+                double rotationalMultiplier = 1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -212,8 +213,8 @@ public class RobotContainer {
 
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
-        // joystick.a().whileTrue(new Elevate(elevator, .2));
-        // joystick.b().whileTrue(new Elevate(elevator, -.2));
+        joystick.a().whileTrue(new Elevate(elevator, .2));
+         joystick.b().whileTrue(new Elevate(elevator, -.2));
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -252,18 +253,18 @@ public class RobotContainer {
 
         // buttonBoard.button(OperatorConstants.L1).onTrue(new WinchOnly(climber, -.2));
         // buttonBoard.button(OperatorConstants.L2).onTrue(new WinchOnly(climber, .2));
-        buttonBoard.button(7).onTrue(new HumanStation(elevator));                      
+        //buttonBoard.button(7).onTrue(new IntakeViaSensor(coral, .5));                      
         buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.50));
         buttonBoard.button(6).onTrue(new PivotBack(collector));
-        buttonBoard.button(8).onTrue(new ElevatorToZero(elevator, 1));
+        //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
         buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
         buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
         
-        //joystick.a().whileTrue(new Elevate(elevator, -.5));
-        //joystick.y().whileTrue(new Elevate(elevator, .5));
+        joystick.a().whileTrue(new Elevate(elevator, -.75));
+        joystick.y().whileTrue(new Elevate(elevator, .75));
         // joystick.a().whileTrue(new WinchOnly(climber, -.2));
         // joystick.y().whileTrue(new WinchOnly(climber, .2));
         joystick.x().whileTrue(new ClimberPivot(climber, .8));
@@ -272,10 +273,13 @@ public class RobotContainer {
 
         //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
 
-        joystick.b().whileTrue(new WinchOnly(climber, .6));
+        //joystick.b().whileTrue(new WinchOnly(climber, .6));
+
+        buttonBoard.button(7).onTrue(new IntakeCoral(coral));
+        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1));
 
         joystick.a().whileTrue(new Elevate(elevator, .5));
-        joystick.y().whileTrue(new Elevate(elevator, .5));
+        joystick.y().whileTrue(new Elevate(elevator, -.5));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

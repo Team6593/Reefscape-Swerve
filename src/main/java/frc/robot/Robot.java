@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Rotations;
@@ -13,13 +14,19 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import com.revrobotics.*;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.RangeProfile;;
+
 public class Robot extends TimedRobot {
+
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
@@ -31,6 +38,7 @@ public class Robot extends TimedRobot {
   public Robot() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(field);
+  
   }
 
   @Override
@@ -45,6 +53,14 @@ public class Robot extends TimedRobot {
      * This example is sufficient to show that vision integration is possible, though exact implementation
      * of how to use vision should be tuned per-robot and to the team's specification.
      */
+
+    //  if(distanceSensor.isRangeValid()) {
+    //   SmartDashboard.putNumber("Range Onboard", distanceSensor.getRange());
+    //   SmartDashboard.putNumber("Timestamp Onboard", distanceSensor.getTimestamp());
+    // }
+    
+    SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+
     if (kUseLimelight) {
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       if (llMeasurement != null) {
@@ -54,7 +70,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.coral.disableSensor();
+  }
 
   @Override
   public void disabledPeriodic() {}

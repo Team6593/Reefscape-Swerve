@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -15,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +32,9 @@ public class Elevator extends SubsystemBase {
   
   private RelativeEncoder elevatorEncoding = elevatorMotor.getEncoder();
 
+  private DutyCycleEncoder bore = new DutyCycleEncoder(0);
+  //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
+
   public DigitalInput limitSwitch = new DigitalInput(3);
 
   /** Creates a new Elevator. */
@@ -43,6 +48,7 @@ public class Elevator extends SubsystemBase {
     
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    
 
     elevatorController.setReference(40, ControlType.kCurrent);
 
@@ -62,7 +68,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Right Motor Temp", elevatorMotor.getMotorTemperature());
     SmartDashboard.putNumber("Left Motor Temperature", elevatorMotor.getMotorTemperature());
     SmartDashboard.putBoolean("Elevator Switch", limitSwitch.get());
-    SmartDashboard.putNumber("Right Encoder Position", elevatorEncoding.getPosition());
+    SmartDashboard.putNumber("Elevator Encoder Position", elevatorEncoding.getPosition());
     //SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
     SmartDashboard.putNumber("Right Motor Output", elevatorMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Output", leftMotor.getOutputCurrent());
@@ -72,6 +78,7 @@ public class Elevator extends SubsystemBase {
     //SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
   }
 
   /**
@@ -119,6 +126,10 @@ public class Elevator extends SubsystemBase {
 
   public void resetEncoder() {
     elevatorEncoding.setPosition(0);
+  }
+
+  public double getBoreEncoder() {
+    return bore.get();
   }
 
 }
