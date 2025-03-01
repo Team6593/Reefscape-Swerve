@@ -41,11 +41,15 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     elevatorConfig.inverted(false).idleMode(IdleMode.kBrake);
   
-    elevatorConfig.closedLoop.maxMotion
-      .maxVelocity(4000)
-      .maxAcceleration(6000)
-      .allowedClosedLoopError(.1);
+    // elevatorConfig.closedLoop.maxMotion
+    //   .maxVelocity(4000)
+    //   .maxAcceleration(6000);
     
+    elevatorConfig.closedLoop
+    .p(.5)
+    .i(0)
+    .d(0)
+    .outputRange(-1, 1);
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     
@@ -95,7 +99,7 @@ public class Elevator extends SubsystemBase {
    */
   public void goToSetpoint(double setpoint) {
     //rightController.setReference(setpoint, ControlType.kPosition);
-    elevatorController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
+    elevatorController.setReference(setpoint, ControlType.kPosition);
     //leftController.setReference(setpoint, ControlType.kPosition);
   }
 

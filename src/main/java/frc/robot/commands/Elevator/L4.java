@@ -9,14 +9,14 @@ import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class L3 extends Command {
+public class L4 extends Command {
   
   Elevator elevator;
   Coral coral;
   boolean done = false;
 
   /** Creates a new L1. */
-  public L3(Elevator elevator, Coral coral) {
+  public L4(Elevator elevator, Coral coral) {
     this.elevator = elevator;
     this.coral = coral;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,17 +26,16 @@ public class L3 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("L3 INIT");
-    elevator.goToSetpoint(-83);
-    coral.setL4(false);
+    System.out.println("L4 INIT");
+    elevator.goToSetpoint(-230);
+    coral.setL4(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("L3 Run");
-    
-    // if(elevator.getRightEncoderReading() == -83) {
+    System.out.println("L4 RUN");
+    // if(elevator.getRightEncoderReading() == -230) {
     //   done = true;
     // }
   }
@@ -44,7 +43,7 @@ public class L3 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("l3 end");
+    System.out.println("L4 END");
     elevator.stop();
   }
 

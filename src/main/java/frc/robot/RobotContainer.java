@@ -62,11 +62,12 @@ import frc.robot.commands.Elevator.L0;
 import frc.robot.commands.Elevator.L1;
 import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
+import frc.robot.commands.Elevator.L4;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.GetInRange;
 
-public class RobotContainer {    
+public class RobotContainer {
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -111,7 +112,8 @@ public class RobotContainer {
         // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
-
+        NamedCommands.registerCommand("L3", new L3(elevator, coral).withTimeout(2.5));
+        NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -174,7 +176,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0;
-                double multiplier = -1;
+                double multiplier = -.7;
                 double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
@@ -214,7 +216,7 @@ public class RobotContainer {
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
         joystick.a().whileTrue(new Elevate(elevator, .2));
-         joystick.b().whileTrue(new Elevate(elevator, -.2));
+         joystick.y().whileTrue(new Elevate(elevator, -.2));
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -239,7 +241,7 @@ public class RobotContainer {
         //         .withRotationalRate(rotation);
         // })
         // );
-
+        
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -247,9 +249,10 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        buttonBoard.button(OperatorConstants.L1).onTrue(new L1(elevator));
-        buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator));
-        buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
+        buttonBoard.button(OperatorConstants.L1).onTrue(new ElevatorToZero(elevator, -.75));
+        buttonBoard.button(OperatorConstants.L3).onTrue(new L4(elevator, coral).withTimeout(2.5));
+        buttonBoard.button(OperatorConstants.L2).onTrue(new L3(elevator, coral).withTimeout(2.5));
+        //buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
 
         // buttonBoard.button(OperatorConstants.L1).onTrue(new WinchOnly(climber, -.2));
         // buttonBoard.button(OperatorConstants.L2).onTrue(new WinchOnly(climber, .2));

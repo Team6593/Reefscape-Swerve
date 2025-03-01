@@ -20,7 +20,7 @@ public class Camera {
   public void streamVideo() {
     streamThread = new Thread(
       () -> {
-        var camera = CameraServer.startAutomaticCapture(1);
+        var camera = CameraServer.startAutomaticCapture(0);
         var cameraWidth = 320;
         var cameraHeight = 240;
         //camera.setPixelFormat(PixelFormat.kGray);

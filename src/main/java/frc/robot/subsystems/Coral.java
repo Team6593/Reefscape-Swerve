@@ -28,6 +28,8 @@ public class Coral extends SubsystemBase {
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
   private SparkMaxConfig leftConfig = new SparkMaxConfig();
   private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+
+  private boolean l4 = false;
   //private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
   /** Creates a new Coral. */
@@ -55,6 +57,14 @@ public class Coral extends SubsystemBase {
     SmartDashboard.putBoolean("Range valid", distanceSensor.isRangeValid());
     SmartDashboard.putNumber("Distance", distanceSensor.getRange());
     SmartDashboard.putNumber("Timestamp", distanceSensor.getTimestamp());
+  }
+
+  public boolean isOnL4() {
+    return l4;
+  }
+
+  public void setL4(boolean mode) {
+    l4 = mode;
   }
 
   public void disableSensor() {
