@@ -6,6 +6,10 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -33,6 +37,7 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
@@ -58,9 +63,11 @@ import frc.robot.commands.Elevator.L1;
 import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.StopElevator;
+import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.GetInRange;
 
-public class RobotContainer {
+public class RobotContainer {    
+
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -79,13 +86,17 @@ public class RobotContainer {
 
     private final Elevator elevator = new Elevator();
 
+    //private final KrakenElevator krakenElevator = new KrakenElevator();
+
     private final Climber climber = new Climber();
 
-    private final Coral coral = new Coral();
+    public final Coral coral = new Coral();
 
     //private final Climber climber = new Climber();
 
     private final Collector collector = new Collector();
+
+    private final Camera camera = new Camera();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -97,15 +108,18 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
-        
+
+        camera.streamVideo();
 
         configureBindings();
     }
+
 
     public void stopClimber() {
         climber.stopClimber();
@@ -114,6 +128,10 @@ public class RobotContainer {
     public void stopElevator() {
         elevator.stop();
     }
+
+    // public void stopKrakenElevator() {
+    //     krakenElevator.stop();
+    // }
 
     public void stopCollector() {
         collector.stop();
@@ -155,9 +173,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                double deadband = 0.2;
-                double multiplier = .8;
-                double rotationalMultiplier = -.8;
+                double deadband = 0;
+                double multiplier = -1;
+                double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -195,8 +213,8 @@ public class RobotContainer {
 
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
-        // joystick.a().whileTrue(new Elevate(elevator, .2));
-        // joystick.b().whileTrue(new Elevate(elevator, -.2));
+        joystick.a().whileTrue(new Elevate(elevator, .2));
+         joystick.b().whileTrue(new Elevate(elevator, -.2));
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -235,22 +253,29 @@ public class RobotContainer {
 
         // buttonBoard.button(OperatorConstants.L1).onTrue(new WinchOnly(climber, -.2));
         // buttonBoard.button(OperatorConstants.L2).onTrue(new WinchOnly(climber, .2));
-        buttonBoard.button(7).onTrue(new HumanStation(elevator));                      
+        //buttonBoard.button(7).onTrue(new IntakeViaSensor(coral, .5));                      
         buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.50));
         buttonBoard.button(6).onTrue(new PivotBack(collector));
-        buttonBoard.button(8).onTrue(new ElevatorToZero(elevator, 1));
+        //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
         buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
         buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
         
-        joystick.a().whileTrue(new Elevate(elevator, -.5));
-        joystick.y().whileTrue(new Elevate(elevator, .5));
-        // joystick.a().whileTrue(new WinchOnly(climber, -.2));
-        // joystick.y().whileTrue(new WinchOnly(climber, .2));
-        joystick.x().whileTrue(new ClimberPivot(climber, .8));
-        joystick.b().whileTrue(new WinchOnly(climber, .6));
+        //joystick.a().whileTrue(new Elevate(elevator, -.75));
+        //joystick.y().whileTrue(new Elevate(elevator, .75));
+        joystick.x().onTrue(new IntakeAndPivot(collector, .7)
+            .until( () -> !collector.hasAlgae())
+            .andThen(new PivotBack(collector)));
+        joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        //joystick.a().whileTrue(new KrakenElevate(krakenElevator, -.1));
+        //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
+
+        //joystick.b().whileTrue(new WinchOnly(climber, .6));
+
+        buttonBoard.button(7).onTrue(new IntakeCoral(coral));
+        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
