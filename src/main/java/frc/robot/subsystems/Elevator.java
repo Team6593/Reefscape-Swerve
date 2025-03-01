@@ -35,7 +35,7 @@ public class Elevator extends SubsystemBase {
   private DutyCycleEncoder bore = new DutyCycleEncoder(0);
   //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
 
-  public DigitalInput limitSwitch = new DigitalInput(3);
+  public DigitalInput limitSwitch = new DigitalInput(8);
 
   /** Creates a new Elevator. */
   public Elevator() {
