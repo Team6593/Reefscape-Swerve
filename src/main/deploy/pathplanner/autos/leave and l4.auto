@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "Leave"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "New New Path"
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
           }
         }
       ]

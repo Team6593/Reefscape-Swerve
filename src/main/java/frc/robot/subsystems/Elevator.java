@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   
   private RelativeEncoder elevatorEncoding = elevatorMotor.getEncoder();
 
-  private DutyCycleEncoder bore = new DutyCycleEncoder(0);
+  //private DutyCycleEncoder bore = new DutyCycleEncoder(0);
   //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
 
   public DigitalInput limitSwitch = new DigitalInput(8);
@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
     //SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
+    //SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
   }
 
   /**
@@ -132,8 +132,8 @@ public class Elevator extends SubsystemBase {
     elevatorEncoding.setPosition(0);
   }
 
-  public double getBoreEncoder() {
-    return bore.get();
-  }
+  // public double getBoreEncoder() {
+  //   return bore.get();
+  // }
 
 }

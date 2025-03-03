@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.coral.disableSensor();
+    //m_robotContainer.coral.disableSensor();
   }
 
   @Override

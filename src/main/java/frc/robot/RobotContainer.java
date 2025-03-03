@@ -112,8 +112,9 @@ public class RobotContainer {
         // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
-        NamedCommands.registerCommand("L3", new L3(elevator, coral).withTimeout(2.5));
+        NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.75));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
