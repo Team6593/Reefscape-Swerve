@@ -114,7 +114,8 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.75));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.90));
+        NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -216,8 +217,8 @@ public class RobotContainer {
 
         // joystick.y().whileTrue(new ElevatorCoast(elevator));
         // joystick.y().whileFalse(new ElevatorBrake(elevator));
-        joystick.a().whileTrue(new Elevate(elevator, .2));
-         joystick.y().whileTrue(new Elevate(elevator, -.2));
+        //joystick.a().whileTrue(new Elevate(elevator, .2));
+        //joystick.y().whileTrue(new Elevate(elevator, -.2));
 
         // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
         //     final double rotation = aim();
@@ -250,7 +251,7 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        buttonBoard.button(OperatorConstants.L1).onTrue(new ElevatorToZero(elevator, -.75));
+        buttonBoard.button(OperatorConstants.L1).onTrue(new ElevatorToZero(elevator, -.90));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L4(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L2).onTrue(new L3(elevator, coral).withTimeout(2.5));
         //buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
@@ -266,6 +267,9 @@ public class RobotContainer {
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
+
+        joystick.y().whileTrue(new ClimberPivot(climber, .3));
+        joystick.a().whileTrue(new ClimberPivot(climber, -.3));
         
         //joystick.a().whileTrue(new Elevate(elevator, -.75));
         //joystick.y().whileTrue(new Elevate(elevator, .75));
@@ -279,7 +283,7 @@ public class RobotContainer {
         //joystick.b().whileTrue(new WinchOnly(climber, .6));
 
         buttonBoard.button(7).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1));
+        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, .9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

@@ -63,8 +63,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void pivot(double speed) {
-    pivotMotor.set(.1*speed);
-    winchMotor.set(-speed -.15);
+    pivotMotor.set(speed * .8);
+    winchMotor.set(speed * 99999);
   }
 
   public void stopClimber() {

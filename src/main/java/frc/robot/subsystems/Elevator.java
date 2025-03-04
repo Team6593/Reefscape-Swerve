@@ -46,7 +46,7 @@ public class Elevator extends SubsystemBase {
     //   .maxAcceleration(6000);
     
     elevatorConfig.closedLoop
-    .p(.5)
+    .p(.90)
     .i(0)
     .d(0)
     .outputRange(-1, 1);
@@ -112,6 +112,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  
   /**
    * Elevates the elevator.
    * @param speed - Positive = Up, Negative = Down
