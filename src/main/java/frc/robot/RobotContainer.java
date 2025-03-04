@@ -268,8 +268,8 @@ public class RobotContainer {
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
 
-        joystick.y().whileTrue(new ClimberPivot(climber, .3));
-        joystick.a().whileTrue(new ClimberPivot(climber, -.3));
+        joystick.y().whileTrue(new ClimberPivot(climber, .8));
+        joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
         //joystick.a().whileTrue(new Elevate(elevator, -.75));
         //joystick.y().whileTrue(new Elevate(elevator, .75));
