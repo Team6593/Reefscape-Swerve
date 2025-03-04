@@ -163,12 +163,38 @@ public class RobotContainer {
         return targetingAngularVelocity;
     }
 
+    /**
+     * effectively the same as aim(), except used for y velocity of swerve
+     * @return y velocity
+     */
+    double slide() {
+        double kP = -0.009;
+        double targetingYVelocity = LimelightHelpers.getTX("limelight") * kP;
+        return targetingYVelocity *= MaxSpeed;
+    }
+
     double range() {
-        double kP = .1;
+        double kP = -.1;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= MaxSpeed;
         //targetingForwardSpeed *= -1.0;
         return targetingForwardSpeed;
+    }
+
+    double blob() {
+        double blobArea = Math.round(LimelightHelpers.getTA("limelight"));
+        double target = 27.771;
+        System.out.println(blobArea);
+
+        if(Limelight.hasValidTargets() == 1) {
+            if(blobArea > target) {
+                return (-.1 * MaxSpeed) * .5;
+            } else {
+                return (.1 * MaxSpeed) * .5;
+            }
+        } else {
+            return 0;
+        }
     }
 
     private void configureBindings() {
@@ -243,6 +269,17 @@ public class RobotContainer {
         //         .withRotationalRate(rotation);
         // })
         // );
+
+        joystick.povRight().whileTrue(drivetrain.applyRequest( () -> {
+            final double yvel = slide();
+            final double xvel = blob();
+            //System.out.println("ALIGNING");
+            // when we have both left and right align, 
+            // then we'll put a line of code to set which pipeline to use
+            return forwardStraight.withVelocityX(xvel)
+                .withVelocityY(yvel)
+                .withRotationalRate(0);
+        }));
         
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -268,22 +305,29 @@ public class RobotContainer {
             .andThen(new PivotBack(collector)));
         buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
 
-        joystick.y().whileTrue(new ClimberPivot(climber, .8));
-        joystick.a().whileTrue(new ClimberPivot(climber, -.8));
+        //joystick.y().whileTrue(new ClimberPivot(climber, .8));
+        //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        //joystick.a().whileTrue(new Elevate(elevator, -.75));
-        //joystick.y().whileTrue(new Elevate(elevator, .75));
-        joystick.x().onTrue(new IntakeAndPivot(collector, .7)
-            .until( () -> !collector.hasAlgae())
-            .andThen(new PivotBack(collector)));
-        joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        joystick.a().whileTrue(new Elevate(elevator, .3));
+        joystick.y().whileTrue(new Elevate(elevator, -.3));
+        
+        joystick.x().whileTrue(new WinchOnly(climber, .5));
+        joystick.b().whileTrue(new WinchOnly(climber, -.5));
+
+        // Algae Commands 
+        // joystick.x().onTrue(new IntakeAndPivot(collector, .7)
+        //     .until( () -> !collector.hasAlgae())
+        //     .andThen(new PivotBack(collector)));
+        // joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.50));
+
+
         //joystick.a().whileTrue(new KrakenElevate(krakenElevator, -.1));
         //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
 
         //joystick.b().whileTrue(new WinchOnly(climber, .6));
 
         buttonBoard.button(7).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, .9)));
+        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

@@ -51,6 +51,13 @@ public class Elevator extends SubsystemBase {
     .d(0)
     .outputRange(-1, 1);
 
+
+    // This technically works but dont use it it stalls the motor
+    // elevatorConfig.closedLoop.maxMotion
+    // .maxVelocity(5400)
+    // .maxAcceleration(6500)
+    // .allowedClosedLoopError(.1);
+
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     
 
@@ -98,9 +105,9 @@ public class Elevator extends SubsystemBase {
    * @param setpoint - Desired encoder position.
    */
   public void goToSetpoint(double setpoint) {
-    //rightController.setReference(setpoint, ControlType.kPosition);
     elevatorController.setReference(setpoint, ControlType.kPosition);
-    //leftController.setReference(setpoint, ControlType.kPosition);
+    //elevatorController.setReference(setpoint, ControlType.kPosition);
+    
   }
 
   /**

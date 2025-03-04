@@ -27,8 +27,8 @@ public class L4 extends Command {
   @Override
   public void initialize() {
     System.out.println("L4 INIT");
-    elevator.goToSetpoint(-230);
-    coral.setL4(true);
+    elevator.goToSetpoint(-166);
+    coral.setL4(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
