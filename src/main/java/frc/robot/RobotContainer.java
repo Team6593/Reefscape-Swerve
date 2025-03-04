@@ -182,16 +182,15 @@ public class RobotContainer {
     }
 
     double blob() {
-        double blobArea = Math.round(LimelightHelpers.getTA("limelight"));
-        double target = 27.771;
+        double blobArea = LimelightHelpers.getTA("limelight");
+        //double target = 27.771;
+        double target = 35;
+        double kP = 0.01;
         System.out.println(blobArea);
 
-        if(Limelight.hasValidTargets() == 1) {
-            if(blobArea > target) {
-                return (-.1 * MaxSpeed) * .5;
-            } else {
-                return (.1 * MaxSpeed) * .5;
-            }
+        if (Limelight.hasValidTargets() == 1) {
+            double error = target - blobArea;
+            return kP * error * MaxSpeed;
         } else {
             return 0;
         }
