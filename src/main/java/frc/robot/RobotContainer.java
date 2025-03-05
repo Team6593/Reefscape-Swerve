@@ -181,12 +181,14 @@ public class RobotContainer {
         return targetingForwardSpeed;
     }
 
-    double blob() {
+    double blob(int pipeline) {
+        LimelightHelpers.setPipelineIndex("limelight", pipeline);
         double blobArea = LimelightHelpers.getTA("limelight");
         //double target = 27.771;
-        double target = 35;
+        double target = 27.771;
         double kP = 0.01;
         System.out.println(blobArea);
+        System.out.println(LimelightHelpers.getCurrentPipelineIndex("limelight"));
 
         if (Limelight.hasValidTargets() == 1) {
             double error = target - blobArea;
@@ -271,8 +273,19 @@ public class RobotContainer {
 
         joystick.povRight().whileTrue(drivetrain.applyRequest( () -> {
             final double yvel = slide();
-            final double xvel = blob();
+            final double xvel = blob(1);
             //System.out.println("ALIGNING");
+            // when we have both left and right align, 
+            // then we'll put a line of code to set which pipeline to use
+            return forwardStraight.withVelocityX(xvel)
+                .withVelocityY(yvel)
+                .withRotationalRate(0);
+        }));
+
+        joystick.povLeft().whileTrue(drivetrain.applyRequest( () -> {
+            final double yvel = slide();
+            final double xvel = blob(0);
+            // System.out.println("ALIGNING");
             // when we have both left and right align, 
             // then we'll put a line of code to set which pipeline to use
             return forwardStraight.withVelocityX(xvel)
