@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,9 +32,20 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
 
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kP = 0.5;
+    pivotMotor.getConfigurator().apply(slot0Configs);
+    winchMotor.getConfigurator().apply(slot0Configs); 
+
     pivotMotor.getConfigurator().apply(motorConfigs);
     winchMotor.getConfigurator().apply(motorConfigs);
 
+    pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+    winchMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    pivotMotor.clearStickyFaults();
+    winchMotor.clearStickyFaults();
+    
     // var slot0Configs = new Slot0Configs();
     // slot0Configs.kS = .25;
     // slot0Configs.kV = .12;
@@ -58,8 +70,17 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public void reelIn(double setpoint) {
+    final PositionVoltage request = new PositionVoltage(0).withSlot(0);
+    winchMotor.setControl(request.withPosition(setpoint));
+  }
+
   public void moveWinch(double speed) {
     winchMotor.set(speed);
+  }
+
+  public void movePivot(double speed) {
+    pivotMotor.set(speed);
   }
 
   public void pivot(double speed) {

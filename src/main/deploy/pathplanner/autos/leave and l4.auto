@@ -27,6 +27,12 @@
           "data": {
             "name": "Home"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Field Centric"
+          }
         }
       ]
     }

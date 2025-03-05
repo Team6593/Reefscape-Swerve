@@ -97,7 +97,8 @@ public class RobotContainer {
 
     private final Collector collector = new Collector();
 
-    private final Camera camera = new Camera();
+    private final Camera camera = new Camera(0);
+    private final Camera camera2 = new Camera(1);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -114,12 +115,31 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
+        
+
+        // LEFT ALIGN ONLY 
+        // NamedCommands.registerCommand("leftalign", drivetrain.applyRequest( () -> {
+        //     if(getPipeline() == 1) {
+        //         setLeftAlignPipeline();
+        //     }
+        //     final double yvel = slide();
+        //     final double xvel = blob();
+        //     // System.out.println("ALIGNING");
+        //     // when we have both left and right align, 
+        //     // then we'll put a line of code to set which pipeline to use
+        //     return forwardStraight.withVelocityX(xvel)
+        //         .withVelocityY(yvel)
+        //         .withRotationalRate(0);
+        // }).withTimeout(2));
+        
         NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.90));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
+        NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         camera.streamVideo();
+        camera2.streamVideo();
 
         configureBindings();
     }
@@ -181,21 +201,30 @@ public class RobotContainer {
         return targetingForwardSpeed;
     }
 
-    double blob(int pipeline) {
-        LimelightHelpers.setPipelineIndex("limelight", pipeline);
-        double blobArea = LimelightHelpers.getTA("limelight");
+    double blob() {
+        //LimelightHelpers.setPipelineIndex("limelight", pipeline);
+        double blobArea = Math.round(LimelightHelpers.getTA("limelight"));
         //double target = 27.771;
-        double target = 27.771;
-        double kP = 0.01;
-        System.out.println(blobArea);
-        System.out.println(LimelightHelpers.getCurrentPipelineIndex("limelight"));
+        double target = 27;
+        if(Limelight.hasValidTargets() == 1) {
+            if(target < blobArea) {
+                return 0.05 * MaxSpeed;
+            } else {
+                return 0;
+            }
+        } else {return 0;}
+    }
 
-        if (Limelight.hasValidTargets() == 1) {
-            double error = target - blobArea;
-            return kP * error * MaxSpeed;
-        } else {
-            return 0;
-        }
+    void setRightAlignPipeline() {
+        LimelightHelpers.setPipelineIndex("limelight", 1);
+    }
+
+    void setLeftAlignPipeline() {
+        LimelightHelpers.setPipelineIndex("limelight", 0);
+    }
+
+    double getPipeline() {
+        return LimelightHelpers.getCurrentPipelineIndex("limelight");
     }
 
     private void configureBindings() {
@@ -240,51 +269,24 @@ public class RobotContainer {
             })
         );
 
-        //.x().whileTrue(new IntakeWithoutBrake(coral, .2));
-
-        // joystick.y().whileTrue(new ElevatorCoast(elevator));
-        // joystick.y().whileFalse(new ElevatorBrake(elevator));
-        //joystick.a().whileTrue(new Elevate(elevator, .2));
-        //joystick.y().whileTrue(new Elevate(elevator, -.2));
-
-        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
-        //     final double rotation = aim();
-        //     final double forward = range();
-        //     return forwardStraight.withVelocityX(forward)
-        //         .withVelocityY(0)
-        //         .withRotationalRate(rotation);
-        // })
-        // );
-
-        // joystick.y().whileTrue(drivetrain.applyRequest(() -> {
-        //     final double rotation = aim();
-        //     double forwardspeed = 0;
-        //     if(Limelight.hasValidTargets() == 1) {
-        //         forwardspeed = .2;
-        //     } else {
-        //         forwardspeed = 0;
-        //     }
-        //     //final double forward = range();
-        //     return forwardStraight.withVelocityX(forwardspeed)
-        //         .withVelocityY(0)
-        //         .withRotationalRate(rotation);
-        // })
-        // );
-
         joystick.povRight().whileTrue(drivetrain.applyRequest( () -> {
+            if(getPipeline() == 0) {
+                setRightAlignPipeline();
+            }
             final double yvel = slide();
-            final double xvel = blob(1);
-            //System.out.println("ALIGNING");
-            // when we have both left and right align, 
-            // then we'll put a line of code to set which pipeline to use
+            final double xvel = blob();
+            
             return forwardStraight.withVelocityX(xvel)
                 .withVelocityY(yvel)
                 .withRotationalRate(0);
         }));
 
         joystick.povLeft().whileTrue(drivetrain.applyRequest( () -> {
+            if(getPipeline() == 1) {
+                setLeftAlignPipeline();
+            }
             final double yvel = slide();
-            final double xvel = blob(0);
+            final double xvel = blob();
             // System.out.println("ALIGNING");
             // when we have both left and right align, 
             // then we'll put a line of code to set which pipeline to use
@@ -300,22 +302,18 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
-        buttonBoard.button(OperatorConstants.L1).onTrue(new ElevatorToZero(elevator, -.90));
-        buttonBoard.button(OperatorConstants.L3).onTrue(new L4(elevator, coral).withTimeout(2.5));
-        buttonBoard.button(OperatorConstants.L2).onTrue(new L3(elevator, coral).withTimeout(2.5));
-        //buttonBoard.button(OperatorConstants.L2).onTrue(new L2(elevator));
-
-        // buttonBoard.button(OperatorConstants.L1).onTrue(new WinchOnly(climber, -.2));
-        // buttonBoard.button(OperatorConstants.L2).onTrue(new WinchOnly(climber, .2));
-        //buttonBoard.button(7).onTrue(new IntakeViaSensor(coral, .5));                      
-        buttonBoard.button(5).onTrue(new SpitAlgae(collector).withTimeout(.50));
-        buttonBoard.button(6).onTrue(new PivotBack(collector));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, -.90));
+        buttonBoard.button(OperatorConstants.L4).onTrue(new L4(elevator, coral).withTimeout(2.5));
+        buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
+                             
+        buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));
+        buttonBoard.button(OperatorConstants.algaePivot).onTrue(new PivotBack(collector));
         //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
-        buttonBoard.button(10).onTrue(new StopAll(collector, coral, elevator));
-        buttonBoard.button(4).onTrue(new IntakeAndPivot(collector, .7)
+        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
+        buttonBoard.button(OperatorConstants.algaeIn).onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
-        buttonBoard.button(9).onTrue(new PivotToSetpoint(collector));
+        
 
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
@@ -323,23 +321,13 @@ public class RobotContainer {
         joystick.a().whileTrue(new Elevate(elevator, .3));
         joystick.y().whileTrue(new Elevate(elevator, -.3));
         
-        joystick.x().whileTrue(new WinchOnly(climber, .5));
-        joystick.b().whileTrue(new WinchOnly(climber, -.5));
-
-        // Algae Commands 
-        // joystick.x().onTrue(new IntakeAndPivot(collector, .7)
-        //     .until( () -> !collector.hasAlgae())
-        //     .andThen(new PivotBack(collector)));
-        // joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.50));
-
-
-        //joystick.a().whileTrue(new KrakenElevate(krakenElevator, -.1));
-        //joystick.y().whileTrue(new KrakenElevate(krakenElevator, .1));
+        joystick.x().whileTrue(new WinchOnly(climber, .9));
+        joystick.b().whileTrue(new WinchOnly(climber, -.9));
 
         //joystick.b().whileTrue(new WinchOnly(climber, .6));
 
-        buttonBoard.button(7).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(8).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
+        buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
+        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

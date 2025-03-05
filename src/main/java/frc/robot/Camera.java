@@ -7,12 +7,15 @@ package frc.robot;
 import org.opencv.core.Mat;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.VideoMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class Camera {
+    int videoPort;
 
-    public Camera() {
+    public Camera(int videoPort) {
+      this.videoPort = videoPort;
     }
 
     Thread streamThread;
@@ -20,13 +23,13 @@ public class Camera {
   public void streamVideo() {
     streamThread = new Thread(
       () -> {
-        var camera = CameraServer.startAutomaticCapture(0);
+        var camera = CameraServer.startAutomaticCapture(videoPort);
         var cameraWidth = 320;
         var cameraHeight = 240;
         //camera.setPixelFormat(PixelFormat.kGray);
 
         camera.setResolution(cameraWidth, cameraHeight);
-        camera.setFPS(30);
+        camera.setFPS(20);
 
         var cvSink = CameraServer.getVideo();
         var outputStream = CameraServer.putVideo("FishEye",

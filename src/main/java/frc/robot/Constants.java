@@ -8,10 +8,15 @@ package frc.robot;
 public final class Constants {
     
     public static class OperatorConstants {
-        public static final int L3 = 1;
-        public static final int L2 = 2;
-        public static final int L1 = 3;
-        public static final int StopAll = 6;
+        public static final int L4 = 1;
+        public static final int L3 = 2;
+        public static final int HOME = 3;
+        public static final int StopAll = 10;
+        public static final int algaeIn = 4;
+        public static final int algaeOut = 5;
+        public static final int intakeCoral = 7;
+        public static final int shootCoral = 8;
+        public static final int algaePivot = 9;
     }
 
     public static class ElevatorConstants {
