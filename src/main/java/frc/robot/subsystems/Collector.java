@@ -75,7 +75,7 @@ public class Collector extends SubsystemBase {
   public void pivotToSetpoint() {
 
     // 14.5 before
-    pivotController.setReference(13.5, ControlType.kPosition);
+    pivotController.setReference(14, ControlType.kPosition);
   }
 
   public void pivotBack() {
@@ -97,7 +97,7 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("switch", limitSwitch.get());
+    SmartDashboard.putBoolean("Collecter Switch", limitSwitch.get());
     SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Intake Voltage", collectorMotor.getBusVoltage());
     // This method will be called once per scheduler run

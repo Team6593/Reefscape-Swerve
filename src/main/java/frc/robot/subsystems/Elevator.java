@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   
   private RelativeEncoder elevatorEncoding = elevatorMotor.getEncoder();
 
-  private DutyCycleEncoder bore = new DutyCycleEncoder(0);
+  //private DutyCycleEncoder bore = new DutyCycleEncoder(0);
   //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
 
   public DigitalInput limitSwitch = new DigitalInput(8);
@@ -41,11 +41,22 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     elevatorConfig.inverted(false).idleMode(IdleMode.kBrake);
   
-    elevatorConfig.closedLoop.maxMotion
-      .maxVelocity(4000)
-      .maxAcceleration(6000)
-      .allowedClosedLoopError(.1);
+    // elevatorConfig.closedLoop.maxMotion
+    //   .maxVelocity(4000)
+    //   .maxAcceleration(6000);
     
+    elevatorConfig.closedLoop
+    .p(.90)
+    .i(0)
+    .d(0)
+    .outputRange(-1, 1);
+
+
+    // This technically works but dont use it it stalls the motor
+    // elevatorConfig.closedLoop.maxMotion
+    // .maxVelocity(5400)
+    // .maxAcceleration(6500)
+    // .allowedClosedLoopError(.1);
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     
@@ -78,7 +89,7 @@ public class Elevator extends SubsystemBase {
     //SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
+    //SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
   }
 
   /**
@@ -94,9 +105,9 @@ public class Elevator extends SubsystemBase {
    * @param setpoint - Desired encoder position.
    */
   public void goToSetpoint(double setpoint) {
-    //rightController.setReference(setpoint, ControlType.kPosition);
-    elevatorController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
-    //leftController.setReference(setpoint, ControlType.kPosition);
+    elevatorController.setReference(setpoint, ControlType.kPosition);
+    //elevatorController.setReference(setpoint, ControlType.kPosition);
+    
   }
 
   /**
@@ -108,6 +119,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  
   /**
    * Elevates the elevator.
    * @param speed - Positive = Up, Negative = Down
@@ -128,8 +140,8 @@ public class Elevator extends SubsystemBase {
     elevatorEncoding.setPosition(0);
   }
 
-  public double getBoreEncoder() {
-    return bore.get();
-  }
+  // public double getBoreEncoder() {
+  //   return bore.get();
+  // }
 
 }

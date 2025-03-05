@@ -27,7 +27,9 @@ public class Coral extends SubsystemBase {
   private SparkClosedLoopController rightController = intakeMotor.getClosedLoopController();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
   private SparkMaxConfig leftConfig = new SparkMaxConfig();
-  private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+  //private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.beamBreakID);
+  private boolean l4 = false;
   //private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
   /** Creates a new Coral. */
@@ -41,10 +43,10 @@ public class Coral extends SubsystemBase {
 
     rightController.setReference(10, ControlType.kCurrent);
 
-    distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
-    distanceSensor.setAutomaticMode(true);
-    distanceSensor.setEnabled(true);
-    distanceSensor.setRangeProfile(RangeProfile.kHighAccuracy);
+    // distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+    // distanceSensor.setAutomaticMode(true);
+    // distanceSensor.setEnabled(true);
+    // distanceSensor.setRangeProfile(RangeProfile.kHighAccuracy);
   }
 
   @Override
@@ -52,14 +54,19 @@ public class Coral extends SubsystemBase {
     //SmartDashboard.putBoolean("Outtake BB", beamBrake.get());
     SmartDashboard.putNumber("Coral Intake voltage", intakeMotor.getBusVoltage());
     SmartDashboard.putBoolean("Has Coral", hasCoral());
-    SmartDashboard.putBoolean("Range valid", distanceSensor.isRangeValid());
-    SmartDashboard.putNumber("Distance", distanceSensor.getRange());
-    SmartDashboard.putNumber("Timestamp", distanceSensor.getTimestamp());
   }
 
-  public void disableSensor() {
-    distanceSensor.setAutomaticMode(false);
+  public boolean isOnL4() {
+    return l4;
   }
+
+  public void setL4(boolean mode) {
+    l4 = mode;
+  }
+
+  // public void disableSensor() {
+  //   distanceSensor.setAutomaticMode(false);
+  // }
 
   /**
    * Manually intake the coral without a beam brake.
@@ -70,13 +77,7 @@ public class Coral extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    double distance = distanceSensor.getRange();
-    distance = Math.round(distance);
-    if(distance > 1) {
-      return false;
-    } else {
-      return true;
-    }
+    return beamBreak.get();
   }
 
   /**
@@ -84,10 +85,10 @@ public class Coral extends SubsystemBase {
    * @param speed
    */
   public void intakeCoral(double speed) {
-    if(!hasCoral()) {
+    if(hasCoral()) {
       intakeMotor.set(speed);
     } else {
-      stop();
+      intakeMotor.stopMotor();
     }
   }
 
