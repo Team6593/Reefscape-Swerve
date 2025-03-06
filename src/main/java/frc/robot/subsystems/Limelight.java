@@ -85,7 +85,7 @@ public class Limelight {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-
+    
     // how many degrees back is your limelight rotated from perfectly vertical
     double limelightMountAngleDegrees = 0.0; // grab later
 
@@ -93,7 +93,7 @@ public class Limelight {
     double limelightLensHeightInches = 0.0; // grab later
 
     // distance from the targets center to the floor 
-    double goalHeightInches = 0; // grab later
+    double goalHeightInches = 12; // grab later
 
     double angelToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angelToGoalDegrees * (3.14159 / 180.0);

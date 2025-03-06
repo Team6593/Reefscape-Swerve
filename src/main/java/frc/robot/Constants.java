@@ -14,6 +14,7 @@ public final class Constants {
         public static final int StopAll = 10;
         public static final int algaeIn = 4;
         public static final int algaeOut = 5;
+        public static final int algaeBack = 6;
         public static final int intakeCoral = 7;
         public static final int shootCoral = 8;
         public static final int algaePivot = 9;

@@ -40,7 +40,7 @@ public class Climber extends SubsystemBase {
     pivotMotor.getConfigurator().apply(motorConfigs);
     winchMotor.getConfigurator().apply(motorConfigs);
 
-    pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+    pivotMotor.setNeutralMode(NeutralModeValue.Brake);
     winchMotor.setNeutralMode(NeutralModeValue.Brake);
 
     pivotMotor.clearStickyFaults();
@@ -84,8 +84,12 @@ public class Climber extends SubsystemBase {
   }
 
   public void pivot(double speed) {
-    pivotMotor.set(speed * .8);
+    pivotMotor.set(speed);
     winchMotor.set(speed);
+  }
+
+  public void pivotOnly(double speed) {
+    pivotMotor.set(speed);
   }
 
   public void stopClimber() {
