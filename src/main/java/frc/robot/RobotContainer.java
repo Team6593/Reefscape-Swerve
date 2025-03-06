@@ -73,7 +73,7 @@ import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
 
-    private PIDController limelightPID = new PIDController(.5, 0, 0);
+    private PIDController limelightPID = new PIDController(.01, 0, 0);
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -112,7 +112,7 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    public final Limelight limelight = new Limelight();
+    public static final Limelight limelight = new Limelight();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -304,14 +304,15 @@ public class RobotContainer {
                 .withRotationalRate(0);
         }));
         
-        joystick.povLeft().onTrue(drivetrain.applyRequest(() -> {
+        joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
             if (getPipeline() == 1) {
                 setLeftAlignPipeline();
             }
             final double yvel = slide();
-            
+            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+            System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
             return forwardStraight
-                                    .withVelocityX(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
+                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
                                     .withVelocityY(yvel)
                                     .withRotationalRate(0);
         }));
@@ -343,8 +344,8 @@ public class RobotContainer {
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        // joystick.a().whileTrue(new Elevate(elevator, .3));
-        // joystick.y().whileTrue(new Elevate(elevator, -.3));
+        joystick.a().whileTrue(new Elevate(elevator, .3));
+        joystick.y().whileTrue(new Elevate(elevator, -.3));
 
         joystick.x().onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
@@ -360,8 +361,12 @@ public class RobotContainer {
         // joystick.y().whileTrue(new WinchOnly(climber, .9).alongWith(new PivotOnly(climber, .1)));
         // joystick.a().whileTrue(new WinchOnly(climber, -.9).alongWith(new PivotOnly(climber, -.1)));
 
-        joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
-        joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
+        // joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
+        // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
+
+        joystick.povUp().whileTrue(new PivotOnly(climber, .1));
+        joystick.povRight().whileTrue(new WinchOnly(climber, .9));
+        joystick.povDown().whileTrue(new WinchOnly(climber, -.9));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
