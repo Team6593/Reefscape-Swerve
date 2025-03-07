@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.commands.Coral.IntakeWithoutBrake;
+import frc.robot.commands.Coral.ManuallyIntakeCoral;
 import frc.robot.commands.Coral.ReverseCoral;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
@@ -73,7 +74,7 @@ import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
 
-    private PIDController limelightPID = new PIDController(.01, 0, 0);
+    private PIDController limelightPID = new PIDController(.02, 0, 0);
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -278,35 +279,62 @@ public class RobotContainer {
             })
         );
 
-        joystick.rightTrigger().whileTrue(drivetrain.applyRequest( () -> {
-            if(getPipeline() == 0) {
-                setRightAlignPipeline();
-            }
-            final double yvel = slide();
-            final double xvel = blob();
+        // joystick.b().whileTrue(drivetrain.applyRequest( () -> {
+        //     if(getPipeline() == 0) {
+        //         setRightAlignPipeline();
+        //     }
+        //     final double yvel = slide();
+        //     final double xvel = blob();
             
-            return forwardStraight.withVelocityX(xvel)
-                .withVelocityY(yvel)
-                .withRotationalRate(0);
-        }));
+        //     return forwardStraight.withVelocityX(xvel)
+        //         .withVelocityY(yvel)
+        //         .withRotationalRate(0);
+        // }));
 
-        joystick.leftTrigger().whileTrue(drivetrain.applyRequest( () -> {
-            if(getPipeline() == 1) {
-                setLeftAlignPipeline();
-            }
-            final double yvel = slide();
-            final double xvel = blob();
-            // System.out.println("ALIGNING");
-            // when we have both left and right align, 
-            // then we'll put a line of code to set which pipeline to use
-            return forwardStraight.withVelocityX(xvel)
-                .withVelocityY(yvel)
-                .withRotationalRate(0);
-        }));
-        
+        // joystick.x().whileTrue(drivetrain.applyRequest( () -> {
+        //     if(getPipeline() == 1) {
+        //         setLeftAlignPipeline();
+        //     }
+        //     final double yvel = slide();
+        //     final double xvel = blob();
+        //     // System.out.println("ALIGNING");
+        //     // when we have both left and right align, 
+        //     // then we'll put a line of code to set which pipeline to use
+        //     return forwardStraight.withVelocityX(xvel)
+        //         .withVelocityY(yvel)
+        //         .withRotationalRate(0);
+        // }));
+
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
             if (getPipeline() == 1) {
                 setLeftAlignPipeline();
+            }
+            final double yvel = slide();
+            final double rrate = aim();
+            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+            //System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+            return forwardStraight
+                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
+                                    .withVelocityY(yvel)
+                                    .withRotationalRate(rrate);
+        }));
+
+        joystick.x().whileTrue(drivetrain.applyRequest(() -> {
+            if (getPipeline() == 1) {
+                setLeftAlignPipeline();
+            }
+            final double yvel = slide();
+            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+            System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+            return forwardStraight
+                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
+                                    .withVelocityY(yvel)
+                                    .withRotationalRate(0);
+        }));
+        
+        joystick.b().whileTrue(drivetrain.applyRequest(() -> {
+            if (getPipeline() == 0) {
+                setRightAlignPipeline();
             }
             final double yvel = slide();
             SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
@@ -344,13 +372,13 @@ public class RobotContainer {
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        joystick.a().whileTrue(new Elevate(elevator, .3));
-        joystick.y().whileTrue(new Elevate(elevator, -.3));
+        // joystick.a().whileTrue(new Elevate(elevator, .3));
+        // joystick.y().whileTrue(new Elevate(elevator, -.3));
 
-        joystick.x().onTrue(new IntakeAndPivot(collector, .7)
+        joystick.y().onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
-        joystick.b().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         
         joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
         joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
@@ -372,7 +400,8 @@ public class RobotContainer {
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        joystick.rightBumper().whileTrue(new ReverseCoral(coral));
+        // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
+        joystick.rightBumper().whileTrue(new ManuallyIntakeCoral(coral, .15));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
