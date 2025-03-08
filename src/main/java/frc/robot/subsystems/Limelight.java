@@ -32,7 +32,7 @@ public class Limelight {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
   }
 
-  public static void update() {
+  public void update() {
     // This method will be called once per scheduler run
 
     //read values periodically
@@ -45,12 +45,14 @@ public class Limelight {
     SmartDashboard.putNumber("ty", y);
     SmartDashboard.putNumber("ta", area);
 
-    System.out.println("x:"+ x);
-    System.out.println("y:"+ y);
-    System.out.println("area:"+ area);
+    // System.out.println("x:"+ x);
+    // System.out.println("y:"+ y);
+    // System.out.println("area:"+ area);
 
 
-    SmartDashboard.putNumber("Distance,", estimateDistance(LimelightConstants.mountAngleDegrees, LimelightConstants.lensHeightInches, LimelightConstants.goalHeightInches));
+    System.out.println(autoEstimateDistance());
+
+    SmartDashboard.putNumber("Distance:", autoEstimateDistance());
 
   }
 
@@ -81,19 +83,21 @@ public class Limelight {
    * Think getDistanceFromAprilTag, but for autonomous
    * @return distanceFromLimelightToGoalInches
    */
-  public double autoEstimateDistance() {
+  public static double autoEstimateDistance() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tx = table.getEntry("tx");
+
     NetworkTableEntry ty = table.getEntry("ty");
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-
+    
     // how many degrees back is your limelight rotated from perfectly vertical
     double limelightMountAngleDegrees = 0.0; // grab later
 
     // distance from the center of the limelight lens to the floor
-    double limelightLensHeightInches = 0.0; // grab later
+    double limelightLensHeightInches = 11.5; // grab later
 
     // distance from the targets center to the floor 
-    double goalHeightInches = 0; // grab later
+    double goalHeightInches = 13.75; // grab later
 
     double angelToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angelToGoalDegrees * (3.14159 / 180.0);
@@ -101,6 +105,9 @@ public class Limelight {
     // calculate distance
     double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)
      / Math.tan(angleToGoalRadians);
+
+    // System.out.println("Tx: " + tx.getDouble(0));
+    // System.out.println("Ty: " + ty.getDouble(0));
 
     // return distance
     return distanceFromLimelightToGoalInches;

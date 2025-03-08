@@ -27,6 +27,18 @@
           "data": {
             "name": "Home"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Human"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab"
+          }
         }
       ]
     }

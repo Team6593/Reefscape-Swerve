@@ -27,6 +27,30 @@
           "data": {
             "name": "Home"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Human"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Human to FC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Field Centric"
+          }
         }
       ]
     }

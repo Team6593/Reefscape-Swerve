@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -40,7 +41,7 @@ public class Climber extends SubsystemBase {
     pivotMotor.getConfigurator().apply(motorConfigs);
     winchMotor.getConfigurator().apply(motorConfigs);
 
-    pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+    pivotMotor.setNeutralMode(NeutralModeValue.Brake);
     winchMotor.setNeutralMode(NeutralModeValue.Brake);
 
     pivotMotor.clearStickyFaults();
@@ -84,8 +85,12 @@ public class Climber extends SubsystemBase {
   }
 
   public void pivot(double speed) {
-    pivotMotor.set(speed * .8);
+    pivotMotor.set(speed);
     winchMotor.set(speed);
+  }
+
+  public void pivotOnly(double speed) {
+    pivotMotor.set(speed);
   }
 
   public void stopClimber() {
@@ -95,6 +100,8 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Climber Pivot", pivotMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Climber Winch Position", winchMotor.getPosition().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 }

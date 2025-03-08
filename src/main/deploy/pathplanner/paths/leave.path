@@ -8,35 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.870666546945921,
-        "y": 4.183519834778057
+        "x": 6.870454545454545,
+        "y": 4.173226351351351
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.76106418918919,
+        "x": 5.7,
         "y": 4.173226351351351
       },
       "prevControl": {
-        "x": 7.531774327541459,
-        "y": 4.170882897243873
+        "x": 7.470711689078905,
+        "y": 4.173226351351351
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle Coral "
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
