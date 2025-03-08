@@ -353,7 +353,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, -.90));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, -.9));
         buttonBoard.button(OperatorConstants.L4).onTrue(new L4(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
         
@@ -393,8 +393,8 @@ public class RobotContainer {
         // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
 
         joystick.povUp().whileTrue(new PivotOnly(climber, .1));
-        joystick.povRight().whileTrue(new WinchOnly(climber, .9));
-        joystick.povDown().whileTrue(new WinchOnly(climber, -.9));
+        joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
+        joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
