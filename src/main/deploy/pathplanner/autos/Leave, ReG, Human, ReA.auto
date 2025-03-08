@@ -43,13 +43,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Human to FC"
+            "pathName": "Left Human To Reef A"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Field Centric"
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
           }
         }
       ]

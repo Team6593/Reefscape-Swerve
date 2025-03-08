@@ -46,9 +46,10 @@ public class Elevator extends SubsystemBase {
     //   .maxAcceleration(6000);
     
     elevatorConfig.closedLoop
-    .p(.90)
+    .p(.9)
     .i(0)
     .d(0)
+    
     .outputRange(-1, 1);
 
 

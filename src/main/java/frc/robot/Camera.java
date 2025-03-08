@@ -54,8 +54,8 @@ public class Camera {
             continue;
           }
 
-          crosshairPoint.x = 90;
-          crosshairPoint.y = 100;
+          crosshairPoint.x = 140;
+          crosshairPoint.y = 140;
           Imgproc.circle(mat, crosshairPoint, 40, red);
 
           long deltaTime = camera.getLastFrameTime();
