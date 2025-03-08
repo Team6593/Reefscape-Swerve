@@ -16,9 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** Add your docs here. */
 public class Camera {
     int videoPort;
+    String cameraName;
 
-    public Camera(int videoPort) {
+    public Camera(int videoPort, String cameraName) {
       this.videoPort = videoPort;
+      this.cameraName = cameraName;
+      
     }
 
     Thread streamThread;
@@ -39,7 +42,7 @@ public class Camera {
 
 
         var cvSink = CameraServer.getVideo();
-        var outputStream = CameraServer.putVideo("FishEye",
+        var outputStream = CameraServer.putVideo(cameraName,
          cameraWidth, cameraHeight);
         
          // mats are memory expensive, it's best to just use one

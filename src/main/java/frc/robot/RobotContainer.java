@@ -104,8 +104,8 @@ public class RobotContainer {
 
     private final Collector collector = new Collector();
 
-    private final Camera camera = new Camera(0);
-    private final Camera camera2 = new Camera(1);
+    private final Camera camera = new Camera(0, "Camera 1");
+    private final Camera camera2 = new Camera(1, "Camera 2");
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
