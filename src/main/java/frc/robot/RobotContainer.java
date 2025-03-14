@@ -305,19 +305,21 @@ public class RobotContainer {
         //         .withRotationalRate(0);
         // }));
 
-        joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
-            if (getPipeline() == 1) {
-                setLeftAlignPipeline();
-            }
-            final double yvel = slide();
-            final double rrate = aim();
-            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            //System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            return forwardStraight
-                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
-                                    .withVelocityY(yvel)
-                                    .withRotationalRate(rrate);
-        }));
+
+        // OLD COMMAND //
+        // joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
+        //     if (getPipeline() == 1) {
+        //         setLeftAlignPipeline();
+        //     }
+        //     final double yvel = slide();
+        //     final double rrate = aim();
+        //     SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+        //     //System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
+        //     return forwardStraight
+        //                             .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
+        //                             .withVelocityY(yvel)
+        //                             .withRotationalRate(rrate);
+        // }));
 
         joystick.x().whileTrue(drivetrain.applyRequest(() -> {
             if (getPipeline() == 1) {
@@ -392,9 +394,33 @@ public class RobotContainer {
         // joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
         // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
 
-        joystick.povUp().whileTrue(new PivotOnly(climber, .1));
-        joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
-        joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
+
+        joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
+            SmartDashboard.putBoolean("Is Pressed", true);
+            final double kP = -0.017;
+            double adjust = 0;
+
+            if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 3) 
+                LimelightHelpers.setPipelineIndex("limelight", 3);
+
+            if (LimelightHelpers.getTV("limelight") == true) {
+                double error = 15 - Limelight.autoEstimateDistance();
+                adjust = kP * error;
+
+                System.out.println("Driving Towards Target");
+                System.out.println("Driving Towards Target");
+                SmartDashboard.putBoolean("AprilTag Driving", true);
+                return forwardStraight.
+                    withVelocityX(adjust);
+            }
+            
+            return null;
+        }));
+
+        // CLIMBER //
+        // joystick.povUp().whileTrue(new PivotOnly(climber, .1));
+        // joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
+        // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
