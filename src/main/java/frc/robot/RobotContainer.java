@@ -374,13 +374,13 @@ public class RobotContainer {
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        // joystick.a().whileTrue(new Elevate(elevator, .3));
-        // joystick.y().whileTrue(new Elevate(elevator, -.3));
+        joystick.a().whileTrue(new Elevate(elevator, .5));
+        joystick.y().whileTrue(new Elevate(elevator, -.5));
 
-        joystick.y().onTrue(new IntakeAndPivot(collector, .7)
-            .until( () -> !collector.hasAlgae())
-            .andThen(new PivotBack(collector)));
-        joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        // joystick.y().onTrue(new IntakeAndPivot(collector, .7)
+        //     .until( () -> !collector.hasAlgae())
+        //     .andThen(new PivotBack(collector)));
+        // joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         
         joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
         joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
@@ -397,14 +397,14 @@ public class RobotContainer {
 
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
             SmartDashboard.putBoolean("Is Pressed", true);
-            final double kP = -0.017;
+            final double kP = -0.014;
             double adjust = 0;
 
             if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 3) 
                 LimelightHelpers.setPipelineIndex("limelight", 3);
 
             if (LimelightHelpers.getTV("limelight") == true) {
-                double error = 15 - Limelight.autoEstimateDistance();
+                double error = 20 - Math.ceil(-Limelight.autoEstimateDistance());
                 adjust = kP * error;
 
                 System.out.println("Driving Towards Target");
