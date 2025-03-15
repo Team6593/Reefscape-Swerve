@@ -394,27 +394,99 @@ public class RobotContainer {
         // joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
         // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
 
-
         joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
-            SmartDashboard.putBoolean("Is Pressed", true);
-            final double kP = -0.014;
+            if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+                LimelightHelpers.setPipelineIndex("limelight", 4);
             double adjust = 0;
+            final double kP = -0.058;
+            final double steerAdjust = -0.06;
+            final double strafeAdjust = -0.07;
+            double tx = LimelightHelpers.getTX("limelight");            
 
-            if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 3) 
-                LimelightHelpers.setPipelineIndex("limelight", 3);
+            if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+                LimelightHelpers.setPipelineIndex("limelight", 4);
 
             if (LimelightHelpers.getTV("limelight") == true) {
-                double error = 20 - Math.ceil(-Limelight.autoEstimateDistance());
+                double error = 7.5 - Limelight.autoEstimateDistance();
                 adjust = kP * error;
 
                 System.out.println("Driving Towards Target");
                 System.out.println("Driving Towards Target");
                 SmartDashboard.putBoolean("AprilTag Driving", true);
+                
+
                 return forwardStraight.
-                    withVelocityX(adjust);
-            }
+                    withVelocityX(adjust)
+                    .withVelocityY(tx * strafeAdjust)
+                    .withRotationalRate(tx * steerAdjust);
+
+            }   
             
-            return null;
+            return forwardStraight.
+                    withVelocityX(0)
+                    .withVelocityY(0)
+                    .withRotationalRate(0);
+        }));
+
+        // nafi
+        joystick.povRight().whileTrue(drivetrain.applyRequest(() -> {
+            SmartDashboard.putBoolean("Is Pressed", true);
+            double adjust = 0;
+            final double kP = -0.058;
+            final double steerAdjust = -0.06;
+            final double strafeAdjust = -0.05;
+            double tx = LimelightHelpers.getTX("limelight");            
+
+            if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+                LimelightHelpers.setPipelineIndex("limelight", 4);
+
+            if (LimelightHelpers.getTV("limelight") == true) {
+                double error = 7.5 - Limelight.autoEstimateDistance();
+                adjust = kP * error;
+
+                System.out.println("Driving Towards Target");
+                System.out.println("Driving Towards Target");
+                SmartDashboard.putBoolean("AprilTag Driving", true);
+
+                SmartDashboard.putNumber("adjust", adjust);
+                SmartDashboard.putNumber("strafe adjust", tx * strafeAdjust);
+                SmartDashboard.putNumber("steer adjust", tx * steerAdjust);
+                
+
+                return forwardStraight.
+                    withVelocityX(adjust)
+                    .withVelocityY(tx * strafeAdjust)
+                    .withRotationalRate(tx * steerAdjust);
+
+            }   
+            
+            return forwardStraight.
+                    withVelocityX(0)
+                    .withVelocityY(0)
+                    .withRotationalRate(0);
+        }));
+
+        joystick.povDown().whileTrue(drivetrain.applyRequest(() -> {
+            double adjust = -0.06;
+
+            if (LimelightHelpers.getTV("limelight") == true) {
+                return drive.
+                        withVelocityY(LimelightHelpers.getTX("limelight") * adjust);
+            }
+            return drive.withVelocityY(0);
+        }));
+
+        joystick.povUp().whileTrue(drivetrain.applyRequest(() -> {
+            double steerAdjust = -0.1;
+
+            if (LimelightHelpers.getTV("limelight") == true) {
+                double tx = LimelightHelpers.getTX("limelight");
+
+                return drive.
+                    withRotationalRate(tx * steerAdjust);
+            }
+
+            return drive.withRotationalRate(0);
         }));
 
         // CLIMBER //

@@ -105,10 +105,10 @@ public class Limelight {
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
     
     // how many degrees back is your limelight rotated from perfectly vertical
-    double limelightMountAngleDegrees = 0.0; // grab later
+    double limelightMountAngleDegrees = 18.0; // grab later
 
     // distance from the center of the limelight lens to the floor
-    double limelightLensHeightInches = 12.4735;// 12.625 // grab later
+    double limelightLensHeightInches = 7.375;// 12.625 // grab later
 
     // distance from the targets center to the floor 
     double goalHeightInches = 12.25;// 13.5 for comp // grab later
