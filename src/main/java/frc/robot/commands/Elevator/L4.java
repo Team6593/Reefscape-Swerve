@@ -27,7 +27,7 @@ public class L4 extends Command {
   @Override
   public void initialize() {
     System.out.println("L4 INIT");
-    elevator.goToSetpoint(-166);
+    elevator.goToSetpoint(-88); // -92 IS THE REAL SETPOINT
     coral.setL4(false);
   }
 

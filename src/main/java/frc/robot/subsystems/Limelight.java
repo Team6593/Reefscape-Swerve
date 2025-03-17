@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 import frc.robot.Constants.LimelightConstants;
-
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
@@ -32,6 +32,19 @@ public class Limelight {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
   }
 
+  public static double glideValue(double speed) {
+    double tx = LimelightHelpers.getTX("limelight");
+
+    if (hasValidTargets() == 1) {
+      if (tx < 0)
+        return speed;
+      else if (tx > 0)
+        return -speed;
+    }
+  
+    return 0;
+  }
+
   public void update() {
     // This method will be called once per scheduler run
 
@@ -50,7 +63,8 @@ public class Limelight {
     // System.out.println("area:"+ area);
 
 
-    //System.out.println(autoEstimateDistance());
+    //System.out.println("Auto Estimate: " + autoEstimateDistance());
+    // System.out.println("Distance" + calculate);
 
     SmartDashboard.putNumber("Distance:", autoEstimateDistance());
 
@@ -91,13 +105,13 @@ public class Limelight {
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
     
     // how many degrees back is your limelight rotated from perfectly vertical
-    double limelightMountAngleDegrees = 0.0; // grab later
+    double limelightMountAngleDegrees = 18.0; // grab later
 
     // distance from the center of the limelight lens to the floor
-    double limelightLensHeightInches = 11.5; // grab later
+    double limelightLensHeightInches = 7.375;// 12.625 // grab later
 
     // distance from the targets center to the floor 
-    double goalHeightInches = 13.75; // grab later
+    double goalHeightInches = 12.25;// 13.5 for comp // grab later
 
     double angelToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angelToGoalDegrees * (3.14159 / 180.0);

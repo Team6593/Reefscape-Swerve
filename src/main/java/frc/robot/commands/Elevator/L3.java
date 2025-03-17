@@ -27,7 +27,7 @@ public class L3 extends Command {
   @Override
   public void initialize() {
     System.out.println("L3 INIT");
-    elevator.goToSetpoint(-65);
+    elevator.goToSetpoint(-36);
     coral.setL4(false);
   }
 

@@ -351,51 +351,6 @@ public class RobotContainer {
 
         joystick.povRight().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed)
             .withTimeout(2.5));
-        
-        // joystick.povRight().onTrue(drivetrain.applyRequest( () -> {
-        //     if(!isConfigured) {
-        //         setupAlign();
-        //     }
-        //     double[] values = runAlign();
-
-        //     return drive
-        //         .withVelocityX(values[0] *= MaxSpeed)
-        //         .withVelocityY(values[1] *= MaxSpeed)
-        //         .withRotationalRate(0);
-        // }).withTimeout(2.5));
-
-        // joystick.b().whileTrue(drivetrain.applyRequest( () -> {
-        //     if(getPipeline() == 0) {
-        //         setRightAlignPipeline();
-        //     }
-        //     final double yvel = slide();
-        //     final double xvel = blob();
-            
-        //     return forwardStraight.withVelocityX(xvel)
-        //         .withVelocityY(yvel)
-        //         .withRotationalRate(0);
-        // }));
-
-        // joystick.x().whileTrue(drivetrain.applyRequest( () -> {
-        //     if(getPipeline() == 1) {
-        //         setLeftAlignPipeline();
-        //     }
-        //     final double yvel = slide();
-        //     final double xvel = blob();
-        //     // System.out.println("ALIGNING");
-        //     // when we have both left and right align, 
-        //     // then we'll put a line of code to set which pipeline to use
-        //     return forwardStraight.withVelocityX(xvel)
-        //         .withVelocityY(yvel)
-        //         .withRotationalRate(0);
-        // }));
-
-        //joystick.rightBumper().onTrue(new AutoAlignToReef(true, forwardStraight));
-
-
-
-        // joystick.povRight().onTrue(new AutoAlignToReef(false, forwardStraight, MaxSpeed)
-        // .withTimeout(3));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -424,27 +379,115 @@ public class RobotContainer {
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        // joystick.a().whileTrue(new Elevate(elevator, .3));
-        // joystick.y().whileTrue(new Elevate(elevator, -.3));
+        joystick.a().whileTrue(new Elevate(elevator, .5));
+        joystick.y().whileTrue(new Elevate(elevator, -.5));
 
-        joystick.y().onTrue(new IntakeAndPivot(collector, .7)
-            .until( () -> !collector.hasAlgae())
-            .andThen(new PivotBack(collector)));
-        joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        // joystick.y().onTrue(new IntakeAndPivot(collector, .7)
+        //     .until( () -> !collector.hasAlgae())
+        //     .andThen(new PivotBack(collector)));
+        // joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         
         //joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
         //joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
 
-        // joystick.x().whileTrue(new WinchOnly(climber, .9));
-        // joystick.b().whileTrue(new WinchOnly(climber, -.9));
 
-        // joystick.y().whileTrue(new WinchOnly(climber, .9).alongWith(new PivotOnly(climber, .1)));
-        // joystick.a().whileTrue(new WinchOnly(climber, -.9).alongWith(new PivotOnly(climber, -.1)));
+        // NAFI'S CODE
+        // joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
+        //     if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+        //         LimelightHelpers.setPipelineIndex("limelight", 4);
+        //     double adjust = 0;
+        //     final double kP = -0.058;
+        //     final double steerAdjust = -0.06;
+        //     final double strafeAdjust = -0.07;
+        //     double tx = LimelightHelpers.getTX("limelight");            
 
-        // joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
-        // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
+        //     if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+        //         LimelightHelpers.setPipelineIndex("limelight", 4);
 
-        // CLIMBER COMMANDS, REBIND LATER
+        //     if (LimelightHelpers.getTV("limelight") == true) {
+        //         double error = 7.5 - Limelight.autoEstimateDistance();
+        //         adjust = kP * error;
+
+        //         System.out.println("Driving Towards Target");
+        //         System.out.println("Driving Towards Target");
+        //         SmartDashboard.putBoolean("AprilTag Driving", true);
+                
+
+        //         return forwardStraight.
+        //             withVelocityX(adjust)
+        //             .withVelocityY(tx * strafeAdjust)
+        //             .withRotationalRate(tx * steerAdjust);
+
+        //     }   
+            
+        //     return forwardStraight.
+        //             withVelocityX(0)
+        //             .withVelocityY(0)
+        //             .withRotationalRate(0);
+        // }));
+
+        // // nafi
+        // joystick.povRight().whileTrue(drivetrain.applyRequest(() -> {
+        //     SmartDashboard.putBoolean("Is Pressed", true);
+        //     double adjust = 0;
+        //     final double kP = -0.058;
+        //     final double steerAdjust = -0.06;
+        //     final double strafeAdjust = -0.05;
+        //     double tx = LimelightHelpers.getTX("limelight");            
+
+        //     if (LimelightHelpers.getCurrentPipelineIndex("limelight") != 4) 
+        //         LimelightHelpers.setPipelineIndex("limelight", 4);
+
+        //     if (LimelightHelpers.getTV("limelight") == true) {
+        //         double error = 7.5 - Limelight.autoEstimateDistance();
+        //         adjust = kP * error;
+
+        //         System.out.println("Driving Towards Target");
+        //         System.out.println("Driving Towards Target");
+        //         SmartDashboard.putBoolean("AprilTag Driving", true);
+
+        //         SmartDashboard.putNumber("adjust", adjust);
+        //         SmartDashboard.putNumber("strafe adjust", tx * strafeAdjust);
+        //         SmartDashboard.putNumber("steer adjust", tx * steerAdjust);
+                
+
+        //         return forwardStraight.
+        //             withVelocityX(adjust)
+        //             .withVelocityY(tx * strafeAdjust)
+        //             .withRotationalRate(tx * steerAdjust);
+
+        //     }   
+            
+        //     return forwardStraight.
+        //             withVelocityX(0)
+        //             .withVelocityY(0)
+        //             .withRotationalRate(0);
+        // }));
+
+        // joystick.povDown().whileTrue(drivetrain.applyRequest(() -> {
+        //     double adjust = -0.06;
+
+        //     if (LimelightHelpers.getTV("limelight") == true) {
+        //         return drive.
+        //                 withVelocityY(LimelightHelpers.getTX("limelight") * adjust);
+        //     }
+        //     return drive.withVelocityY(0);
+        // }));
+
+        // joystick.povUp().whileTrue(drivetrain.applyRequest(() -> {
+        //     double steerAdjust = -0.1;
+
+        //     if (LimelightHelpers.getTV("limelight") == true) {
+        //         double tx = LimelightHelpers.getTX("limelight");
+
+        //         return drive.
+        //             withRotationalRate(tx * steerAdjust);
+        //     }
+
+        //     return drive.withRotationalRate(0);
+        // }));
+
+        // CLIMBER //
         // joystick.povUp().whileTrue(new PivotOnly(climber, .1));
         // joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
         // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));

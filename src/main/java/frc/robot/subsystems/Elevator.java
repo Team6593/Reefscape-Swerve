@@ -49,14 +49,13 @@ public class Elevator extends SubsystemBase {
     .p(.9)
     .i(0)
     .d(0)
-    
     .outputRange(-1, 1);
 
 
-    // This technically works but dont use it it stalls the motor
+    //This technically works but dont use it it stalls the motor
     // elevatorConfig.closedLoop.maxMotion
-    // .maxVelocity(5400)
-    // .maxAcceleration(6500)
+    // .maxVelocity(6500)
+    // .maxAcceleration(7500)
     // .allowedClosedLoopError(.1);
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -107,7 +106,7 @@ public class Elevator extends SubsystemBase {
    */
   public void goToSetpoint(double setpoint) {
     elevatorController.setReference(setpoint, ControlType.kPosition);
-    //elevatorController.setReference(setpoint, ControlType.kPosition);
+    //elevatorController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
     
   }
 
