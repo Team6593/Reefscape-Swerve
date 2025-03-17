@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private final boolean kUseLimelight = false;
+  private boolean kUseLimelight = true;
 
   Field2d field = new Field2d();
 
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
-    //kUseLimelight = false;
+    kUseLimelight = false;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

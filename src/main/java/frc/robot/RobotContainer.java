@@ -127,23 +127,8 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
-        
-
-        // LEFT ALIGN ONLY 
-        // NamedCommands.registerCommand("leftalign", drivetrain.applyRequest( () -> {
-        //     if(getPipeline() == 1) {
-        //         setLeftAlignPipeline();
-        //     }
-        //     final double yvel = slide();
-        //     final double xvel = blob();
-        //     // System.out.println("ALIGNING");
-        //     // when we have both left and right align, 
-        //     // then we'll put a line of code to set which pipeline to use
-        //     return forwardStraight.withVelocityX(xvel)
-        //         .withVelocityY(yvel)
-        //         .withRotationalRate(0);
-        // }).withTimeout(2));
-        
+        NamedCommands.registerCommand("Left Align", new AutoAlignToReef(false, drivetrain, MaxSpeed)
+            .withTimeout(2.5));
         NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.90));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -237,74 +222,6 @@ public class RobotContainer {
 
     double getPipeline() {
         return LimelightHelpers.getCurrentPipelineIndex("limelight");
-    }
-
-    private PIDController xController = new PIDController(1.5, 0.0, 0);  // Vertical movement
-    private PIDController yController = new PIDController(1.5, 0.0, 0);  // Horitontal movement
-    private PIDController rotController = new PIDController(.009, 0, 0);  // Rotation
-    boolean isConfigured = false;
-    double tagID = -1;
-
-    void setupAlign() {
-        rotController.setSetpoint(LLSettings.ROT_SETPOINT_REEF_ALIGNMENT);
-        rotController.setTolerance(LLSettings.ROT_TOLERANCE_REEF_ALIGNMENT);
-
-        xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
-        xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
-    
-        yController.setSetpoint(LLSettings.Y_SETPOINT_REEF_ALIGNMENT);
-        yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
-        tagID = LimelightHelpers.getFiducialID("limelight");
-        isConfigured = true;
-    }
-
-    double[] runAlign() {
-        double[] values = {0, 0, 0};
-        if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
-            //this.dontSeeTagTimer.reset();
-      
-            System.out.println("SAW ATAG");
-      
-            double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
-            SmartDashboard.putNumber("x", postions[2]);
-      
-            double xSpeed = xController.calculate(postions[2]);
-            SmartDashboard.putNumber("xspeed", xSpeed);
-            double ySpeed = -yController.calculate(postions[0]);
-            double rotValue = rotController.calculate(postions[4]);
-
-            values[0] = xSpeed;
-            values[1] = ySpeed;
-            values[2] = rotValue;
-            // drive
-            //   .withVelocityX(xSpeed)
-            //   .withVelocityY(ySpeed)
-            //   .withRotationalRate(rotValue);
-            
-      
-            if (!rotController.atSetpoint() ||
-                !yController.atSetpoint() ||
-                !xController.atSetpoint()) {
-              //stopTimer.reset();
-            }
-          } else {
-            System.out.println("OUT OF SIGHT");
-            values[0] = 0;
-            values[1] = 0;
-            values[2] = 0;
-        //    drive
-        //     .withVelocityX(0)
-        //     .withVelocityY(0)
-        //     .withRotationalRate(0);
-          }
-          
-          System.out.println("VALUES ----");
-            System.out.println(values[0]);
-            System.out.println(values[1]);
-            System.out.println(values[2]);
-
-        SmartDashboard.putNumberArray("PID ALIGN VALUES", values);
-          return values;
     }
 
     private void configureBindings() {

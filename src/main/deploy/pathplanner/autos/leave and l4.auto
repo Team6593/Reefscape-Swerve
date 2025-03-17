@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Left Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "L4"
           }
         },
@@ -26,6 +32,12 @@
           "type": "named",
           "data": {
             "name": "Home"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Field Centric"
           }
         }
       ]
