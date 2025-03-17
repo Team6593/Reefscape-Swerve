@@ -13,6 +13,7 @@ public final class Constants {
         public static final double X_SETPOINT_REEF_ALIGNMENT = -0.16;
         public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
         public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.03;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.1;
         public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
         public static final int DONT_SEE_TAG_WAIT_TIME = 3;
         public static final int POSE_VALIDATION_TIME = 3;

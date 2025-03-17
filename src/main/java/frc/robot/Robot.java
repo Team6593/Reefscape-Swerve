@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-
+    LimelightHelpers.setPipelineIndex("limelight", 0);
     m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
@@ -111,6 +111,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
+    //kUseLimelight = false;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

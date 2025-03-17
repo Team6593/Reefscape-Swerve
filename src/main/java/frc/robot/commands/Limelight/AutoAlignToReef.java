@@ -35,7 +35,7 @@ public class AutoAlignToReef extends Command {
   public AutoAlignToReef(boolean isRightScore, CommandSwerveDrivetrain drivebase, double maxDtSpeed) {
     xController = new PIDController(.5, 0.0, 0);  // Vertical movement
     yController = new PIDController(.5, 0.0, 0);  // Horitontal movement
-    rotController = new PIDController(.5, 0, 0);  // Rotation
+    rotController = new PIDController(.05, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
@@ -56,7 +56,7 @@ public class AutoAlignToReef extends Command {
     xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
     xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings.Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE : -LLSettings.Y_SETPOINT_REEF_ALIGNMENT);
     yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
@@ -64,10 +64,10 @@ public class AutoAlignToReef extends Command {
 
   @Override
   public void execute() {
-    System.out.println("RUNNING");
+    //System.out.println("RUNNING");
     if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
-      System.out.println("SAW ATAG");
+      //System.out.println("SAW ATAG");
 
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
@@ -77,24 +77,11 @@ public class AutoAlignToReef extends Command {
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);
 
-      //drivebase.drive(new Translation2d(xSpeed, ySpeed), rotValue, false);
-      // drivebase.applyRequest( () -> {
-        // System.out.println("DRIVING TO ATAG");
-        // System.out.println("VALUES ---");
-        // System.out.println(xSpeed);
-        // System.out.println(ySpeed);
-        // System.out.println("---");
-      //   return robotCentric
-      //     .withVelocityX(xSpeed * (maxDtSpeed))
-      //     .withVelocityY(ySpeed * (maxDtSpeed))
-      //     .withRotationalRate(0);
-      // });
-
-      System.out.println("DRIVING TO ATAG");
-      System.out.println("VALUES ---");
-      System.out.println(xSpeed);
-      System.out.println(ySpeed);
-      System.out.println("---");
+      // System.out.println("DRIVING TO ATAG");
+      // System.out.println("VALUES ---");
+      // System.out.println(xSpeed);
+      // System.out.println(ySpeed);
+      // System.out.println("---");
 
       drivebase.setControl(
         robotCentric
@@ -123,7 +110,7 @@ public class AutoAlignToReef extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("ALIGNED");
+    //System.out.println("ALIGNED");
     drivebase.applyRequest( () -> {
       return robotCentric
         .withVelocityX(0)
