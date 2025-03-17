@@ -8,11 +8,14 @@ package frc.robot;
 public final class Constants {
 
     public static class LLSettings {
-        public static final double ROT_SETPOINT_REEF_ALIGNMENT = -87.08;
+        // -87.08
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = 3.74;
         public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 3.0;
-        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.16;
+        // -0.16
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.29;
         public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
-        public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.03;
+        // 0.03
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.04;
         public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.1;
         public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
         public static final int DONT_SEE_TAG_WAIT_TIME = 3;
