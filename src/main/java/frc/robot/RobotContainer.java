@@ -42,6 +42,7 @@ import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.Constants.LLSettings;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.ClimberPivot;
@@ -70,6 +71,7 @@ import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.L4;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
+import frc.robot.commands.Limelight.AutoAlignToReef;
 import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
@@ -237,6 +239,74 @@ public class RobotContainer {
         return LimelightHelpers.getCurrentPipelineIndex("limelight");
     }
 
+    private PIDController xController = new PIDController(1.5, 0.0, 0);  // Vertical movement
+    private PIDController yController = new PIDController(1.5, 0.0, 0);  // Horitontal movement
+    private PIDController rotController = new PIDController(.009, 0, 0);  // Rotation
+    boolean isConfigured = false;
+    double tagID = -1;
+
+    void setupAlign() {
+        rotController.setSetpoint(LLSettings.ROT_SETPOINT_REEF_ALIGNMENT);
+        rotController.setTolerance(LLSettings.ROT_TOLERANCE_REEF_ALIGNMENT);
+
+        xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
+        xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
+    
+        yController.setSetpoint(LLSettings.Y_SETPOINT_REEF_ALIGNMENT);
+        yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
+        tagID = LimelightHelpers.getFiducialID("limelight");
+        isConfigured = true;
+    }
+
+    double[] runAlign() {
+        double[] values = {0, 0, 0};
+        if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
+            //this.dontSeeTagTimer.reset();
+      
+            System.out.println("SAW ATAG");
+      
+            double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
+            SmartDashboard.putNumber("x", postions[2]);
+      
+            double xSpeed = xController.calculate(postions[2]);
+            SmartDashboard.putNumber("xspeed", xSpeed);
+            double ySpeed = -yController.calculate(postions[0]);
+            double rotValue = rotController.calculate(postions[4]);
+
+            values[0] = xSpeed;
+            values[1] = ySpeed;
+            values[2] = rotValue;
+            // drive
+            //   .withVelocityX(xSpeed)
+            //   .withVelocityY(ySpeed)
+            //   .withRotationalRate(rotValue);
+            
+      
+            if (!rotController.atSetpoint() ||
+                !yController.atSetpoint() ||
+                !xController.atSetpoint()) {
+              //stopTimer.reset();
+            }
+          } else {
+            System.out.println("OUT OF SIGHT");
+            values[0] = 0;
+            values[1] = 0;
+            values[2] = 0;
+        //    drive
+        //     .withVelocityX(0)
+        //     .withVelocityY(0)
+        //     .withRotationalRate(0);
+          }
+          
+          System.out.println("VALUES ----");
+            System.out.println(values[0]);
+            System.out.println(values[1]);
+            System.out.println(values[2]);
+
+        SmartDashboard.putNumberArray("PID ALIGN VALUES", values);
+          return values;
+    }
+
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -279,6 +349,21 @@ public class RobotContainer {
             })
         );
 
+        joystick.povRight().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed)
+            .withTimeout(2.5));
+        
+        // joystick.povRight().onTrue(drivetrain.applyRequest( () -> {
+        //     if(!isConfigured) {
+        //         setupAlign();
+        //     }
+        //     double[] values = runAlign();
+
+        //     return drive
+        //         .withVelocityX(values[0] *= MaxSpeed)
+        //         .withVelocityY(values[1] *= MaxSpeed)
+        //         .withRotationalRate(0);
+        // }).withTimeout(2.5));
+
         // joystick.b().whileTrue(drivetrain.applyRequest( () -> {
         //     if(getPipeline() == 0) {
         //         setRightAlignPipeline();
@@ -305,45 +390,12 @@ public class RobotContainer {
         //         .withRotationalRate(0);
         // }));
 
-        joystick.povLeft().whileTrue(drivetrain.applyRequest(() -> {
-            if (getPipeline() == 1) {
-                setLeftAlignPipeline();
-            }
-            final double yvel = slide();
-            final double rrate = aim();
-            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            //System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            return forwardStraight
-                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
-                                    .withVelocityY(yvel)
-                                    .withRotationalRate(rrate);
-        }));
+        //joystick.rightBumper().onTrue(new AutoAlignToReef(true, forwardStraight));
 
-        joystick.x().whileTrue(drivetrain.applyRequest(() -> {
-            if (getPipeline() == 1) {
-                setLeftAlignPipeline();
-            }
-            final double yvel = slide();
-            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            return forwardStraight
-                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
-                                    .withVelocityY(yvel)
-                                    .withRotationalRate(0);
-        }));
-        
-        joystick.b().whileTrue(drivetrain.applyRequest(() -> {
-            if (getPipeline() == 0) {
-                setRightAlignPipeline();
-            }
-            final double yvel = slide();
-            SmartDashboard.putNumber("Calculation", limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            System.out.println(limelightPID.calculate(limelight.autoEstimateDistance(), 6.75));
-            return forwardStraight
-                                    .withVelocityX(-limelightPID.calculate(limelight.autoEstimateDistance(), 6.75))
-                                    .withVelocityY(yvel)
-                                    .withRotationalRate(0);
-        }));
+
+
+        // joystick.povRight().onTrue(new AutoAlignToReef(false, forwardStraight, MaxSpeed)
+        // .withTimeout(3));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -380,8 +432,8 @@ public class RobotContainer {
             .andThen(new PivotBack(collector)));
         joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         
-        joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
-        joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
+        //joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
+        //joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
 
         // joystick.x().whileTrue(new WinchOnly(climber, .9));
         // joystick.b().whileTrue(new WinchOnly(climber, -.9));
@@ -392,16 +444,18 @@ public class RobotContainer {
         // joystick.y().whileTrue(new PivotAndWinch(climber, .1, .9));
         // joystick.a().whileTrue(new PivotAndWinch(climber, -.1, -.9));
 
-        joystick.povUp().whileTrue(new PivotOnly(climber, .1));
-        joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
-        joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
+        // CLIMBER COMMANDS, REBIND LATER
+        // joystick.povUp().whileTrue(new PivotOnly(climber, .1));
+        // joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
+        // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
-        joystick.rightBumper().whileTrue(new ManuallyIntakeCoral(coral, .15));
+        
+        //joystick.rightBumper().whileTrue(new ManuallyIntakeCoral(coral, .15));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

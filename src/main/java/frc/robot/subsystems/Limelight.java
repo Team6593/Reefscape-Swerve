@@ -50,7 +50,7 @@ public class Limelight {
     // System.out.println("area:"+ area);
 
 
-    System.out.println(autoEstimateDistance());
+    //System.out.println(autoEstimateDistance());
 
     SmartDashboard.putNumber("Distance:", autoEstimateDistance());
 
