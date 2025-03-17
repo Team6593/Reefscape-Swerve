@@ -18,6 +18,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 import frc.robot.Constants.LLSettings;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Limelight;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAlignToReef extends Command {
@@ -43,6 +44,7 @@ public class AutoAlignToReef extends Command {
 
   @Override
   public void initialize() {
+    LimelightHelpers.setPipelineIndex("limelight", 3);
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
