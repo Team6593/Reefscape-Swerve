@@ -348,18 +348,21 @@ public class RobotContainer {
                     .withRotationalRate(rotationalRate * MaxAngularRate);
             })
         );
-        
-        joystick.povRight().onTrue(drivetrain.applyRequest( () -> {
-            if(!isConfigured) {
-                setupAlign();
-            }
-            double[] values = runAlign();
 
-            return drive
-                .withVelocityX(values[0] *= MaxSpeed)
-                .withVelocityY(values[1] *= MaxSpeed)
-                .withRotationalRate(0);
-        }).withTimeout(2.5));
+        joystick.povRight().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed)
+            .withTimeout(2.5));
+        
+        // joystick.povRight().onTrue(drivetrain.applyRequest( () -> {
+        //     if(!isConfigured) {
+        //         setupAlign();
+        //     }
+        //     double[] values = runAlign();
+
+        //     return drive
+        //         .withVelocityX(values[0] *= MaxSpeed)
+        //         .withVelocityY(values[1] *= MaxSpeed)
+        //         .withRotationalRate(0);
+        // }).withTimeout(2.5));
 
         // joystick.b().whileTrue(drivetrain.applyRequest( () -> {
         //     if(getPipeline() == 0) {
