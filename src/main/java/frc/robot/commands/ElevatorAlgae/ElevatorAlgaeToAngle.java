@@ -13,7 +13,10 @@ public class ElevatorAlgaeToAngle extends Command {
   private ElevatorAlgae elevatorAlgaeMech = new ElevatorAlgae();
   private double setpoint;
 
-  /** Creates a new ElevatorAlgaeToAngle. */
+  /** Creates a new ElevatorAlgaeToAngle. 
+   * @param elevatorAlgaeMech - Elevator Algae Mechanism subsystem.
+   * @param setpoint - COUNTER CLOCKWISE. SETPOINTS SHOULD BE -45 AND -90
+  */
   public ElevatorAlgaeToAngle(ElevatorAlgae elevatorAlgaeMech, double setpoint) {
     this.elevatorAlgaeMech = elevatorAlgaeMech;
     this.setpoint = setpoint;
