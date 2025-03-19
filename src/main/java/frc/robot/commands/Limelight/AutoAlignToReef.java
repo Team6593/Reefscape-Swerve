@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 import frc.robot.Constants.LLSettings;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
 
@@ -31,16 +32,42 @@ public class AutoAlignToReef extends Command {
   private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private double maxDtSpeed;
+  private double maxAngularRate;
 
-  public AutoAlignToReef(boolean isRightScore, CommandSwerveDrivetrain drivebase, double maxDtSpeed) {
-    xController = new PIDController(.5, 0.0, 0);  // Vertical movement
-    yController = new PIDController(.5, 0.0, 0);  // Horitontal movement
+  public AutoAlignToReef(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
+  double maxDtSpeed, double maxAngularRate) {
+    xController = new PIDController(.7, 0.0, 0);  // Vertical movement
+    yController = new PIDController(0.5, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.05, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
+    this.maxAngularRate = maxAngularRate;
     addRequirements(drivebase);
   }
+
+  // copypasted from RobotContainer because im lazy -MQ
+  double aim() {
+    //System.out.println("AIMING");
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate around.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double kP = -.0095;
+
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    double targetingAngularVelocity = (LimelightHelpers.getTX("limelight") - LLSettings.TX_VALUE) * kP;
+
+    // convert to radians per second for our drive method
+    targetingAngularVelocity *= maxAngularRate;
+
+    //invert since tx is positive when the target is to the right of the crosshair
+    //targetingAngularVelocity *= -1.0;
+
+    return targetingAngularVelocity;
+}
 
   @Override
   public void initialize() {
@@ -56,7 +83,7 @@ public class AutoAlignToReef extends Command {
     xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
     xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings.Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE : -LLSettings.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings.TX_VALUE : -LLSettings.TX_VALUE);
     yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
@@ -71,23 +98,26 @@ public class AutoAlignToReef extends Command {
 
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
-
       double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspeed", xSpeed);
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);
 
+      double currentTx = LimelightHelpers.getTX("limelight");
+      double error = LLSettings.TX_VALUE - currentTx;
+      double result = error * 0.009;
       // System.out.println("DRIVING TO ATAG");
       // System.out.println("VALUES ---");
       // System.out.println(xSpeed);
       // System.out.println(ySpeed);
       // System.out.println("---");
+      double rotation = aim();
 
       drivebase.setControl(
         robotCentric
-          .withVelocityX(xSpeed *(maxDtSpeed /2))
-          .withVelocityY(ySpeed *(maxDtSpeed /2))
-          .withRotationalRate(0));
+          .withVelocityX(xSpeed * (maxDtSpeed /2)) // forward backward
+          .withVelocityY(result *(maxDtSpeed /2)) // left right
+          .withRotationalRate(rotValue *(maxAngularRate /4)));
 
       if (!rotController.atSetpoint() ||
           !yController.atSetpoint() ||

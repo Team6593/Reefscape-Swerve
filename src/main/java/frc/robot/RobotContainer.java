@@ -127,9 +127,10 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
-        NamedCommands.registerCommand("Left Align", new AutoAlignToReef(false, drivetrain, MaxSpeed)
+        NamedCommands.registerCommand("Left Align", new AutoAlignToReef(false, drivetrain, 
+        MaxSpeed, MaxAngularRate)
             .withTimeout(2.5));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, -.90));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -.90));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -266,10 +267,10 @@ public class RobotContainer {
             })
         );
 
-        joystick.povRight().onTrue(new AutoAlignToReef(true, drivetrain, MaxSpeed)
-            .withTimeout(.7));
-        joystick.povLeft().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed)
-            .withTimeout(.7));
+        joystick.povRight().onTrue(new AutoAlignToReef(true, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(3.5));
+        joystick.povLeft().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(3.5));
         
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -279,7 +280,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, -.9));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.9));
         buttonBoard.button(OperatorConstants.L4).onTrue(new L4(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
         
@@ -412,7 +413,7 @@ public class RobotContainer {
         // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, -.9)));
+        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.9)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
