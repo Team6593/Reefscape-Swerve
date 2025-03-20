@@ -28,6 +28,7 @@ public class ElevatorToZero extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //elevator.changeToBrakeMode();
     coral.setL4(false);
   }
 

@@ -26,6 +26,7 @@ public class L3 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //elevator.changeToCoastMode();
     System.out.println("L3 INIT");
     elevator.goToSetpoint(-36);
     coral.setL4(false);
@@ -44,6 +45,7 @@ public class L3 extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //elevator.changeToBrakeMode();
     System.out.println("l3 end");
     elevator.stop();
   }

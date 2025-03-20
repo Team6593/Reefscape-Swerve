@@ -54,8 +54,8 @@ public class Elevator extends SubsystemBase {
 
     //This technically works but dont use it it stalls the motor
     // elevatorConfig.closedLoop.maxMotion
-    // .maxVelocity(6500)
-    // .maxAcceleration(7500)
+    // .maxVelocity(5600)
+    // .maxAcceleration(6500)
     // .allowedClosedLoopError(.1);
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -116,6 +116,11 @@ public class Elevator extends SubsystemBase {
   public void changeToBrakeMode() {
     elevatorConfig.idleMode(IdleMode.kBrake);
 
+    elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  public void changeToCoastMode() {
+    elevatorConfig.idleMode(IdleMode.kCoast);
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 

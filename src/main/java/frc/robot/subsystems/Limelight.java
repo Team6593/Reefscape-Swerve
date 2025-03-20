@@ -98,20 +98,20 @@ public class Limelight {
    * @return distanceFromLimelightToGoalInches
    */
   public static double autoEstimateDistance() {
+    if(hasValidTargets() == 1) {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
 
     NetworkTableEntry ty = table.getEntry("ty");
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
     
     // how many degrees back is your limelight rotated from perfectly vertical
-    double limelightMountAngleDegrees = 18.0; // grab later
+    double limelightMountAngleDegrees = 20; // 18.0 before, gives 11.22 inches at bumper-to-reef
 
     // distance from the center of the limelight lens to the floor
-    double limelightLensHeightInches = 7.375;// 12.625 // grab later
+    double limelightLensHeightInches = 4;// 12.625 , 7.375
 
     // distance from the targets center to the floor 
-    double goalHeightInches = 12.25;// 13.5 for comp // grab later
+    double goalHeightInches = 6.875;// 13.5 for comp, 6.875 is spec
 
     double angelToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angelToGoalDegrees * (3.14159 / 180.0);
@@ -125,6 +125,7 @@ public class Limelight {
 
     // return distance
     return distanceFromLimelightToGoalInches;
+  } else {return 0;}
   }
 
   /**

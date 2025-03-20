@@ -72,6 +72,8 @@ import frc.robot.commands.Elevator.L4;
 import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.AutoAlignToReef;
+import frc.robot.commands.Limelight.AutoAlignToReefLeft;
+import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.GetInRange;
 
 public class RobotContainer {
@@ -266,11 +268,14 @@ public class RobotContainer {
                     .withRotationalRate(rotationalRate * MaxAngularRate);
             })
         );
-
-        joystick.povRight().onTrue(new AutoAlignToReef(true, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(3.5));
-        joystick.povLeft().onTrue(new AutoAlignToReef(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(3.5));
+        
+        joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(5.5));
+        
+        // TODO: get setpoints for right side and adjust PID values
+        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(5.5));
+        
         
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -280,7 +285,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.9));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.75));
         buttonBoard.button(OperatorConstants.L4).onTrue(new L4(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
         
@@ -413,7 +418,7 @@ public class RobotContainer {
         // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.9)));
+        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.75)));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));

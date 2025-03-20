@@ -17,12 +17,14 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 import frc.robot.Constants.LLSettings;
+import frc.robot.Constants.LLSettings2;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
 
-/* Note: Don't use this command, it's janky, the code is messy, and it only works 80 percent of the time*/
-public class AutoAlignToReef extends Command {
+/* Align's to the reef's right side, and as of 3/20/25, 
+ the second limelight has been installed but we haven't grabbed the setpoints yet */
+public class AutoAlignToReefRight extends Command {
 
   private PIDController xController, yController, rotController;
   private boolean isRightScore;
@@ -34,9 +36,9 @@ public class AutoAlignToReef extends Command {
   private double maxDtSpeed;
   private double maxAngularRate;
 
-  public AutoAlignToReef(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
+  public AutoAlignToReefRight(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.7, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.4, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.5, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.07, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
@@ -46,74 +48,50 @@ public class AutoAlignToReef extends Command {
     addRequirements(drivebase);
   }
 
-  // copypasted from RobotContainer because im lazy -MQ
-  double aim() {
-    double kP = -.014; // -0.0095
-    double targetingAngularVelocity = (LimelightHelpers.getTX("limelight") - LLSettings.TX_VALUE) * kP;
-    targetingAngularVelocity *= maxAngularRate;
-    return targetingAngularVelocity;
-  }
-
-  double distance() {
-    double kP = -0.05; // -0.09 before, -0.05 was too slow
-    double target = 5.53; // goal is 6 inches (aka bumper to reef)
-    double current = Limelight.autoEstimateDistance();
-    double error = target - current;
-    double result = error * kP;
-    return result;
-  }
-
   @Override
   public void initialize() {
-    LimelightHelpers.setPipelineIndex("limelight", 3);
+    if(Limelight.autoEstimateDistance() > 25) {
+      rotController.setP(0.07);
+    } else if(Limelight.autoEstimateDistance() < 25) {
+      rotController.setP(0.05);
+    } else if(Limelight.autoEstimateDistance() <= 18) {
+      rotController.setP(0.01);
+    } 
+
+    LimelightHelpers.setPipelineIndex("limelight-2", 0);
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
     this.dontSeeTagTimer.start();
 
-    rotController.setSetpoint(LLSettings.ROT_SETPOINT_REEF_ALIGNMENT);
-    rotController.setTolerance(LLSettings.ROT_TOLERANCE_REEF_ALIGNMENT);
+    rotController.setSetpoint(LLSettings2.ROT_SETPOINT_REEF_ALIGNMENT);
+    rotController.setTolerance(LLSettings2.ROT_TOLERANCE_REEF_ALIGNMENT);
 
-    xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
-    xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
+    xController.setSetpoint(LLSettings2.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setTolerance(LLSettings2.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings.TX_VALUE : -LLSettings.TX_VALUE);
-    yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings2.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings2.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setTolerance(LLSettings2.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("limelight");
+    tagID = LimelightHelpers.getFiducialID("limelight-2");
   }
 
   @Override
   public void execute() {
-    //System.out.println("RUNNING");
-    if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
+    if (LimelightHelpers.getTV("limelight-2") && LimelightHelpers.getFiducialID("limelight-2") == tagID) {
       this.dontSeeTagTimer.reset();
-      //System.out.println("SAW ATAG");
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-2");
       SmartDashboard.putNumber("x", postions[2]);
       double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspeed", xSpeed);
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);
 
-      double currentTx = LimelightHelpers.getTX("limelight");
-      double error = LLSettings.TX_VALUE - currentTx;
-      double result = error * 0.009;
-      // System.out.println("DRIVING TO ATAG");
-      // System.out.println("VALUES ---");
-      // System.out.println(xSpeed);
-      // System.out.println(ySpeed);
-      // System.out.println("---");
-      double rotation = aim();
-
-      // null check if tag isn't visible
-      double forwardspeed = distance();
-
       drivebase.setControl(
         robotCentric
-          .withVelocityX(forwardspeed * (maxDtSpeed /8)) // forward backward
-          .withVelocityY(result *(maxDtSpeed /2)) // left right
+          .withVelocityX(xSpeed * (maxDtSpeed /2)) // forward backward
+          .withVelocityY(ySpeed *(maxDtSpeed /1)) // left right
           .withRotationalRate(rotValue *(maxAngularRate /4)));
 
       if (!rotController.atSetpoint() ||
@@ -123,7 +101,7 @@ public class AutoAlignToReef extends Command {
       }
     } else {
       System.out.println("NO ATAG");
-      //drivebase.drive(new Translation2d(), 0, false);
+      
       drivebase.applyRequest( () -> {
         return robotCentric
           .withVelocityX(0)
@@ -149,7 +127,7 @@ public class AutoAlignToReef extends Command {
   @Override
   public boolean isFinished() {
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
-    return this.dontSeeTagTimer.hasElapsed(LLSettings.DONT_SEE_TAG_WAIT_TIME) ||
-        stopTimer.hasElapsed(LLSettings.POSE_VALIDATION_TIME);
+    return this.dontSeeTagTimer.hasElapsed(LLSettings2.DONT_SEE_TAG_WAIT_TIME) ||
+        stopTimer.hasElapsed(LLSettings2.POSE_VALIDATION_TIME);
   }
 }
