@@ -273,7 +273,7 @@ public class RobotContainer {
             .withTimeout(5.5));
         
         // TODO: get setpoints for right side and adjust PID values
-        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
+        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(5.5));
         
         

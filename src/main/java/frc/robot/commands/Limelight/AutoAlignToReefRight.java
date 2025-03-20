@@ -58,7 +58,7 @@ public class AutoAlignToReefRight extends Command {
       rotController.setP(0.01);
     } 
 
-    LimelightHelpers.setPipelineIndex("limelight-2", 0);
+    LimelightHelpers.setPipelineIndex("limelight-two", 0);
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
@@ -73,15 +73,15 @@ public class AutoAlignToReefRight extends Command {
     yController.setSetpoint(isRightScore ? LLSettings2.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings2.Y_SETPOINT_REEF_ALIGNMENT);
     yController.setTolerance(LLSettings2.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("limelight-2");
+    tagID = LimelightHelpers.getFiducialID("limelight-two");
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight-2") && LimelightHelpers.getFiducialID("limelight-2") == tagID) {
+    if (LimelightHelpers.getTV("limelight-two") && LimelightHelpers.getFiducialID("limelight-two") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-2");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-two");
       SmartDashboard.putNumber("x", postions[2]);
       double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspeed", xSpeed);
