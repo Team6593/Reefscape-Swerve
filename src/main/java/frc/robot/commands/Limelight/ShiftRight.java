@@ -16,6 +16,8 @@ public class ShiftRight extends Command {
   private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private boolean done = false;
+  private double targetPose;
+  
   /** Creates a new ShiftRight. */
   public ShiftRight(CommandSwerveDrivetrain drivetrain) {
     this.drivetrain = drivetrain;
@@ -26,27 +28,33 @@ public class ShiftRight extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    targetPose = drivetrain.getState().Pose.getY() - .3;
+    System.out.println("BEGAN SHIFT TO RIGHT BRANCH.");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.applyRequest( () -> {
-      return robotCentric
-        .withVelocityY(drivetrain.getState().Pose.getY() - .3);
-    });
+    System.out.println("SHIFTING TO RIGHT.");
+    if (drivetrain.getState().Pose.getY() == targetPose) {
+      done = true;
+    } else {
+      drivetrain.applyRequest( () -> {
+        return robotCentric
+          .withVelocityY(.2);
+      });
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    System.out.println("FINISHED SHIFT TO RIGHT BRANCH.");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return done;
   }
 }

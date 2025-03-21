@@ -273,15 +273,13 @@ public class RobotContainer {
         joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(5.5));
         
-        // TODO: get setpoints for right side and adjust PID values
-        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5));
-        
-        // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-        //     .withTimeout(5.5)
-        //     .andThen(new ShiftRight(drivetrain))
-        //     .until( () -> (drivetrain.getState().Pose.getY() == -.3)));
-        
+        // // TODO: get setpoints for right side and adjust PID values
+        // joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(5.5));
+
+        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(5.5)
+            .andThen(new ShiftRight(drivetrain)));
         
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
