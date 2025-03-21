@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
-import frc.robot.Constants.LLSettings;
 import frc.robot.Constants.LLSettings2;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -39,8 +38,8 @@ public class AutoAlignToReefRight extends Command {
   public AutoAlignToReefRight(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
     xController = new PIDController(.4, 0.0, 0);  // Vertical movement
-    yController = new PIDController(0.5, 0.0, 0);  // Horitontal movement
-    rotController = new PIDController(.07, 0, 0);  // Rotation
+    yController = new PIDController(0.4, 0.0, 0);  // Horitontal movement
+    rotController = new PIDController(.05, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
@@ -51,11 +50,11 @@ public class AutoAlignToReefRight extends Command {
   @Override
   public void initialize() {
     if(Limelight.autoEstimateDistance() > 25) {
-      rotController.setP(0.07);
-    } else if(Limelight.autoEstimateDistance() < 25) {
       rotController.setP(0.05);
+    } else if(Limelight.autoEstimateDistance() < 25) {
+      rotController.setP(0.03);
     } else if(Limelight.autoEstimateDistance() <= 18) {
-      rotController.setP(0.01);
+      rotController.setP(0.005);
     } 
 
     LimelightHelpers.setPipelineIndex("limelight-two", 0);

@@ -42,7 +42,7 @@ import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
-import frc.robot.Constants.LLSettings;
+import frc.robot.Constants.LLSettings1;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.ClimberPivot;
@@ -75,6 +75,7 @@ import frc.robot.commands.Limelight.AutoAlignToReef;
 import frc.robot.commands.Limelight.AutoAlignToReefLeft;
 import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.GetInRange;
+import frc.robot.commands.Limelight.ShiftRight;
 
 public class RobotContainer {
 
@@ -273,8 +274,13 @@ public class RobotContainer {
             .withTimeout(5.5));
         
         // TODO: get setpoints for right side and adjust PID values
-        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(5.5));
+        
+        // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(5.5)
+        //     .andThen(new ShiftRight(drivetrain))
+        //     .until( () -> (drivetrain.getState().Pose.getY() == -.3)));
         
         
         // Run SysId routines when holding back/start and X/Y.

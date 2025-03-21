@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
-import frc.robot.Constants.LLSettings;
+import frc.robot.Constants.LLSettings1;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
@@ -49,7 +49,7 @@ public class AutoAlignToReef extends Command {
   // copypasted from RobotContainer because im lazy -MQ
   double aim() {
     double kP = -.014; // -0.0095
-    double targetingAngularVelocity = (LimelightHelpers.getTX("limelight") - LLSettings.TX_VALUE) * kP;
+    double targetingAngularVelocity = (LimelightHelpers.getTX("limelight") - LLSettings1.TX_VALUE) * kP;
     targetingAngularVelocity *= maxAngularRate;
     return targetingAngularVelocity;
   }
@@ -71,14 +71,14 @@ public class AutoAlignToReef extends Command {
     this.dontSeeTagTimer = new Timer();
     this.dontSeeTagTimer.start();
 
-    rotController.setSetpoint(LLSettings.ROT_SETPOINT_REEF_ALIGNMENT);
-    rotController.setTolerance(LLSettings.ROT_TOLERANCE_REEF_ALIGNMENT);
+    rotController.setSetpoint(LLSettings1.ROT_SETPOINT_REEF_ALIGNMENT);
+    rotController.setTolerance(LLSettings1.ROT_TOLERANCE_REEF_ALIGNMENT);
 
-    xController.setSetpoint(LLSettings.X_SETPOINT_REEF_ALIGNMENT);
-    xController.setTolerance(LLSettings.X_TOLERANCE_REEF_ALIGNMENT);
+    xController.setSetpoint(LLSettings1.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setTolerance(LLSettings1.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings.TX_VALUE : -LLSettings.TX_VALUE);
-    yController.setTolerance(LLSettings.Y_TOLERANCE_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings1.TX_VALUE : -LLSettings1.TX_VALUE);
+    yController.setTolerance(LLSettings1.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
   }
@@ -98,7 +98,7 @@ public class AutoAlignToReef extends Command {
       double rotValue = -rotController.calculate(postions[4]);
 
       double currentTx = LimelightHelpers.getTX("limelight");
-      double error = LLSettings.TX_VALUE - currentTx;
+      double error = LLSettings1.TX_VALUE - currentTx;
       double result = error * 0.009;
       // System.out.println("DRIVING TO ATAG");
       // System.out.println("VALUES ---");
@@ -149,7 +149,7 @@ public class AutoAlignToReef extends Command {
   @Override
   public boolean isFinished() {
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
-    return this.dontSeeTagTimer.hasElapsed(LLSettings.DONT_SEE_TAG_WAIT_TIME) ||
-        stopTimer.hasElapsed(LLSettings.POSE_VALIDATION_TIME);
+    return this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
+        stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME);
   }
 }

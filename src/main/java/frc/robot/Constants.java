@@ -9,7 +9,7 @@ public final class Constants {
 
     // TODO: LLSettings and LLSettings2 setpoint values might have to be reconfigured at comp practice field
 
-    public static class LLSettings {
+    public static class LLSettings1 {
         public static final double TX_VALUE = -12.2;
         // -87.08
         // 3.51
@@ -32,20 +32,39 @@ public final class Constants {
         public static final double TX_VALUE = -12.2;
         // -87.08
         // 3.51
-        public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0; // 1.1
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = 1.1;
         public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
         // -0.16
         // -.29
-        public static final double X_SETPOINT_REEF_ALIGNMENT = 0.21;
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.03;
         public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
         // -0.03
         // -0.30
-        public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.11;
-        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.11;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.13;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.13;
         public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
         public static final double DONT_SEE_TAG_WAIT_TIME = .5;
         public static final double POSE_VALIDATION_TIME = 3;
     }
+
+    // public static class LLSettings2 {
+    //     public static final double TX_VALUE = -12.2;
+    //     // -87.08
+    //     // 3.51
+    //     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0; // 1.1
+    //     public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.16
+    //     // -.29
+    //     public static final double X_SETPOINT_REEF_ALIGNMENT = 0.21;
+    //     public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.03
+    //     // -0.30
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.11;
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.11;
+    //     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+    //     public static final double POSE_VALIDATION_TIME = 3;
+    // }
     
     public static class OperatorConstants {
         public static final int L4 = 1;
