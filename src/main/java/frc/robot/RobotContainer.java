@@ -12,6 +12,7 @@ import edu.wpi.first.cscore.CvSource;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.RobotCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -130,9 +131,13 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(2.5));
         NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
-        NamedCommands.registerCommand("Left Align", new AutoAlignToReef(false, drivetrain, 
+        NamedCommands.registerCommand("Left Align", new AutoAlignToReefLeft(false, drivetrain, 
         MaxSpeed, MaxAngularRate)
-            .withTimeout(2.5));
+            .withTimeout(1.8));
+        NamedCommands.registerCommand("Left Align w/ Stop", new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(1.8)
+            .andThen(stopDrivetrain()));
+        NamedCommands.registerCommand("Stop Drivetrain", stopDrivetrain().withTimeout(.1));
         NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -.90));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -145,6 +150,15 @@ public class RobotContainer {
         configureBindings();
     }
 
+
+    public Command stopDrivetrain() {
+        return drivetrain.applyRequest( () -> {
+            return drive
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withRotationalRate(0);
+        });
+    }
 
     public void stopClimber() {
         climber.stopClimber();
@@ -271,16 +285,16 @@ public class RobotContainer {
         );
         
         joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(1.5));
+        
+        // TODO: get setpoints for right side and adjust PID values
+        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(5.5));
-        
-        // // TODO: get setpoints for right side and adjust PID values
-        // joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
-        //     .withTimeout(5.5));
 
-        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5)
-            .andThen(new ShiftRight(drivetrain)));
-        
+        // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(5.5)
+        //     .andThen(new ShiftRight(drivetrain)));
+    
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -433,6 +447,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        drivetrain.runOnce(() -> drivetrain.seedFieldCentric());
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }

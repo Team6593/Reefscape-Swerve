@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "doesn't do anything"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Left Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Drivetrain"
+            "pathName": "leave"
           }
         },
         {
@@ -41,9 +29,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "doesn't do anything 2"
+            "name": "Field Centric"
           }
         }
       ]

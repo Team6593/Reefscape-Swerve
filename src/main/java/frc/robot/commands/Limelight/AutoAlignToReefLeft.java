@@ -36,9 +36,9 @@ public class AutoAlignToReefLeft extends Command {
 
   public AutoAlignToReefLeft(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.4, 0.0, 0);  // Vertical movement
-    yController = new PIDController(0.5, 0.0, 0);  // Horitontal movement
-    rotController = new PIDController(.07, 0, 0);  // Rotation
+    xController = new PIDController(.658, 0.0, 0);  // Vertical movement
+    yController = new PIDController(0.43, 0.0, 0);  // Horitontal movement
+    rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
@@ -49,11 +49,11 @@ public class AutoAlignToReefLeft extends Command {
   @Override
   public void initialize() {
     if(Limelight.autoEstimateDistance() > 25) {
-      rotController.setP(0.07);
+      rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() < 25) {
-      rotController.setP(0.05);
+      rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() <= 18) {
-      rotController.setP(0.01);
+      rotController.setP(0.007);
     } 
 
     LimelightHelpers.setPipelineIndex("limelight", 3);
@@ -113,7 +113,9 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    //System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
     drivebase.applyRequest( () -> {
       return robotCentric
         .withVelocityX(0)

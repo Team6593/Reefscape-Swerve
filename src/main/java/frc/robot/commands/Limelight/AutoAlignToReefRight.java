@@ -21,8 +21,7 @@ import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
 
-/* Align's to the reef's right side, and as of 3/20/25, 
- the second limelight has been installed but we haven't grabbed the setpoints yet */
+/* This command works flawlessly, DON'T TOUCH THIS CODE PLEASE!*/
 public class AutoAlignToReefRight extends Command {
 
   private PIDController xController, yController, rotController;
@@ -37,8 +36,8 @@ public class AutoAlignToReefRight extends Command {
 
   public AutoAlignToReefRight(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.4, 0.0, 0);  // Vertical movement
-    yController = new PIDController(0.4, 0.0, 0);  // Horitontal movement
+    xController = new PIDController(.3, 0.0, 0);  // Vertical movement
+    yController = new PIDController(0.3, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.05, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
@@ -50,14 +49,14 @@ public class AutoAlignToReefRight extends Command {
   @Override
   public void initialize() {
     if(Limelight.autoEstimateDistance() > 25) {
-      rotController.setP(0.05);
+      rotController.setP(0.07);
     } else if(Limelight.autoEstimateDistance() < 25) {
-      rotController.setP(0.03);
+      rotController.setP(0.05);
     } else if(Limelight.autoEstimateDistance() <= 18) {
-      rotController.setP(0.005);
+      rotController.setP(0.007);
     } 
 
-    LimelightHelpers.setPipelineIndex("limelight-two", 0);
+    LimelightHelpers.setPipelineIndex("limelight", 3);
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
@@ -72,15 +71,15 @@ public class AutoAlignToReefRight extends Command {
     yController.setSetpoint(isRightScore ? LLSettings2.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings2.Y_SETPOINT_REEF_ALIGNMENT);
     yController.setTolerance(LLSettings2.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("limelight-two");
+    tagID = LimelightHelpers.getFiducialID("limelight");
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight-two") && LimelightHelpers.getFiducialID("limelight-two") == tagID) {
+    if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-two");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
       double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspeed", xSpeed);
@@ -114,7 +113,9 @@ public class AutoAlignToReefRight extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    //System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
+    System.out.println("ALIGNED");
     drivebase.applyRequest( () -> {
       return robotCentric
         .withVelocityX(0)
