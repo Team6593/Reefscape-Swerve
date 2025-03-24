@@ -100,12 +100,11 @@ public class AutoAlignToReefLeft extends Command {
     } else {
       System.out.println("NO ATAG");
       
-      drivebase.applyRequest( () -> {
-        return robotCentric
-          .withVelocityX(0)
-          .withVelocityY(0)
-          .withRotationalRate(0);
-      });
+      drivebase.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
     }
 
     SmartDashboard.putNumber("poseValidTimer", stopTimer.get());
@@ -114,14 +113,11 @@ public class AutoAlignToReefLeft extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("ALIGNED");
-    System.out.println("ALIGNED");
-    System.out.println("ALIGNED");
-    drivebase.applyRequest( () -> {
-      return robotCentric
-        .withVelocityX(0)
-        .withVelocityY(0)
-        .withRotationalRate(0);
-    });
+    drivebase.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
   }
 
   @Override

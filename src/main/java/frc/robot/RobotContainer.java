@@ -284,12 +284,16 @@ public class RobotContainer {
             })
         );
         
+        // IMPORTANT NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // DO NOT ADJUST THE .withTimeout() ON THESE COMMANDS, THEY WILL NEVER ACTUALLY RUN THAT LONG
+        // THE COMMAND WILL END ITSELF PROPERLY, NO NEED TO ADJUST THE TIMINGS TO RELINQUISH DRIVETRAIN
+        // CONTROL TO THE DRIVER
         joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(1.5));
-        
-        // TODO: get setpoints for right side and adjust PID values
-        joystick.povRight().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(5.5));
+        
+        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(5.5).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3.5));
+            
 
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(5.5)

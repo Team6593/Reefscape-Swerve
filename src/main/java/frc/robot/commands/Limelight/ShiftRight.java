@@ -15,12 +15,15 @@ public class ShiftRight extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private boolean done = false;
-  private double targetPosition;
+  private double targetPosey;
+  private double initialPoseY;
+  private double maxSpeed;
+  private boolean finished = false;
   
   /** Creates a new ShiftRight. */
-  public ShiftRight(CommandSwerveDrivetrain drivetrain) {
+  public ShiftRight(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
     this.drivetrain = drivetrain;
+    this.maxSpeed = maxSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -28,49 +31,57 @@ public class ShiftRight extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    targetPosition = drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble() - 3;
-    System.out.println("BEGAN SHIFT TO RIGHT BRANCH.");
+    initialPoseY = drivetrain.getState().Pose.getY();
+    targetPosey = initialPoseY + 0.35;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("SHIFTING TO RIGHT.");
-    if (drivetrain.getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble() == targetPosition) {
-      done = true;
-    } else { 
-      drivetrain.applyRequest( () -> {
-        return robotCentric
-          .withVelocityX(0)
-          .withVelocityY(.2)
-          .withRotationalRate(0);
-      });
+    if(drivetrain.getState().Pose.getY() > targetPosey) {
+      // when the robot gets very close to the target, it will oscillate and "jitter"
+      // which is expected behaviour when using bang-bang control
+      // so we'll just end the command here and stop moving the bot
+      System.out.println("POSITIVE VALUE");
+      finished = true;
+      drivetrain.setControl(
+        robotCentric
+        .withVelocityX(0)
+        .withVelocityY(0.0 * maxSpeed)
+        .withRotationalRate(0)
+      );
+    } else if(drivetrain.getState().Pose.getY() < targetPosey) {
+      System.out.println("NEGATIVE VALUE");
+      finished = false;
+      drivetrain.setControl(
+        robotCentric
+        .withVelocityX(0)
+        .withVelocityY(-0.05 * maxSpeed)
+        .withRotationalRate(0)
+      );
+    } else {
+      drivetrain.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
+      finished = true;
     }
-    // if (drivetrain.getState().Pose.getY() == targetPose) {
-    //   done = true;
-    // } else {
-    //   drivetrain.applyRequest( () -> {
-    //     return robotCentric
-    //       .withVelocityY(.2);
-    //   });
-    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("FINISHED SHIFT TO RIGHT BRANCH.");
-    drivetrain.applyRequest( () -> {
-      return robotCentric
-        .withVelocityX(0)
-        .withVelocityY(.0)
-        .withRotationalRate(0);
-    });
+    drivetrain.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return done;
+    return finished;
   }
 }
