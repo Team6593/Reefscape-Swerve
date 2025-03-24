@@ -134,6 +134,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Left Align", new AutoAlignToReefLeft(false, drivetrain, 
         MaxSpeed, MaxAngularRate)
             .withTimeout(1.8));
+        NamedCommands.registerCommand("Right Align", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(5.5)
+            .andThen(new ShiftRight(drivetrain, MaxSpeed))
+            .withTimeout(3.5)));
         NamedCommands.registerCommand("Left Align w/ Stop", new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
@@ -309,8 +313,14 @@ public class RobotContainer {
         // Elevator
         buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.75));
         buttonBoard.button(OperatorConstants.L4).onTrue(new L4(elevator, coral).withTimeout(2.5));
-        buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
-        
+        //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
+        buttonBoard.button(OperatorConstants.L3)
+            .onTrue(new L3(elevator, coral)
+            .withTimeout(1)
+            .andThen(new ShootCoral(coral))
+            .withTimeout(1.25)
+            .andThen(new ElevatorToZero(elevator, coral, -.75)));
+
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));
         buttonBoard.button(OperatorConstants.algaeBack).onTrue(new PivotBack(collector));

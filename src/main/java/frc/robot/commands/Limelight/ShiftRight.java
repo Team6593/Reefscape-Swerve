@@ -56,7 +56,7 @@ public class ShiftRight extends Command {
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(-0.05 * maxSpeed)
+        .withVelocityY(-0.21 * maxSpeed)
         .withRotationalRate(0)
       );
     } else {
