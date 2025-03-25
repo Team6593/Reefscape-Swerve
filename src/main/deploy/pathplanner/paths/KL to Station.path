@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.0040540540540537,
+        "y": 6.021114864864865
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.004054054054054,
+        "y": 6.021114864864865
+      },
+      "isLocked": false,
+      "linkedName": "Halfway to KL"
+    },
+    {
+      "anchor": {
+        "x": 0.965151515151515,
+        "y": 7.432575757575758
+      },
+      "prevControl": {
+        "x": -0.03484848484848513,
+        "y": 7.432575757575758
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Barge Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 69.43033562699745
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -52.30575953331091
+  },
+  "useDefaultConstraints": true
+}

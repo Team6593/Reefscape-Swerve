@@ -1,0 +1,145 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Leave to GH partly"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Left Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drivetrain"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GH to Back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center to Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Station to K"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Left Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drivetrain"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "KL to Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Station to K"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Right Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
