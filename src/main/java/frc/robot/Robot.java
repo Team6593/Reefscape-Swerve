@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
     SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+    SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
     RobotContainer.limelight.update();
     
 

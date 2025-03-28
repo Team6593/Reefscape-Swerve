@@ -28,8 +28,8 @@ public class L4 extends Command {
   public void initialize() {
     //elevator.changeToCoastMode();
     System.out.println("L4 INIT");
-    elevator.goToSetpoint(-88); // -92 IS THE REAL SETPOINT
-    coral.setL4(true);
+    elevator.goToSetpoint(-95); // -92 IS THE REAL SETPOINT, -92.62278747558594, OLD -88; -95; -96
+    coral.setL4(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
