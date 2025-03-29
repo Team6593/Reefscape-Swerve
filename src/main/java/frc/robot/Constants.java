@@ -36,12 +36,12 @@ public final class Constants {
         public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
         // -0.16
         // -.29
-        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.03;
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.01;
         public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
         // -0.03
         // -0.30
-        public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.13;
-        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.13;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.07;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.07;
         public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
         public static final double DONT_SEE_TAG_WAIT_TIME = .5;
         public static final double POSE_VALIDATION_TIME = 3;

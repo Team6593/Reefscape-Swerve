@@ -32,31 +32,31 @@ public class ShiftRight extends Command {
   @Override
   public void initialize() {
     initialPoseY = drivetrain.getState().Pose.getY();
-    targetPosey = initialPoseY + 0.29;
+    targetPosey = initialPoseY + 0.29; // .29 before
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(drivetrain.getState().Pose.getY() > targetPosey) {
-      // when the robot gets very close to the target, it will oscillate and "jitter"
-      // which is expected behaviour when using bang-bang control
-      // so we'll just end the command here and stop moving the bot
-      System.out.println("POSITIVE VALUE");
-      finished = true;
-      drivetrain.setControl(
-        robotCentric
-        .withVelocityX(0)
-        .withVelocityY(0.0 * maxSpeed)
-        .withRotationalRate(0)
-      );
-    } else if(drivetrain.getState().Pose.getY() < targetPosey) {
-      System.out.println("NEGATIVE VALUE");
+    System.out.println("CURRENT POSEY");
+    double currentPose = drivetrain.getState().Pose.getY();
+    System.out.println(currentPose);
+    if(currentPose < targetPosey) {
+      System.out.println("LESS THAN VALUE");
       finished = false;
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(-0.2 * maxSpeed)
+        .withVelocityY(0.2 * maxSpeed)
+        .withRotationalRate(0)
+      );
+    } else if(currentPose > targetPosey) {
+      System.out.println("GREATER THAN VALUE");
+      finished = false;
+      drivetrain.setControl(
+        robotCentric
+        .withVelocityX(0)
+        .withVelocityY(-.2 * maxSpeed)
         .withRotationalRate(0)
       );
     } else {
@@ -72,6 +72,12 @@ public class ShiftRight extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("INIT POSE");
+    System.out.println(initialPoseY);
+    System.out.println("TARGET POSE");
+    System.out.println(targetPosey);
+    System.out.println("END POSE");
+    System.out.println(drivetrain.getState().Pose.getY());
     drivetrain.setControl(
         robotCentric
           .withVelocityX(0) // forward backward

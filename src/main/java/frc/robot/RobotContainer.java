@@ -300,7 +300,7 @@ public class RobotContainer {
             .withTimeout(5.5));
         
         joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3.5));
+            .withTimeout(5.5).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(5.5));
             
 
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
