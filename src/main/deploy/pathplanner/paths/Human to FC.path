@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.965151515151515,
-        "y": 7.432575757575758
+        "x": 1.3348484848484847,
+        "y": 7.104734848484849
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.925624488114606,
-        "y": 6.454281838656839
+        "x": 1.2953214578115757,
+        "y": 6.126440929565931
       },
       "isLocked": false,
       "linkedName": "Barge Coral Station"
@@ -34,9 +34,9 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 270.0,
-    "maxAngularAcceleration": 360.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 38.59102864647644
+    "rotation": 22.5
   },
   "useDefaultConstraints": true
 }

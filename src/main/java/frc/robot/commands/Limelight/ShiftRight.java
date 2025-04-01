@@ -32,7 +32,7 @@ public class ShiftRight extends Command {
   @Override
   public void initialize() {
     initialPoseY = drivetrain.getState().Pose.getY();
-    targetPosey = initialPoseY + 0.29; // .29 before
+    targetPosey = initialPoseY + 0.33; // .29 before
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +47,7 @@ public class ShiftRight extends Command {
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(0.2 * maxSpeed)
+        .withVelocityY(-.12 * maxSpeed)
         .withRotationalRate(0)
       );
     } else if(currentPose > targetPosey) {
@@ -56,7 +56,7 @@ public class ShiftRight extends Command {
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(-.2 * maxSpeed)
+        .withVelocityY(0)
         .withRotationalRate(0)
       );
     } else {

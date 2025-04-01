@@ -25,6 +25,9 @@ import com.revrobotics.*;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;;
 
+
+// TODO: AUTO FIELD CENTRIC
+
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;

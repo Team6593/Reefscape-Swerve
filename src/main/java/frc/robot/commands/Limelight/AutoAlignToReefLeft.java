@@ -36,7 +36,7 @@ public class AutoAlignToReefLeft extends Command {
 
   public AutoAlignToReefLeft(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.76, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.87, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.43, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;

@@ -21,6 +21,12 @@
           "data": {
             "name": "Stop Drivetrain"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go back"
+          }
         }
       ]
     }

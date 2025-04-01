@@ -139,7 +139,7 @@ public class RobotContainer {
         MaxSpeed, MaxAngularRate)
             .withTimeout(2.2));
         NamedCommands.registerCommand("Right Align", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5)
+            .withTimeout(3)
             .andThen(new ShiftRight(drivetrain, MaxSpeed))
             .withTimeout(3.5)));
         NamedCommands.registerCommand("Left Align w/ Stop", new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -257,7 +257,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0;
-                double multiplier = -.7;
+                double multiplier = -.9;
                 double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
@@ -297,10 +297,10 @@ public class RobotContainer {
         // THE COMMAND WILL END ITSELF PROPERLY, NO NEED TO ADJUST THE TIMINGS TO RELINQUISH DRIVETRAIN
         // CONTROL TO THE DRIVER
         joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5));
+            .withTimeout(3));
         
         joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(5.5).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(5.5));
+            .withTimeout(3).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3.5));
             
 
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
