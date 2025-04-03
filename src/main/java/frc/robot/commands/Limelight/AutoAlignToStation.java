@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
-import frc.robot.Constants.LLSettings1;
+import frc.robot.Constants.LLSettings3;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
@@ -36,7 +36,7 @@ public class AutoAlignToStation extends Command {
 
   public AutoAlignToStation(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.95, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.70, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.43, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
@@ -62,14 +62,14 @@ public class AutoAlignToStation extends Command {
     this.dontSeeTagTimer = new Timer();
     this.dontSeeTagTimer.start();
 
-    rotController.setSetpoint(LLSettings1.ROT_SETPOINT_REEF_ALIGNMENT);
-    rotController.setTolerance(LLSettings1.ROT_TOLERANCE_REEF_ALIGNMENT);
+    rotController.setSetpoint(LLSettings3.ROT_SETPOINT_REEF_ALIGNMENT);
+    rotController.setTolerance(LLSettings3.ROT_TOLERANCE_REEF_ALIGNMENT);
 
-    xController.setSetpoint(LLSettings1.X_SETPOINT_REEF_ALIGNMENT);
-    xController.setTolerance(LLSettings1.X_TOLERANCE_REEF_ALIGNMENT);
+    xController.setSetpoint(LLSettings3.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setTolerance(LLSettings3.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings1.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings1.Y_SETPOINT_REEF_ALIGNMENT);
-    yController.setTolerance(LLSettings1.Y_TOLERANCE_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings3.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings3.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setTolerance(LLSettings3.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
   }
@@ -123,7 +123,7 @@ public class AutoAlignToStation extends Command {
   @Override
   public boolean isFinished() {
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
-    return this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
-        stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME);
+    return this.dontSeeTagTimer.hasElapsed(LLSettings3.DONT_SEE_TAG_WAIT_TIME) ||
+        stopTimer.hasElapsed(LLSettings3.POSE_VALIDATION_TIME);
   }
 }

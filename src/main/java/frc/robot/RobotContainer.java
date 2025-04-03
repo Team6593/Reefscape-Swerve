@@ -77,6 +77,7 @@ import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.AutoAlignToReef;
 import frc.robot.commands.Limelight.AutoAlignToReefLeft;
 import frc.robot.commands.Limelight.AutoAlignToReefRight;
+import frc.robot.commands.Limelight.AutoAlignToStation;
 import frc.robot.commands.Limelight.GetInRange;
 import frc.robot.commands.Limelight.ShiftRight;
 import frc.robot.commands.Limelight.ShiftRightX;
@@ -376,7 +377,9 @@ public class RobotContainer {
         joystick.povUp().whileTrue(new PivotOnly(climber, .1));
         joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
         joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
-        joystick.povLeft().onTrue(new ClimberPivotToSetpoint(climber, 5.65));
+        //joystick.povLeft().onTrue(new ClimberPivotToSetpoint(climber, 5.65));
+        joystick.povLeft().onTrue(new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(.5));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.75)));
@@ -387,6 +390,10 @@ public class RobotContainer {
         //joystick.rightBumper().whileTrue(new ManuallyIntakeCoral(coral, .15));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+    }
+
+    public void fieldCentricTheRobot() {
+        drivetrain.runOnce(() -> drivetrain.seedFieldCentric());
     }
 
     public Command getAutonomousCommand() {

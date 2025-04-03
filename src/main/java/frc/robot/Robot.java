@@ -99,6 +99,8 @@ public class Robot extends TimedRobot {
     //m_robotContainer.drivetrain.resetOdometryForAuto(position);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    m_robotContainer.fieldCentricTheRobot();
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

@@ -48,7 +48,16 @@ public final class Constants {
     }
 
     public static class LLSettings3 {
-
+        public static final double TX_VALUE = -0.09;
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = -12.06;
+        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.09;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.67;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.04;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+        public static final double POSE_VALIDATION_TIME = 1;
     }
 
 
