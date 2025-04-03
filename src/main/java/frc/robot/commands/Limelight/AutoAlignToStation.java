@@ -22,7 +22,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
 
 /* This command works flawlessly, DON'T TOUCH THIS CODE PLEASE!*/
-public class AutoAlignToReefLeft extends Command {
+public class AutoAlignToStation extends Command {
 
   private PIDController xController, yController, rotController;
   private boolean isRightScore;
@@ -34,7 +34,7 @@ public class AutoAlignToReefLeft extends Command {
   private double maxDtSpeed;
   private double maxAngularRate;
 
-  public AutoAlignToReefLeft(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
+  public AutoAlignToStation(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
     xController = new PIDController(.95, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.43, 0.0, 0);  // Horitontal movement
@@ -48,13 +48,13 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public void initialize() {
-    if(Limelight.autoEstimateDistance() > 25) {
-      rotController.setP(0.041);
-    } else if(Limelight.autoEstimateDistance() < 25) {
-      rotController.setP(0.041);
-    } else if(Limelight.autoEstimateDistance() <= 18) {
-      rotController.setP(0.007);
-    } 
+    // if(Limelight.autoEstimateDistance() > 25) {
+    //   rotController.setP(0.041);
+    // } else if(Limelight.autoEstimateDistance() < 25) {
+    //   rotController.setP(0.041);
+    // } else if(Limelight.autoEstimateDistance() <= 18) {
+    //   rotController.setP(0.007);
+    // } 
 
     LimelightHelpers.setPipelineIndex("limelight", 3);
     this.stopTimer = new Timer();

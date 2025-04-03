@@ -38,7 +38,7 @@ public class Collector extends SubsystemBase {
     pivotConfig.idleMode(IdleMode.kBrake);
     topConfig.idleMode(IdleMode.kBrake);
     topConfig.inverted(true);
-    pivotConfig.closedLoop.p(.5).i(0).d(0).outputRange(-.4, .4);
+    pivotConfig.closedLoop.p(.75).i(0).d(0).outputRange(-.75, .75);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     pivotEncoder.setPosition(0);
 

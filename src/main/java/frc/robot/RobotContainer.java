@@ -48,6 +48,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ShiftBack;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.Climber.ClimberPivot;
+import frc.robot.commands.Climber.ClimberPivotToSetpoint;
 import frc.robot.commands.Climber.PivotAndWinch;
 import frc.robot.commands.Climber.PivotOnly;
 import frc.robot.commands.Climber.WinchOnly;
@@ -78,6 +79,7 @@ import frc.robot.commands.Limelight.AutoAlignToReefLeft;
 import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.GetInRange;
 import frc.robot.commands.Limelight.ShiftRight;
+import frc.robot.commands.Limelight.ShiftRightX;
 
 public class RobotContainer {
 
@@ -131,7 +133,10 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
         NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(1.5));
-        NamedCommands.registerCommand("Score", new ShootCoral(coral).withTimeout(1));
+        NamedCommands.registerCommand("Score", new ShootCoral(coral)
+            .withTimeout(.5)
+            .andThen(new ShiftBack(drivetrain, MaxSpeed))
+            .withTimeout(.75));
         NamedCommands.registerCommand("Left Align", new AutoAlignToReefLeft(false, drivetrain, 
         MaxSpeed, MaxAngularRate)
             .withTimeout(1.8));
@@ -139,9 +144,13 @@ public class RobotContainer {
         MaxSpeed, MaxAngularRate)
             .withTimeout(2.2));
         NamedCommands.registerCommand("Right Align", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(3)
+            .withTimeout(2)
             .andThen(new ShiftRight(drivetrain, MaxSpeed))
-            .withTimeout(3.5)));
+            .withTimeout(2.75)));
+        NamedCommands.registerCommand("Right Align X", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(2)
+            .andThen(new ShiftRightX(drivetrain, MaxSpeed))
+            .withTimeout(2.75)));
         NamedCommands.registerCommand("Left Align w/ Stop", new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
@@ -292,21 +301,23 @@ public class RobotContainer {
             })
         );
         
-        // IMPORTANT NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // DO NOT ADJUST THE .withTimeout() ON THESE COMMANDS, THEY WILL NEVER ACTUALLY RUN THAT LONG
-        // THE COMMAND WILL END ITSELF PROPERLY, NO NEED TO ADJUST THE TIMINGS TO RELINQUISH DRIVETRAIN
-        // CONTROL TO THE DRIVER
-        joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(3));
+        // Note: The timeouts dont mean the actual robot will be moving for this long, this is to let the
+        // scheduler know when the command has "ended"
+        // Appropriately change time such that it finishes quickly whilst also running for long enough
+        // If the time out is too long, the driver will be unable to do anything for a few seconds
+        // joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2));
         
-        joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(3).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3.5));
-            
-
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-        //     .withTimeout(5.5)
-        //     .andThen(new ShiftRight(drivetrain)));
-    
+        //     .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.75));
+        
+        // joystick.povDown().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2).andThen(new ShiftRightX(drivetrain, MaxSpeed)).withTimeout(2.75));
+        
+
+        // joystick.povDown().onTrue(new AutoAlignToReefRight(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(3));
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -335,7 +346,10 @@ public class RobotContainer {
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));
         buttonBoard.button(OperatorConstants.algaeBack).onTrue(new PivotBack(collector));
-        buttonBoard.button(OperatorConstants.algaePivot).onTrue(new PivotToSetpoint(collector));
+        buttonBoard.button(OperatorConstants.algaePivot)
+            .onTrue(new PivotToSetpoint(collector)
+            .withTimeout(.5)
+            .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
         //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
 
         buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
@@ -358,10 +372,11 @@ public class RobotContainer {
         //joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
         //joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
 
-        // CLIMBER //
-        // joystick.povUp().whileTrue(new PivotOnly(climber, .1));
-        // joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
-        // joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
+        // CLIMBER
+        joystick.povUp().whileTrue(new PivotOnly(climber, .1));
+        joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
+        joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
+        joystick.povLeft().onTrue(new ClimberPivotToSetpoint(climber, 5.65));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.75)));

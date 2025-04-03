@@ -11,17 +11,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShiftRight extends Command {
+public class ShiftRightX extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private double targetPosey;
-  private double initialPoseY;
+  private double targetPoseX;
+  private double initialPoseX;
   private double maxSpeed;
   private boolean finished = false;
   
   /** Creates a new ShiftRight. */
-  public ShiftRight(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
+  public ShiftRightX(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
     this.drivetrain = drivetrain;
     this.maxSpeed = maxSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -31,32 +31,32 @@ public class ShiftRight extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialPoseY = drivetrain.getState().Pose.getY();
-    targetPosey = initialPoseY - 0.33; // .29 before
+    initialPoseX = drivetrain.getState().Pose.getX();
+    targetPoseX = initialPoseX + 0.40; // .29 before
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     System.out.println("CURRENT POSEY");
-    double currentPose = drivetrain.getState().Pose.getY();
+    double currentPose = drivetrain.getState().Pose.getX();
     System.out.println(currentPose);
-    if(currentPose < targetPosey) {
+    if(currentPose < targetPoseX) {
       System.out.println("LESS THAN VALUE");
       finished = false;
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(0)
+        .withVelocityY(-.12 * maxSpeed)
         .withRotationalRate(0)
       );
-    } else if(currentPose > targetPosey) {
+    } else if(currentPose > targetPoseX) {
       System.out.println("GREATER THAN VALUE");
       finished = false;
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(-.12 * maxSpeed)
+        .withVelocityY(0)
         .withRotationalRate(0)
       );
     } else {
@@ -73,11 +73,11 @@ public class ShiftRight extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("INIT POSE");
-    System.out.println(initialPoseY);
+    System.out.println(initialPoseX);
     System.out.println("TARGET POSE");
-    System.out.println(targetPosey);
+    System.out.println(targetPoseX);
     System.out.println("END POSE");
-    System.out.println(drivetrain.getState().Pose.getY());
+    System.out.println(drivetrain.getState().Pose.getX());
     drivetrain.setControl(
         robotCentric
           .withVelocityX(0) // forward backward

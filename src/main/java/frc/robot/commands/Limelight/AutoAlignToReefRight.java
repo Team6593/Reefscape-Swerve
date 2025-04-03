@@ -36,9 +36,9 @@ public class AutoAlignToReefRight extends Command {
 
   public AutoAlignToReefRight(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.3, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.93, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.3, 0.0, 0);  // Horitontal movement
-    rotController = new PIDController(.05, 0, 0);  // Rotation
+    rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
@@ -49,9 +49,9 @@ public class AutoAlignToReefRight extends Command {
   @Override
   public void initialize() {
     if(Limelight.autoEstimateDistance() > 25) {
-      rotController.setP(0.07);
+      rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() < 25) {
-      rotController.setP(0.05);
+      rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() <= 18) {
       rotController.setP(0.007);
     } 
@@ -100,12 +100,11 @@ public class AutoAlignToReefRight extends Command {
     } else {
       System.out.println("NO ATAG");
       
-      drivebase.applyRequest( () -> {
-        return robotCentric
-          .withVelocityX(0)
-          .withVelocityY(0)
-          .withRotationalRate(0);
-      });
+      drivebase.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
     }
 
     SmartDashboard.putNumber("poseValidTimer", stopTimer.get());
@@ -114,14 +113,11 @@ public class AutoAlignToReefRight extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("ALIGNED");
-    System.out.println("ALIGNED");
-    System.out.println("ALIGNED");
-    drivebase.applyRequest( () -> {
-      return robotCentric
-        .withVelocityX(0)
-        .withVelocityY(0)
-        .withRotationalRate(0);
-    });
+    drivebase.setControl(
+        robotCentric
+          .withVelocityX(0) // forward backward
+          .withVelocityY(0) // left right
+          .withRotationalRate(0));
   }
 
   @Override

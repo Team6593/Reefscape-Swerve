@@ -8,13 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climber;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ToSetpoint extends Command {
+public class ClimberPivotToSetpoint extends Command {
 
   private Climber climber;
   private double setpoint;
+  private boolean done = false;
 
-  /** Creates a new ToSetpoint. */
-  public ToSetpoint(Climber climber, double setpoint) {
+  /** Creates a new PivotToSetpoint. */
+  public ClimberPivotToSetpoint(Climber climber, double setpoint) {
     this.climber = climber;
     this.setpoint = setpoint;
 
@@ -25,22 +26,30 @@ public class ToSetpoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.reelIn(setpoint);
+    System.out.println("CLIMBER PIVOT BEGAN");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (climber.pivotAtSetpoint()) {
+      done = true;
+    } else {
+      climber.movePivot(.1);
+      System.out.println("PIVOTING");
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("CLIMBER PIVOT DONE");
     climber.stopClimber();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return done;
   }
 }

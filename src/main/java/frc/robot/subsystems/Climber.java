@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,6 +23,10 @@ public class Climber extends SubsystemBase {
 
   private TalonFX pivotMotor = new TalonFX(ClimberConstants.climberID);
   private TalonFX winchMotor = new TalonFX(ClimberConstants.winchID);
+  final PositionVoltage request = new PositionVoltage(0).withSlot(0);
+  final PositionTorqueCurrentFOC positionTorque = new PositionTorqueCurrentFOC(0).withSlot(1);
+  
+
 
   private TalonFXConfiguration motorConfigs = new TalonFXConfiguration()
                                                   .withCurrentLimits(
@@ -34,7 +41,7 @@ public class Climber extends SubsystemBase {
   public Climber() {
 
     var slot0Configs = new Slot0Configs();
-    slot0Configs.kP = 0.5;
+    slot0Configs.kP = 60;
     pivotMotor.getConfigurator().apply(slot0Configs);
     winchMotor.getConfigurator().apply(slot0Configs); 
 
@@ -47,6 +54,15 @@ public class Climber extends SubsystemBase {
     pivotMotor.clearStickyFaults();
     winchMotor.clearStickyFaults();
     
+    winchMotor.getConfigurator().setPosition(0);
+    pivotMotor.getConfigurator().setPosition(0);
+
+    motorConfigs.Voltage.withPeakForwardVoltage(Volts.of(9))
+      .withPeakReverseVoltage(Volts.of(-8));
+
+    motorConfigs.TorqueCurrent.withPeakForwardTorqueCurrent(Amps.of(120))
+      .withPeakReverseTorqueCurrent(Amps.of(-120));
+
     // var slot0Configs = new Slot0Configs();
     // slot0Configs.kS = .25;
     // slot0Configs.kV = .12;
@@ -71,8 +87,11 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public void pivotIn(double setpoint) {
+    pivotMotor.setControl(positionTorque.withPosition(setpoint));
+  }
+
   public void reelIn(double setpoint) {
-    final PositionVoltage request = new PositionVoltage(0).withSlot(0);
     winchMotor.setControl(request.withPosition(setpoint));
   }
 
@@ -82,6 +101,22 @@ public class Climber extends SubsystemBase {
 
   public void movePivot(double speed) {
     pivotMotor.set(speed);
+  }
+
+  public boolean pivotAtSetpoint() {
+    if (pivotMotor.getPosition().getValueAsDouble() > 5.6) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public boolean winchAtSetpoint() {
+    if (winchMotor.getPosition().getValueAsDouble() < 2) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public void pivot(double speed) {
@@ -100,7 +135,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Climber Pivot", pivotMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Climber Pivot Position", pivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Climber Winch Position", winchMotor.getPosition().getValueAsDouble());
     // This method will be called once per scheduler run
   }
