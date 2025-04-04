@@ -231,7 +231,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                     // sat test #1
                     // rotation .05 0 0
-                    new PIDConstants(1, 0, 0),
+                    new PIDConstants(3, 0, 0),
                     // PID constants for rotation
                     new PIDConstants(.0001, 0, 0)
                 ),

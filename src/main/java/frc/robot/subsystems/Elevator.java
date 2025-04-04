@@ -61,7 +61,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     
 
-    elevatorController.setReference(40, ControlType.kCurrent);
+    elevatorController.setReference(60, ControlType.kCurrent);
 
     elevatorEncoding.setPosition(0);
 

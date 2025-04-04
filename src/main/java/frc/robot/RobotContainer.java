@@ -17,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -80,6 +81,7 @@ import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.AutoAlignToStation;
 import frc.robot.commands.Limelight.GetInRange;
 import frc.robot.commands.Limelight.ShiftRight;
+import frc.robot.commands.Limelight.ShiftRightChangable;
 import frc.robot.commands.Limelight.ShiftRightX;
 
 public class RobotContainer {
@@ -159,6 +161,37 @@ public class RobotContainer {
         NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -.90));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        NamedCommands.registerCommand("Station Align", new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
+                                                            .withTimeout(.5));
+
+        // Events
+        new EventTrigger("Left Align Event")
+        .onTrue(new  AutoAlignToReefLeft(false, drivetrain, 
+        MaxSpeed, MaxAngularRate));
+
+        new EventTrigger("Right Align Event")
+        .onTrue((new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        .andThen(new ShiftRight(drivetrain, MaxSpeed))));
+
+        new EventTrigger("Scoring Event").onTrue(new L4(elevator, coral)
+            .withTimeout(1.5)
+            .andThen(new ShootCoral(coral))
+            .withTimeout(2)
+            .andThen(new ShiftBack(drivetrain, MaxSpeed))
+            .withTimeout(2.25)
+            .andThen(new ElevatorToZero(elevator, coral, -.90)));
+
+        new EventTrigger("Left Align Score")
+                        .onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+                        .andThen(new L4(elevator, coral)
+                        .withTimeout(1.5)
+                        .andThen(new ShootCoral(coral))
+                        .withTimeout(2)
+                        .andThen(new ShiftBack(drivetrain, MaxSpeed))
+                        .withTimeout(2.25)
+                        .andThen(new ElevatorToZero(elevator, coral, -.90))));
+
+
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -267,7 +300,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0;
-                double multiplier = -.9;
+                double multiplier = -1;
                 double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
@@ -321,10 +354,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
         buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.75));
@@ -339,9 +372,9 @@ public class RobotContainer {
         //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L3)
             .onTrue(new L3(elevator, coral)
-            .withTimeout(1)
+            .withTimeout(.75)
             .andThen(new ShootCoral(coral))
-            .withTimeout(1.25)
+            .withTimeout(1)
             .andThen(new ElevatorToZero(elevator, coral, -.75)));
 
         // Algae
@@ -362,27 +395,57 @@ public class RobotContainer {
         //joystick.y().whileTrue(new ClimberPivot(climber, .8));
         //joystick.a().whileTrue(new ClimberPivot(climber, -.8));
         
-        joystick.a().whileTrue(new Elevate(elevator, .5));
-        joystick.y().whileTrue(new Elevate(elevator, -.5));
+        // joystick.a().whileTrue(new Elevate(elevator, .5));
+        // joystick.y().whileTrue(new Elevate(elevator, -.5));
 
         // joystick.y().onTrue(new IntakeAndPivot(collector, .7)
         //     .until( () -> !collector.hasAlgae())
         //     .andThen(new PivotBack(collector)));
         // joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         
+        joystick.x().onTrue(new IntakeAndPivot(collector, .7)
+            .until( () -> !collector.hasAlgae())
+            .andThen(new PivotBack(collector)));
+        joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        joystick.y()
+            .onTrue(new PivotToSetpoint(collector)
+            .withTimeout(.5)
+            .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
+        joystick.b().whileTrue(new WinchOnly(climber, -1.0));
+
+
+
         //joystick.button(7).onTrue(new StopAll(collector, coral, elevator));
         //joystick.button(8).onTrue(new StopAll(collector, coral, elevator));
 
         // CLIMBER
-        joystick.povUp().whileTrue(new PivotOnly(climber, .1));
-        joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
+        //joystick.povUp().whileTrue(new PivotOnly(climber, .1));
+        //joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
         joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
         //joystick.povLeft().onTrue(new ClimberPivotToSetpoint(climber, 5.65));
-        joystick.povLeft().onTrue(new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(.5));
+
+        // joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2));
+        // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3));
+        joystick.povUp().whileTrue(new WinchOnly(climber, 1.0));
+        joystick.povLeft().whileTrue(new PivotOnly(climber, .1));
+        joystick.povRight().whileTrue(new PivotOnly(climber, -.1));
+
+        // changes based off tag
+        // joystick.povUp().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2).andThen(new ShiftRightChangable(drivetrain, MaxSpeed)).withTimeout(2.75));
+
+        // joystick.povLeft().onTrue(new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(.5));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.75)));
+
+        buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(2));
+        buttonBoard.button(OperatorConstants.rightAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.75));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));

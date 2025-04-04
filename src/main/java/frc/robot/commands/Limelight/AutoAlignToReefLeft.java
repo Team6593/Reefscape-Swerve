@@ -36,7 +36,7 @@ public class AutoAlignToReefLeft extends Command {
 
   public AutoAlignToReefLeft(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.95, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.90, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.43, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
@@ -112,6 +112,7 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    LimelightHelpers.setPipelineIndex("limelight", 0);
     System.out.println("ALIGNED");
     drivebase.setControl(
         robotCentric
@@ -122,6 +123,8 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public boolean isFinished() {
+    SmartDashboard.putBoolean("Done Aligning", this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
+    stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME));
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
     return this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
         stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME);

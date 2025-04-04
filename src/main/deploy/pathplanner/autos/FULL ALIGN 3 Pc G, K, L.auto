@@ -55,6 +55,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Station Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Grab"
           }
         },
@@ -98,6 +104,12 @@
           "type": "path",
           "data": {
             "pathName": "KL to Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Station Align"
           }
         },
         {

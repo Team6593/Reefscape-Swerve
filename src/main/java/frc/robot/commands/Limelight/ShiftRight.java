@@ -32,7 +32,7 @@ public class ShiftRight extends Command {
   @Override
   public void initialize() {
     initialPoseY = drivetrain.getState().Pose.getY();
-    targetPosey = initialPoseY - 0.33; // .29 before
+    targetPosey = initialPoseY - 0.29; // .29 before
   }
 
   // Called every time the scheduler runs while the command is scheduled.
