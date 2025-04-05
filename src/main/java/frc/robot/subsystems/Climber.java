@@ -104,7 +104,7 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean pivotAtSetpoint() {
-    if (pivotMotor.getPosition().getValueAsDouble() > 5.6) {
+    if (pivotMotor.getPosition().getValueAsDouble() > 7.1) {
       return true;
     } else {
       return false;

@@ -3,48 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6253693181752609,
-        "y": 7.2657670454471095
+        "x": 7.628716216216215,
+        "y": 1.9300675675675665
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3776548596146414,
-        "y": 6.647681511776758
+        "x": 8.109239577248124,
+        "y": 1.8217544897585134
       },
       "isLocked": false,
-      "linkedName": "Barge Coral Station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.3504545454545456,
-        "y": 5.470880681818182
+        "x": 5.326266891896833,
+        "y": 2.592145270265328
       },
       "prevControl": {
-        "x": 3.0289331498567074,
-        "y": 5.8558451056382
+        "x": 6.228331741719979,
+        "y": 2.276204031857639
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef L"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Right Align Event",
-      "waypointRelativePos": 0.8,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "Scoring Event",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 9.0,
@@ -55,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -52.650650955359275
+    "rotation": 119.29136217098426
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -135.0
+    "velocity": 0.0,
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }

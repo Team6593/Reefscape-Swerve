@@ -48,6 +48,7 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public void initialize() {
+    Constants.aligning = true;
     if(Limelight.autoEstimateDistance() > 25) {
       rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() < 25) {
@@ -112,6 +113,7 @@ public class AutoAlignToReefLeft extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    Constants.aligning = false;
     LimelightHelpers.setPipelineIndex("limelight", 0);
     System.out.println("ALIGNED");
     drivebase.setControl(

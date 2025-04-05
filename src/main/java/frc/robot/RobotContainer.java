@@ -383,7 +383,7 @@ public class RobotContainer {
         buttonBoard.button(OperatorConstants.algaePivot)
             .onTrue(new PivotToSetpoint(collector)
             .withTimeout(.5)
-            .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
+            .andThen(new ClimberPivotToSetpoint(climber, 7.1)));
         //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
 
         buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
@@ -429,7 +429,7 @@ public class RobotContainer {
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3));
         joystick.povUp().whileTrue(new WinchOnly(climber, 1.0));
-        joystick.povLeft().whileTrue(new PivotOnly(climber, .1));
+        joystick.rightBumper().whileTrue(new PivotOnly(climber, .1));
         joystick.povRight().whileTrue(new PivotOnly(climber, -.1));
 
         // changes based off tag
