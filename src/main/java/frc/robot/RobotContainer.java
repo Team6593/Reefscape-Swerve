@@ -156,7 +156,7 @@ public class RobotContainer {
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
         NamedCommands.registerCommand("Stop Drivetrain", stopDrivetrain().withTimeout(.1));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -.90));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         NamedCommands.registerCommand("Station Align", new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -177,7 +177,7 @@ public class RobotContainer {
             .withTimeout(2)
             .andThen(new ShiftBack(drivetrain, MaxSpeed))
             .withTimeout(2.25)
-            .andThen(new ElevatorToZero(elevator, coral, -.90)));
+            .andThen(new ElevatorToZero(elevator, coral, -1)));
 
         new EventTrigger("Left Align Score")
                         .onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -187,7 +187,7 @@ public class RobotContainer {
                         .withTimeout(2)
                         .andThen(new ShiftBack(drivetrain, MaxSpeed))
                         .withTimeout(2.25)
-                        .andThen(new ElevatorToZero(elevator, coral, -.90))));
+                        .andThen(new ElevatorToZero(elevator, coral, -1))));
 
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -358,20 +358,20 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.90));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -1));
         buttonBoard.button(OperatorConstants.L4)
             .onTrue(new L4(elevator, coral)
             .withTimeout(1.5)
             .andThen(new ShootCoral(coral))
             .withTimeout(1.75)
-            .andThen(new ElevatorToZero(elevator, coral, -.90)));
+            .andThen(new ElevatorToZero(elevator, coral, -1)));
         //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
         buttonBoard.button(OperatorConstants.L3)
             .onTrue(new L3(elevator, coral)
             .withTimeout(.75)
             .andThen(new ShootCoral(coral))
             .withTimeout(1)
-            .andThen(new ElevatorToZero(elevator, coral, -.90)));
+            .andThen(new ElevatorToZero(elevator, coral, -1)));
 
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));
@@ -436,12 +436,12 @@ public class RobotContainer {
         //     .withTimeout(.5));
 
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -.90)));
+        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
 
         buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(2));
         buttonBoard.button(OperatorConstants.rightAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.75));
+            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.95));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
