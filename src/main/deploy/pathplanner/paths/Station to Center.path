@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.111793321191601,
-        "y": 6.5889215874888825
+        "x": 1.9871875,
+        "y": 7.584857954545454
       },
       "isLocked": false,
       "linkedName": "Barge Coral Station"
     },
     {
       "anchor": {
-        "x": 3.4,
-        "y": 4.163
+        "x": 7.6,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.238318284424379,
-        "y": 4.079472347629796
+        "x": 6.6,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef A"
+      "linkedName": "Dead Center"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,

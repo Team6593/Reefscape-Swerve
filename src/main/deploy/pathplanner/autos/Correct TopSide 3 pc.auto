@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far left to reef B2"
+            "pathName": "Top to I"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Left Align"
           }
         },
         {
@@ -31,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far left to reef 2"
+            "pathName": "I to Station"
           }
         },
         {
@@ -43,7 +49,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far Left To Reef 2.5"
+            "pathName": "Top Station to K"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Left Align"
           }
         },
         {
@@ -65,9 +77,51 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "K to Top Station"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Field Centric"
+            "name": "Grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Station to L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Right Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to Top Station"
           }
         }
       ]

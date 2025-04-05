@@ -25,13 +25,16 @@ import com.revrobotics.*;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;;
 
+
+// TODO: AUTO FIELD CENTRIC
+
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
 
-  private final boolean kUseLimelight = false;
+  private boolean kUseLimelight = true;
 
   Field2d field = new Field2d();
 
@@ -45,7 +48,8 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
-
+    SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+    SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
     RobotContainer.limelight.update();
     
 
@@ -86,7 +90,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-
+    LimelightHelpers.setPipelineIndex("limelight", 0);
     m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
@@ -94,6 +98,8 @@ public class Robot extends TimedRobot {
     //Pose2d position = new Pose2d(8.785, 5.062, Rotation2d.k180deg);
     //m_robotContainer.drivetrain.resetOdometryForAuto(position);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_robotContainer.fieldCentricTheRobot();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -111,6 +117,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
+    kUseLimelight = false;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

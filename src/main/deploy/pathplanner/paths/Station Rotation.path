@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.111793321191601,
-        "y": 6.5889215874888825
+        "x": 1.603785779289428,
+        "y": 8.02876986075383
       },
       "isLocked": false,
       "linkedName": "Barge Coral Station"
     },
     {
       "anchor": {
-        "x": 3.4,
-        "y": 4.163
+        "x": 1.7391891891891893,
+        "y": 6.683192567567566
       },
       "prevControl": {
-        "x": 2.238318284424379,
-        "y": 4.079472347629796
+        "x": 1.3790700053012819,
+        "y": 6.420916655012497
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef A"
+      "linkedName": "Station Rotation End"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -42.072121769100086
   },
   "reversed": false,
   "folder": null,

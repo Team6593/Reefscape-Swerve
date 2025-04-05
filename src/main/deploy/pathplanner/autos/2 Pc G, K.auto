@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far left to reef B3"
+            "pathName": "Leave to GH partly"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Left Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drivetrain"
           }
         },
         {
@@ -31,7 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far left to reef 2"
+            "pathName": "GH to Back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center to Station"
           }
         },
         {
@@ -43,7 +61,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far Left To Reef 2.5"
+            "pathName": "Station Rotation"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Extended Left Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drivetrain"
           }
         },
         {
@@ -62,12 +92,6 @@
           "type": "named",
           "data": {
             "name": "Home"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Field Centric"
           }
         }
       ]

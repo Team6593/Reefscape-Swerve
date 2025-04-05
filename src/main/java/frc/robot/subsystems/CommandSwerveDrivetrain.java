@@ -231,9 +231,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                     // sat test #1
                     // rotation .05 0 0
-                    new PIDConstants(1, 0, 0),
+                    new PIDConstants(3, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(.001, 0, 0)
+                    new PIDConstants(.0001, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -286,6 +286,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+
+        SmartDashboard.putNumber("Module 0 Azimuth Encoder", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(

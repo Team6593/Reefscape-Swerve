@@ -26,9 +26,10 @@ public class L4 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //elevator.changeToCoastMode();
     System.out.println("L4 INIT");
-    elevator.goToSetpoint(-88); // -92 IS THE REAL SETPOINT
-    coral.setL4(false);
+    elevator.goToSetpoint(-95); // -92 IS THE REAL SETPOINT, -92.62278747558594, OLD -88; -95; -96
+    coral.setL4(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,6 +45,7 @@ public class L4 extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("L4 END");
+    //elevator.changeToBrakeMode();
     elevator.stop();
   }
 

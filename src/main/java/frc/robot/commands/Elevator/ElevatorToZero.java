@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Elevator;
 
+import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -11,12 +12,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ElevatorToZero extends Command {
 
   private Elevator elevator;
+  private Coral coral;
   private double speed;
 
   /** Creates a new ElevatorToZero. */
-  public ElevatorToZero(Elevator elevator, double speed) {
+  public ElevatorToZero(Elevator elevator, Coral coral, double speed) {
     this.elevator = elevator;
     this.speed = speed;
+    this.coral = coral;
 
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +27,10 @@ public class ElevatorToZero extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //elevator.changeToBrakeMode();
+    coral.setL4(false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

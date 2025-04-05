@@ -7,37 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Leave"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Home"
+            "pathName": "Top Start to I Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "To Human"
+            "pathName": "I to Station"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Grab"
+            "pathName": "Top Station to K Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to Top Station"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Station to L Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to Top Station"
           }
         }
       ]

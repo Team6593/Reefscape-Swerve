@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9871875,
-        "y": 7.584857954545454
+        "x": 1.7391891891891893,
+        "y": 6.683192567567566
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.111793321191601,
-        "y": 6.5889215874888825
+        "x": 2.7391891891891897,
+        "y": 6.683192567567566
       },
       "isLocked": false,
-      "linkedName": "Barge Coral Station"
+      "linkedName": "Station Rotation End"
     },
     {
       "anchor": {
-        "x": 3.4,
-        "y": 4.163
+        "x": 1.3348484848484847,
+        "y": 8.0
       },
       "prevControl": {
-        "x": 2.238318284424379,
-        "y": 4.079472347629796
+        "x": 0.33484848484848495,
+        "y": 8.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef A"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 22.5
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -42.072121769100086
   },
   "useDefaultConstraints": true
 }
