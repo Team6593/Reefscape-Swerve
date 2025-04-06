@@ -441,7 +441,7 @@ public class RobotContainer {
         buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(2));
         buttonBoard.button(OperatorConstants.rightAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.95));
+            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.4));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
