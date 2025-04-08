@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9871875,
-        "y": 7.584857954545454
+        "x": 1.31625,
+        "y": 6.906789772727272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.111793321191601,
-        "y": 6.5889215874888825
+        "x": 2.4408558211916005,
+        "y": 5.910853405670701
       },
       "isLocked": false,
       "linkedName": "Barge Coral Station"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 40.23635830927382
   },
   "useDefaultConstraints": true
 }

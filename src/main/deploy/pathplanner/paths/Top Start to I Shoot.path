@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.4046022727272724,
-        "y": 5.361193181818181
+        "x": 5.88,
+        "y": 5.704898648648648
       },
       "prevControl": {
-        "x": 5.122780678702359,
-        "y": 5.279600553518036
+        "x": 5.598178405975086,
+        "y": 5.623306020348503
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Left Align Score",
-      "waypointRelativePos": 0.8,
+      "name": "Left Align Event",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Scoring Event",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }

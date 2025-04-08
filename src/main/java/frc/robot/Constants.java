@@ -7,6 +7,8 @@ package frc.robot;
 /** Add your docs here. */
 public final class Constants {
 
+    public static boolean aligning = false;
+
     // TODO: LLSettings and LLSettings2 setpoint values might have to be reconfigured at comp practice field
 
 
