@@ -80,6 +80,8 @@ public class AutoAlignToReefLeft extends Command {
     if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
 
+      System.out.println("aligning!");
+
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
       double xSpeed = xController.calculate(postions[2]);
@@ -121,6 +123,7 @@ public class AutoAlignToReefLeft extends Command {
           .withVelocityX(0) // forward backward
           .withVelocityY(0) // left right
           .withRotationalRate(0));
+    System.out.println("Done aligning!");
   }
 
   @Override
