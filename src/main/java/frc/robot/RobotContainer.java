@@ -80,6 +80,7 @@ import frc.robot.commands.Limelight.AutoAlignToReefLeft;
 import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.AutoAlignToStation;
 import frc.robot.commands.Limelight.GetInRange;
+import frc.robot.commands.Limelight.HyperAlign;
 import frc.robot.commands.Limelight.ShiftRight;
 import frc.robot.commands.Limelight.ShiftRightChangable;
 import frc.robot.commands.Limelight.ShiftRightX;
@@ -292,14 +293,16 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
+
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0;
-                double multiplier = -1;
-                double rotationalMultiplier = -1;
+                double multiplier = -.3;
+                double rotationalMultiplier = -.3;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -332,6 +335,8 @@ public class RobotContainer {
                     .withRotationalRate(rotationalRate * MaxAngularRate);
             })
         );
+
+        joystick.a().onTrue(new HyperAlign(drivetrain, forwardStraight).withTimeout(5));
         
         // Note: The timeouts dont mean the actual robot will be moving for this long, this is to let the
         // scheduler know when the command has "ended"
@@ -402,7 +407,8 @@ public class RobotContainer {
         joystick.x().onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
-        joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
+        // REBIND LATER!!!
+        //joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         joystick.y()
             .onTrue(new PivotToSetpoint(collector)
             .withTimeout(.5)
