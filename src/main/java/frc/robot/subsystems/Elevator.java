@@ -46,10 +46,10 @@ public class Elevator extends SubsystemBase {
     //   .maxAcceleration(6000);
     
     elevatorConfig.closedLoop
-    .p(.9)
+    .p(1)
     .i(0)
     .d(0)
-    .outputRange(-.5, .5);
+    .outputRange(-1, 1);
 
 
     //This technically works but dont use it it stalls the motor
