@@ -301,8 +301,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
                 double deadband = 0;
-                double multiplier = -.3;
-                double rotationalMultiplier = -.3;
+                double multiplier = -1;
+                double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
@@ -363,20 +363,20 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -1));
-        buttonBoard.button(OperatorConstants.L4)
-            .onTrue(new L4(elevator, coral)
-            .withTimeout(1.5)
-            .andThen(new ShootCoral(coral))
-            .withTimeout(1.75)
-            .andThen(new ElevatorToZero(elevator, coral, -1)));
-        //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
-        buttonBoard.button(OperatorConstants.L3)
-            .onTrue(new L3(elevator, coral)
-            .withTimeout(.75)
-            .andThen(new ShootCoral(coral))
-            .withTimeout(1)
-            .andThen(new ElevatorToZero(elevator, coral, -1)));
+        // buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -1));
+        // buttonBoard.button(OperatorConstants.L4)
+        //     .onTrue(new L4(elevator, coral)
+        //     .withTimeout(1.5)
+        //     .andThen(new ShootCoral(coral))
+        //     .withTimeout(1.75)
+        //     .andThen(new ElevatorToZero(elevator, coral, -1)));
+        // //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
+        // buttonBoard.button(OperatorConstants.L3)
+        //     .onTrue(new L3(elevator, coral)
+        //     .withTimeout(.75)
+        //     .andThen(new ShootCoral(coral))
+        //     .withTimeout(1)
+        //     .andThen(new ElevatorToZero(elevator, coral, -1)));
 
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));

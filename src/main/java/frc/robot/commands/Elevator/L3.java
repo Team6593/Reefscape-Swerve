@@ -28,8 +28,10 @@ public class L3 extends Command {
   public void initialize() {
     //elevator.changeToCoastMode();
     System.out.println("L3 INIT");
-    elevator.goToSetpoint(-36);
+    elevator.goToSetpoint(-22); // (-36 / 25) * 12
     coral.setL4(false);
+    
+    // newTicks = oldTicks * (newRatio/oldRatio)
   }
 
   // Called every time the scheduler runs while the command is scheduled.

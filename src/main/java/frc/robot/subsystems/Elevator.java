@@ -49,7 +49,7 @@ public class Elevator extends SubsystemBase {
     .p(.9)
     .i(0)
     .d(0)
-    .outputRange(-1, 1);
+    .outputRange(-.5, .5);
 
 
     //This technically works but dont use it it stalls the motor
