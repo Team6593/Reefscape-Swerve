@@ -20,6 +20,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -297,6 +298,9 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
 
+        SlewRateLimiter leftStickLimiter = new SlewRateLimiter(.5);
+        SlewRateLimiter rightStickLimiter = new SlewRateLimiter(.5);
+
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
@@ -329,6 +333,10 @@ public class RobotContainer {
                     rotationalRate = (rotationalRate - Math.signum(rotationalRate) * deadband) / (1 - deadband);
                 }
                 
+                // double slewVelocityX = leftStickLimiter.calculate(velocityX);
+                // double slewVelocityY = leftStickLimiter.calculate(velocityY);
+                // double slewRotationalRate = rightStickLimiter.calculate(rotationalRate);
+
                 return drive
                     .withVelocityX(velocityX * MaxSpeed)
                     .withVelocityY(velocityY * MaxSpeed)
