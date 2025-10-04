@@ -279,6 +279,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        // log how much amps the entire drive uses
+        double driveStatorCurrent = 0;
+        double driveSupplyCurrent = 0;
+
+        for( int i = 0; i < 4; i++) {
+            driveStatorCurrent += getModule(i).getDriveMotor().getStatorCurrent().getValueAsDouble() +
+        getModule(i).getSteerMotor().getStatorCurrent().getValueAsDouble();
+            
+            driveSupplyCurrent = getModule(i).getDriveMotor().getSupplyCurrent().getValueAsDouble() +
+        getModule(i).getSteerMotor().getSupplyCurrent().getValueAsDouble();
+        }
+
+        SmartDashboard.putNumber("DriveSupUsage", driveSupplyCurrent);
+        SmartDashboard.putNumber("DriveStatUsage", driveStatorCurrent);
+
+
+        SmartDashboard.putNumber("Module 0 Drive Supply", 
+        getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.

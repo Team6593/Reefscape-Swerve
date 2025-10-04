@@ -30,7 +30,7 @@ public class TunerConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
+        .withKP(0.1).withKI(0).withKD(0) // d was 0 before
         .withKS(0).withKV(0.124);
 
     // The closed-loop output type to use for the steer motors;
@@ -60,33 +60,35 @@ public class TunerConstants {
             new CurrentLimitsConfigs()
                 // Swerve azimuth does not require much torque output, so we can set a relatively low
                 // stator current limit to help avoid brownouts without impacting performance.
-                .withStatorCurrentLimit(Amps.of(60))
-                .withSupplyCurrentLowerLimit(20)
-                .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(Amps.of(60))
+                .withStatorCurrentLimit(Amps.of(40))
+                .withSupplyCurrentLowerLimit(25)
+                .withStatorCurrentLimitEnable(false)
+                .withSupplyCurrentLimit(Amps.of(25))
                 .withSupplyCurrentLimitEnable(true)
-        )
-        // .withOpenLoopRamps(new OpenLoopRampsConfigs()
-        //     .withDutyCycleOpenLoopRampPeriod(1))
-        .withVoltage(new VoltageConfigs()
-            .withPeakForwardVoltage(Volt.of(11))
-            .withPeakReverseVoltage(Volt.of(-11)));
+        );
+        // .withVoltage(new VoltageConfigs()
+        //     .withPeakForwardVoltage(Volt.of(11))
+        //     .withPeakReverseVoltage(Volt.of(-11)));
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
     .withCurrentLimits(
         new CurrentLimitsConfigs()
             // Swerve azimuth does not require much torque output, so we can set a relatively low
             // stator current limit to help avoid brownouts without impacting performance.
-            .withStatorCurrentLimit(Amps.of(60))
-            .withSupplyCurrentLowerLimit(20)
+            // .withStatorCurrentLimit(Amps.of(40))
+            // .withSupplyCurrentLowerLimit(20)
+            // .withStatorCurrentLimitEnable(true)
+            // .withSupplyCurrentLimit(Amps.of(40))
+            // .withSupplyCurrentLimitEnable(true)
+
+            .withStatorCurrentLimit(40)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(Amps.of(60))
-            .withSupplyCurrentLimitEnable(true)
-    )
+            .withSupplyCurrentLimitEnable(false)
+    );
     // .withOpenLoopRamps(new OpenLoopRampsConfigs()
     //     .withDutyCycleOpenLoopRampPeriod(1))
-    .withVoltage(new VoltageConfigs()
-        .withPeakForwardVoltage(Volt.of(11))
-        .withPeakReverseVoltage(Volt.of(-11)));
+    // .withVoltage(new VoltageConfigs()
+    //     .withPeakForwardVoltage(Volt.of(11))
+    //     .withPeakReverseVoltage(Volt.of(-11)));
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
     private static final Pigeon2Configuration pigeonConfigs = null;
@@ -97,7 +99,7 @@ public class TunerConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.81);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.41);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
