@@ -305,34 +305,34 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                double deadband = 0;
-                double multiplier = 1;
-                double rotationalMultiplier = 1;
+                double deadband = 0.1;
+                double multiplier = -1;
+                double rotationalMultiplier = -1;
 
                 double velocityX = joystick.getLeftY() * multiplier;
                 double velocityY = joystick.getLeftX() * multiplier;
                 double rotationalRate = joystick.getRightX() * rotationalMultiplier;
     
                 // Apply deadband to velocityX
-                if (Math.abs(velocityX) < deadband) {
-                    velocityX = 0.0;
-                } else {
-                    velocityX = (velocityX - Math.signum(velocityX) * deadband) / (1 - deadband);
-                }
+                // if (Math.abs(velocityX) < deadband) {
+                //     velocityX = 0.0;
+                // } else {
+                //     velocityX = (velocityX - Math.signum(velocityX) * deadband) / (1 - deadband);
+                // }
     
-                // Apply deadband to velocityY
-                if (Math.abs(velocityY) < deadband) {
-                    velocityY = 0.0;
-                } else {
-                    velocityY = (velocityY - Math.signum(velocityY) * deadband) / (1 - deadband);
-                }
+                // // Apply deadband to velocityY
+                // if (Math.abs(velocityY) < deadband) {
+                //     velocityY = 0.0;
+                // } else {
+                //     velocityY = (velocityY - Math.signum(velocityY) * deadband) / (1 - deadband);
+                // }
     
-                // Apply deadband to rotationalRate
-                if (Math.abs(rotationalRate) < deadband) {
-                    rotationalRate = 0.0;
-                } else {
-                    rotationalRate = (rotationalRate - Math.signum(rotationalRate) * deadband) / (1 - deadband);
-                }
+                // // Apply deadband to rotationalRate
+                // if (Math.abs(rotationalRate) < deadband) {
+                //     rotationalRate = 0.0;
+                // } else {
+                //     rotationalRate = (rotationalRate - Math.signum(rotationalRate) * deadband) / (1 - deadband);
+                // }
                 
                 double slewVelocityX = xLimiter.calculate(velocityX);
                 double slewVelocityY = yLimiter.calculate(velocityY);
