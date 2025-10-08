@@ -82,6 +82,7 @@ import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.AutoAlignToStation;
 import frc.robot.commands.Limelight.GetInRange;
 import frc.robot.commands.Limelight.HyperAlign;
+import frc.robot.commands.Limelight.HyperAlign2;
 import frc.robot.commands.Limelight.ShiftRight;
 import frc.robot.commands.Limelight.ShiftRightChangable;
 import frc.robot.commands.Limelight.ShiftRightX;
@@ -453,13 +454,18 @@ public class RobotContainer {
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
 
-        buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(2));
+        // buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //     .withTimeout(2));
+        buttonBoard.button(OperatorConstants.leftAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+            .withTimeout(5));
         buttonBoard.button(OperatorConstants.rightAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.4));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
+
+        joystick.rightBumper().onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+            .withTimeout(5));
         
         //joystick.rightBumper().whileTrue(new ManuallyIntakeCoral(coral, .15));
 

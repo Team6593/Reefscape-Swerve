@@ -17,11 +17,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
+import frc.robot.Constants.LLSettings1;
 import frc.robot.Constants.LLSettings2;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight; 
 
+/* This command works flawlessly, DON'T TOUCH THIS CODE PLEASE!*/
 public class HyperAlign2 extends Command {
 
   private PIDController xController, yController, rotController;
@@ -35,8 +37,8 @@ public class HyperAlign2 extends Command {
 
   public HyperAlign2(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate, SwerveRequest.RobotCentric robotCentric) {
-    xController = new PIDController(.93, 0.0, 0);  // Vertical movement
-    yController = new PIDController(0.3, 0.0, 0);  // Horitontal movement
+    xController = new PIDController(1, 0.0, 0);  // Vertical movement
+    yController = new PIDController(0.6, 0.0, 0);  // Horitontal movement .43
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
@@ -48,6 +50,7 @@ public class HyperAlign2 extends Command {
 
   @Override
   public void initialize() {
+    Constants.aligning = true;
     if(Limelight.autoEstimateDistance() > 25) {
       rotController.setP(0.041);
     } else if(Limelight.autoEstimateDistance() < 25) {
@@ -62,14 +65,14 @@ public class HyperAlign2 extends Command {
     this.dontSeeTagTimer = new Timer();
     this.dontSeeTagTimer.start();
 
-    rotController.setSetpoint(LLSettings2.ROT_SETPOINT_REEF_ALIGNMENT);
-    rotController.setTolerance(LLSettings2.ROT_TOLERANCE_REEF_ALIGNMENT);
+    rotController.setSetpoint(LLSettings1.ROT_SETPOINT_REEF_ALIGNMENT);
+    rotController.setTolerance(LLSettings1.ROT_TOLERANCE_REEF_ALIGNMENT);
 
-    xController.setSetpoint(LLSettings2.X_SETPOINT_REEF_ALIGNMENT);
-    xController.setTolerance(LLSettings2.X_TOLERANCE_REEF_ALIGNMENT);
+    xController.setSetpoint(LLSettings1.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setTolerance(LLSettings1.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? LLSettings2.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings2.Y_SETPOINT_REEF_ALIGNMENT);
-    yController.setTolerance(LLSettings2.Y_TOLERANCE_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? LLSettings1.Y_SETPOINT_REEF_ALIGNMENT : -LLSettings1.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setTolerance(LLSettings1.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
   }
@@ -78,6 +81,8 @@ public class HyperAlign2 extends Command {
   public void execute() {
     if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
+
+      System.out.println("aligning!");
 
       double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
@@ -88,7 +93,7 @@ public class HyperAlign2 extends Command {
 
       drivebase.setControl(
         robotCentric
-          .withVelocityX(xSpeed * (maxDtSpeed /2)) // forward backward
+          .withVelocityX(xSpeed * (maxDtSpeed * .75)) // forward backward
           .withVelocityY(ySpeed *(maxDtSpeed /1)) // left right
           .withRotationalRate(rotValue *(maxAngularRate /4)));
 
@@ -112,18 +117,23 @@ public class HyperAlign2 extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    Constants.aligning = false;
+    LimelightHelpers.setPipelineIndex("limelight", 0);
     System.out.println("ALIGNED");
     drivebase.setControl(
         robotCentric
           .withVelocityX(0) // forward backward
           .withVelocityY(0) // left right
           .withRotationalRate(0));
+    System.out.println("Done aligning!");
   }
 
   @Override
   public boolean isFinished() {
+    SmartDashboard.putBoolean("Done Aligning", this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
+    stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME));
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
-    return this.dontSeeTagTimer.hasElapsed(LLSettings2.DONT_SEE_TAG_WAIT_TIME) ||
-        stopTimer.hasElapsed(LLSettings2.POSE_VALIDATION_TIME);
+    return this.dontSeeTagTimer.hasElapsed(LLSettings1.DONT_SEE_TAG_WAIT_TIME) ||
+        stopTimer.hasElapsed(LLSettings1.POSE_VALIDATION_TIME);
   }
 }
