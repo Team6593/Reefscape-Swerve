@@ -149,7 +149,7 @@ public class RobotContainer {
             .withTimeout(2.2));
         NamedCommands.registerCommand("Right Align", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(2)
-            .andThen(new ShiftRight(drivetrain, MaxSpeed))
+            .andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight))
             .withTimeout(2.75)));
         NamedCommands.registerCommand("Right Align X", (new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
             .withTimeout(2)
@@ -172,7 +172,7 @@ public class RobotContainer {
 
         new EventTrigger("Right Align Event")
         .onTrue((new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-        .andThen(new ShiftRight(drivetrain, MaxSpeed))));
+        .andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight))));
 
         new EventTrigger("Scoring Event").onTrue(new L4(elevator, coral)
             .withTimeout(1.5)
@@ -458,8 +458,8 @@ public class RobotContainer {
         //     .withTimeout(2));
         buttonBoard.button(OperatorConstants.leftAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
             .withTimeout(5));
-        buttonBoard.button(OperatorConstants.rightAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-            .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(2.4));
+        buttonBoard.button(OperatorConstants.rightAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+            .withTimeout(5).andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight)).withTimeout(5));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));
