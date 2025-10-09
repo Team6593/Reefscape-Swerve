@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.0669602272727272,
-        "y": 1.1930681818181825
+        "x": 0.9848484848484849,
+        "y": 1.1295454545454549
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9799810522771595,
-        "y": 0.6959439738774278
+        "x": 1.8978693098529171,
+        "y": 0.6324212466047001
       },
       "isLocked": false,
       "linkedName": "Bottom Coral Station"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": 138.81407483429044
   },
   "useDefaultConstraints": true
 }

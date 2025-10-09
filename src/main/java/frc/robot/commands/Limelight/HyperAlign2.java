@@ -38,7 +38,7 @@ public class HyperAlign2 extends Command {
 
   public HyperAlign2(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
   double maxDtSpeed, double maxAngularRate, SwerveRequest.RobotCentric robotCentric) {
-    xController = new PIDController(1, 0.0, 0);  // Vertical movement
+    xController = new PIDController(.8, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.6, 0.0, 0);  // Horitontal movement .43
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;

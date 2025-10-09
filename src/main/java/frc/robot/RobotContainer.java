@@ -45,6 +45,7 @@ import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightTwo;
 import frc.robot.Constants.LLSettings1;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ShiftBack;
@@ -78,7 +79,6 @@ import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.AutoAlignToReef;
 import frc.robot.commands.Limelight.AutoAlignToReefLeft;
-import frc.robot.commands.Limelight.AutoAlignToReefRight;
 import frc.robot.commands.Limelight.AutoAlignToStation;
 import frc.robot.commands.Limelight.GetInRange;
 import frc.robot.commands.Limelight.HyperAlign;
@@ -86,6 +86,7 @@ import frc.robot.commands.Limelight.HyperAlign2;
 import frc.robot.commands.Limelight.ShiftRight;
 import frc.robot.commands.Limelight.ShiftRightChangable;
 import frc.robot.commands.Limelight.ShiftRightX;
+import frc.robot.commands.LimelightTwo.RightHyperAlign;
 
 public class RobotContainer {
 
@@ -130,6 +131,8 @@ public class RobotContainer {
 
     public static final Limelight limelight = new Limelight();
 
+    public static final LimelightTwo limelight_two = new LimelightTwo();
+
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -138,7 +141,7 @@ public class RobotContainer {
         // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
-        NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(1.5));
+        NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(1));
         NamedCommands.registerCommand("Score", new ShootCoral(coral)
             .withTimeout(.5));
         NamedCommands.registerCommand("Left Align", new AutoAlignToReefLeft(false, drivetrain, 
@@ -159,11 +162,30 @@ public class RobotContainer {
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
         NamedCommands.registerCommand("Stop Drivetrain", stopDrivetrain().withTimeout(.1));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1));
-        NamedCommands.registerCommand("Grab", new IntakeCoral(coral));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1).withTimeout(1));
+        NamedCommands.registerCommand("Grab", new IntakeCoral(coral).withTimeout(2));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         NamedCommands.registerCommand("Station Align", new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
                                                             .withTimeout(.5));
+        NamedCommands.registerCommand("Hyper Left Align", (new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+        .withTimeout(2)));
+        NamedCommands.registerCommand("Hyper Right Align", (new RightHyperAlign(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+        .withTimeout(1.3)));
+        
+
+        new EventTrigger("Hyper Align Right Event")
+        .onTrue(new RightHyperAlign(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+        .withTimeout(1.3)
+        .andThen(new L4(elevator, coral).withTimeout(1))
+        .andThen(new ShootCoral(coral).withTimeout(.5))
+        .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1))).debounce(3);
+        
+        new EventTrigger("Hyper Align Left Event")
+        .onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+        .withTimeout(1.3)
+        .andThen(new L4(elevator, coral).withTimeout(1))
+        .andThen(new ShootCoral(coral))
+        .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1)));
 
         // Events
         new EventTrigger("Left Align Event")
@@ -457,9 +479,11 @@ public class RobotContainer {
         // buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2));
         buttonBoard.button(OperatorConstants.leftAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-            .withTimeout(5));
-        buttonBoard.button(OperatorConstants.rightAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-            .withTimeout(5).andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight)).withTimeout(5));
+            .withTimeout(2));
+        // buttonBoard.button(OperatorConstants.rightAlign).onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+        //     .withTimeout(5).andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight)).withTimeout(5));
+        buttonBoard.button(OperatorConstants.rightAlign).onTrue(new RightHyperAlign(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
+            .withTimeout(1.5));
 
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // joystick.rightBumper().whileTrue(new ReverseCoral(coral));

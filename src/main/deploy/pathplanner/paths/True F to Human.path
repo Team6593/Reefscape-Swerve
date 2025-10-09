@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.609715909090909,
-        "y": 2.220142045454545
+        "x": 5.387121212121213,
+        "y": 2.9121212121212126
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4967991454640455,
-        "y": 2.087351417546021
+        "x": 6.387121212121213,
+        "y": 2.912121212121212
       },
       "isLocked": false,
-      "linkedName": "Reef CD"
+      "linkedName": "True F"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 1.1295454545454549
       },
       "prevControl": {
-        "x": 0.1404334847246913,
-        "y": 1.013081222492378
+        "x": -0.015151515151515138,
+        "y": 1.1295454545454549
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 65.0
+    "rotation": 122.73522627210755
   },
   "useDefaultConstraints": true
 }

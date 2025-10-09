@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.609715909090909,
-        "y": 2.220142045454545
+        "x": 7.543939393939393,
+        "y": 1.0704545454545462
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4967991454640455,
-        "y": 2.087351417546021
+        "x": 6.60555725254553,
+        "y": 1.7338362228175133
       },
       "isLocked": false,
-      "linkedName": "Reef CD"
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.387121212121213,
+        "y": 2.9121212121212126
+      },
+      "prevControl": {
+        "x": 5.518340737833429,
+        "y": 2.6993268605235707
+      },
+      "nextControl": {
+        "x": 5.255901686408996,
+        "y": 3.124915563718855
+      },
+      "isLocked": false,
+      "linkedName": "True F"
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 1.1295454545454549
       },
       "prevControl": {
-        "x": 0.1404334847246913,
-        "y": 1.013081222492378
+        "x": 2.013828905571021,
+        "y": 0.23824462687418135
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +47,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Hyper Align Right Event",
+      "waypointRelativePos": 0.2,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 9.0,
@@ -48,7 +71,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 65.0
+    "rotation": 143.13010235415595
   },
   "useDefaultConstraints": true
 }
