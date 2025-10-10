@@ -46,7 +46,7 @@ public class RightHyperAlign extends Command {
     this.maxDtSpeed = maxDtSpeed;
     this.maxAngularRate = maxAngularRate;
     this.robotCentric = robotCentric;
-    addRequirements(drivebase);
+    //addRequirements(drivebase);
   }
 
   @Override

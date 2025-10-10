@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.387121212121213,
-        "y": 2.9121212121212126
+        "x": 5.349671052629284,
+        "y": 2.918503289470349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.387121212121213,
-        "y": 2.912121212121212
+        "x": 5.397779605263157,
+        "y": 1.8601151315789468
       },
       "isLocked": false,
       "linkedName": "True F"
     },
     {
       "anchor": {
-        "x": 0.9848484848484849,
-        "y": 1.1295454545454549
+        "x": 5.41702302631579,
+        "y": 0.975
       },
       "prevControl": {
-        "x": -0.015151515151515138,
-        "y": 1.1295454545454549
+        "x": 5.378536184212821,
+        "y": 1.4753289473684215
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Coral Station"
+      "linkedName": "Midway"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.81407483429044
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,

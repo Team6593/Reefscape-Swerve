@@ -75,18 +75,6 @@
           "data": {
             "name": "Home"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "True F to Human"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "True F to Human p2"
-          }
         }
       ]
     }

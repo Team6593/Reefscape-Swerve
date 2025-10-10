@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0964912197412735,
-        "y": 0.47779355521714006
+        "x": 2.183470394736842,
+        "y": 0.9749177631578947
       },
       "isLocked": false,
       "linkedName": "Bottom Coral Station"
     },
     {
       "anchor": {
-        "x": 3.609715909090909,
-        "y": 2.220142045454545
+        "x": 5.41702302631579,
+        "y": 0.975
       },
       "prevControl": {
-        "x": 3.462296404121687,
-        "y": 1.9156406290222616
+        "x": 4.41702302631579,
+        "y": 0.9749999999999996
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef CD"
+      "linkedName": "Midway"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 65.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,

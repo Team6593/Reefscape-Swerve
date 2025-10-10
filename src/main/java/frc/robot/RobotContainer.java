@@ -54,6 +54,7 @@ import frc.robot.commands.Climber.ClimberPivot;
 import frc.robot.commands.Climber.ClimberPivotToSetpoint;
 import frc.robot.commands.Climber.PivotAndWinch;
 import frc.robot.commands.Climber.PivotOnly;
+import frc.robot.commands.Climber.ReelTo;
 import frc.robot.commands.Climber.WinchOnly;
 import frc.robot.commands.Collector.IntakeAlgae;
 import frc.robot.commands.Collector.IntakeAndPivot;
@@ -162,7 +163,7 @@ public class RobotContainer {
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
         NamedCommands.registerCommand("Stop Drivetrain", stopDrivetrain().withTimeout(.1));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1).withTimeout(1));
+        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1).withTimeout(1.5));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral).withTimeout(2));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         NamedCommands.registerCommand("Station Align", new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -175,17 +176,17 @@ public class RobotContainer {
 
         new EventTrigger("Hyper Align Right Event")
         .onTrue(new RightHyperAlign(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-        .withTimeout(1.3)
-        .andThen(new L4(elevator, coral).withTimeout(1))
-        .andThen(new ShootCoral(coral).withTimeout(.5))
-        .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1))).debounce(3);
+        .withTimeout(1.3));
+        // .andThen(new L4(elevator, coral).withTimeout(1))
+        // .andThen(new ShootCoral(coral).withTimeout(.5))
+        // .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1.5))).debounce(3);
         
         new EventTrigger("Hyper Align Left Event")
         .onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-        .withTimeout(1.3)
-        .andThen(new L4(elevator, coral).withTimeout(1))
-        .andThen(new ShootCoral(coral))
-        .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1)));
+        .withTimeout(1.3));
+        // .andThen(new L4(elevator, coral).withTimeout(1))
+        // .andThen(new ShootCoral(coral))
+        // .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1.5)));
 
         // Events
         new EventTrigger("Left Align Event")
@@ -214,6 +215,13 @@ public class RobotContainer {
                         .withTimeout(2.25)
                         .andThen(new ElevatorToZero(elevator, coral, -1))));
 
+
+        NamedCommands.registerCommand("Drive Back", drivetrain.applyRequest( () -> {
+            return drive
+                .withVelocityX(0)
+                .withVelocityY(0)
+                .withRotationalRate(0);
+        }).withTimeout(1));
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -439,13 +447,15 @@ public class RobotContainer {
         joystick.x().onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
+
+        joystick.b().onTrue(new ReelTo(climber));
         // REBIND LATER!!!
         //joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
         joystick.y()
             .onTrue(new PivotToSetpoint(collector)
             .withTimeout(.5)
             .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
-        joystick.b().whileTrue(new WinchOnly(climber, -1.0));
+        // joystick.b().whileTrue(new WinchOnly(climber, -1.0));
 
 
 
