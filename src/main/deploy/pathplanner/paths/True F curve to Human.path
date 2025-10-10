@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.41702302631579,
-        "y": 0.975
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.316385135135135,
-        "y": 1.4162162162162155
-      },
-      "isLocked": false,
-      "linkedName": "Midway"
-    },
-    {
-      "anchor": {
         "x": 5.349671052629284,
         "y": 2.918503289470349
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.104983108108108,
+        "y": -0.3921452702702708
+      },
+      "isLocked": false,
+      "linkedName": "True F"
+    },
+    {
+      "anchor": {
+        "x": 0.9684121621567138,
+        "y": 0.6355574324358497
+      },
       "prevControl": {
-        "x": 5.409063423264246,
-        "y": 2.675660652541906
+        "x": 2.430912162169221,
+        "y": 0.23040540540618804
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "True F"
+      "linkedName": "Bottom Coral Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Hyper Align Left Event",
-      "waypointRelativePos": 0.1,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 9.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.73522627210755
+    "rotation": 141.76617482255293
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 122.73522627210755
   },
   "useDefaultConstraints": true
 }
