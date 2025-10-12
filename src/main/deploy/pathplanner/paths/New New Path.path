@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.349671052629284,
-        "y": 0.6849662162162156
+        "x": 7.648479729729729,
+        "y": 3.975591216216216
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.249033161448629,
-        "y": 1.126182432432431
+        "x": 6.551604729729729,
+        "y": 3.9163006756756755
       },
       "isLocked": false,
-      "linkedName": "Midway"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.349671052629284,
-        "y": 2.918503289470349
+        "x": 5.830236486486487,
+        "y": 3.975591216216216
       },
       "prevControl": {
-        "x": 5.409063423264246,
-        "y": 2.675660652541906
+        "x": 4.830236486486487,
+        "y": 3.975591216216216
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "True F"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,9 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Hyper Align Left Event",
-      "waypointRelativePos": 0.1,
-      "endWaypointRelativePos": 1.0,
+      "name": "Hyper Align Right Event",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.73522627210755
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

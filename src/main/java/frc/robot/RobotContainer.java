@@ -176,14 +176,14 @@ public class RobotContainer {
 
         new EventTrigger("Hyper Align Right Event")
         .onTrue(new RightHyperAlign(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-        .withTimeout(1.3));
+        .withTimeout(3));
         // .andThen(new L4(elevator, coral).withTimeout(1))
         // .andThen(new ShootCoral(coral).withTimeout(.5))
         // .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1.5))).debounce(3);
         
         new EventTrigger("Hyper Align Left Event")
         .onTrue(new HyperAlign2(false, drivetrain, MaxSpeed, MaxAngularRate, forwardStraight)
-        .withTimeout(1.3));
+        .withTimeout(3));
         // .andThen(new L4(elevator, coral).withTimeout(1))
         // .andThen(new ShootCoral(coral))
         // .andThen(new ElevatorToZero(elevator, coral, -1).withTimeout(1.5)));
@@ -375,8 +375,6 @@ public class RobotContainer {
                     .withRotationalRate(rotationalRate * MaxAngularRate);
             })
         );
-
-        joystick.a().onTrue(new HyperAlign(drivetrain, forwardStraight).withTimeout(5));
         
         // Note: The timeouts dont mean the actual robot will be moving for this long, this is to let the
         // scheduler know when the command has "ended"
@@ -425,6 +423,11 @@ public class RobotContainer {
             .onTrue(new PivotToSetpoint(collector)
             .withTimeout(.5)
             .andThen(new ClimberPivotToSetpoint(climber, 7.1)));
+        // joystick.y()
+        //     .onTrue(new PivotToSetpoint(collector)
+        //     .withTimeout(.5)
+        //     .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
+        
         //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
 
         buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
@@ -448,10 +451,13 @@ public class RobotContainer {
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
 
-        joystick.b().onTrue(new ReelTo(climber));
+        // joystick.b().onTrue(new ReelTo(climber));
+        joystick.y().onTrue(new SpitAlgae(collector).withTimeout(.5));
+
+        joystick.povDown().onTrue(new ReelTo(climber));
         // REBIND LATER!!!
         //joystick.a().onTrue(new SpitAlgae(collector).withTimeout(.50));
-        joystick.y()
+        joystick.povUp()
             .onTrue(new PivotToSetpoint(collector)
             .withTimeout(.5)
             .andThen(new ClimberPivotToSetpoint(climber, 5.6)));
@@ -465,16 +471,16 @@ public class RobotContainer {
         // CLIMBER
         //joystick.povUp().whileTrue(new PivotOnly(climber, .1));
         //joystick.povRight().whileTrue(new WinchOnly(climber, 1.0));
-        joystick.povDown().whileTrue(new WinchOnly(climber, -1.0));
+        joystick.povRight().whileTrue(new WinchOnly(climber, -1.0));
         //joystick.povLeft().onTrue(new ClimberPivotToSetpoint(climber, 5.65));
 
         // joystick.povLeft().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2));
         // joystick.povRight().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2).andThen(new ShiftRight(drivetrain, MaxSpeed)).withTimeout(3));
-        joystick.povUp().whileTrue(new WinchOnly(climber, 1.0));
+        joystick.povLeft().whileTrue(new WinchOnly(climber, 1.0));
         joystick.rightBumper().whileTrue(new PivotOnly(climber, .1));
-        joystick.povRight().whileTrue(new PivotOnly(climber, -.1));
+        // joystick.povRight().whileTrue(new PivotOnly(climber, -.1));
 
         // changes based off tag
         // joystick.povUp().onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -482,7 +488,7 @@ public class RobotContainer {
 
         // joystick.povLeft().onTrue(new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(.5));
-
+            
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
         buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
 
