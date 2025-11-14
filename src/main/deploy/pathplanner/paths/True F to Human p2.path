@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.609715909090909,
-        "y": 2.220142045454545
+        "x": 5.349671052629284,
+        "y": 0.6849662162162156
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4967991454640455,
-        "y": 2.087351417546021
+        "x": 4.03149671052402,
+        "y": 0.7816142425354085
       },
       "isLocked": false,
-      "linkedName": "Reef CD"
+      "linkedName": "Midway"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 1.0235511363586476
       },
       "prevControl": {
-        "x": 0.32226113623485597,
-        "y": 0.9070869043055707
+        "x": 1.859439294253387,
+        "y": 0.9369557416218048
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 65.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

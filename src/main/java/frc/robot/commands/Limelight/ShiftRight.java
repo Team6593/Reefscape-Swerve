@@ -13,17 +13,18 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShiftRight extends Command {
   private CommandSwerveDrivetrain drivetrain;
-  private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private final SwerveRequest.RobotCentric robotCentric;
   private double targetPosey;
   private double initialPoseY;
   private double maxSpeed;
   private boolean finished = false;
   
   /** Creates a new ShiftRight. */
-  public ShiftRight(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
+  public ShiftRight(CommandSwerveDrivetrain drivetrain, double maxSpeed, 
+  SwerveRequest.RobotCentric robotCentric) {
     this.drivetrain = drivetrain;
     this.maxSpeed = maxSpeed;
+    this.robotCentric = robotCentric;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -32,7 +33,7 @@ public class ShiftRight extends Command {
   @Override
   public void initialize() {
     initialPoseY = drivetrain.getState().Pose.getY();
-    targetPosey = initialPoseY - 1; // .29 
+    targetPosey = initialPoseY - .32;
   } 
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +48,7 @@ public class ShiftRight extends Command {
       drivetrain.setControl(
         robotCentric
         .withVelocityX(0)
-        .withVelocityY(.08 * maxSpeed)
+        .withVelocityY(.0 * maxSpeed)
         .withRotationalRate(0)
       );
     } else if(currentPose > targetPosey) {

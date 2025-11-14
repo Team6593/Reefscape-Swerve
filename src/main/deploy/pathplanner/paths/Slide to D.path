@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.609715909090909,
-        "y": 2.220142045454545
+        "x": 7.016047297297298,
+        "y": 1.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4967991454640455,
-        "y": 2.087351417546021
+        "x": 8.0160472972973,
+        "y": 1.0999999999999996
       },
       "isLocked": false,
-      "linkedName": "Reef CD"
+      "linkedName": "Start"
     },
     {
       "anchor": {
-        "x": 1.16667613635865,
-        "y": 1.0235511363586476
+        "x": 2.9,
+        "y": 1.1
       },
       "prevControl": {
-        "x": 0.32226113623485597,
-        "y": 0.9070869043055707
+        "x": 1.9,
+        "y": 1.1
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Coral Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Hyper Align Right Event",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 9.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 141.76617482255293
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 65.0
+    "rotation": 122.735
   },
   "useDefaultConstraints": true
 }

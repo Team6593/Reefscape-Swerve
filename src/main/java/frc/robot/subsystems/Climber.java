@@ -112,7 +112,7 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean winchAtSetpoint() {
-    if (winchMotor.getPosition().getValueAsDouble() < 2) {
+    if (winchMotor.getPosition().getValueAsDouble() < -795) {
       return true;
     } else {
       return false;

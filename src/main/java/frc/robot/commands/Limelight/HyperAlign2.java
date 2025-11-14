@@ -4,12 +4,14 @@
 
 package frc.robot.commands.Limelight;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,33 +19,34 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 import frc.robot.Constants.LLSettings1;
+import frc.robot.Constants.LLSettings2;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Limelight; 
 
 /* This command works flawlessly, DON'T TOUCH THIS CODE PLEASE!*/
-public class AutoAlignToReefLeft extends Command {
+public class HyperAlign2 extends Command {
 
   private PIDController xController, yController, rotController;
   private boolean isRightScore;
   private Timer dontSeeTagTimer, stopTimer;
   private CommandSwerveDrivetrain drivebase;
   private double tagID = -1;
-  private final SwerveRequest.RobotCentric robotCentric = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private final SwerveRequest.RobotCentric robotCentric;
   private double maxDtSpeed;
   private double maxAngularRate;
 
-  public AutoAlignToReefLeft(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
-  double maxDtSpeed, double maxAngularRate) {
-    xController = new PIDController(.90, 0.0, 0);  // Vertical movement
+  public HyperAlign2(boolean isRightScore, CommandSwerveDrivetrain drivebase, 
+  double maxDtSpeed, double maxAngularRate, SwerveRequest.RobotCentric robotCentric) {
+    xController = new PIDController(.8, 0.0, 0);  // Vertical movement
     yController = new PIDController(0.6, 0.0, 0);  // Horitontal movement .43
     rotController = new PIDController(.048, 0, 0);  // Rotation
     this.isRightScore = isRightScore;
     this.drivebase = drivebase;
     this.maxDtSpeed = maxDtSpeed;
     this.maxAngularRate = maxAngularRate;
-    addRequirements(drivebase);
+    this.robotCentric = robotCentric;
+    //addRequirements(drivebase);
   }
 
   @Override
@@ -91,7 +94,7 @@ public class AutoAlignToReefLeft extends Command {
 
       drivebase.setControl(
         robotCentric
-          .withVelocityX(xSpeed * (maxDtSpeed /2)) // forward backward
+          .withVelocityX(xSpeed * (maxDtSpeed * .75)) // forward backward
           .withVelocityY(ySpeed *(maxDtSpeed /1)) // left right
           .withRotationalRate(rotValue *(maxAngularRate /4)));
 
