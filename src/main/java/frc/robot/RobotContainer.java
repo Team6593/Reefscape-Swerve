@@ -42,7 +42,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
-import frc.robot.subsystems.Elevator;
+// import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorIO;
 import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
@@ -67,17 +67,18 @@ import frc.robot.commands.Collector.SpitAlgae;
 import frc.robot.commands.Coral.IntakeCoral;
 import frc.robot.commands.Coral.ShootCoral;
 import frc.robot.commands.Coral.ShootWithoutBrake;
-import frc.robot.commands.Elevator.Elevate;
-import frc.robot.commands.Elevator.ElevatorToZero;
+// import frc.robot.commands.Elevator.Elevate;
+// import frc.robot.commands.Elevator.ElevatorToZero;
 
-import frc.robot.commands.Elevator.ElevatorBrake;
-import frc.robot.commands.Elevator.HumanStation;
-import frc.robot.commands.Elevator.L0;
-import frc.robot.commands.Elevator.L1;
-import frc.robot.commands.Elevator.L2;
-import frc.robot.commands.Elevator.L3;
-import frc.robot.commands.Elevator.L4;
-import frc.robot.commands.Elevator.StopElevator;
+// import frc.robot.commands.Elevator.ElevatorBrake;
+// import frc.robot.commands.Elevator.HumanStation;
+// import frc.robot.commands.Elevator.L0;
+// import frc.robot.commands.Elevator.L1;
+// import frc.robot.commands.Elevator.L2;
+// import frc.robot.commands.Elevator.L3;
+// import frc.robot.commands.Elevator.L4;
+// import frc.robot.commands.Elevator.StopElevator;
+import frc.robot.commands.ElevatorIO.ElevatorIOHome;
 import frc.robot.commands.ElevatorIO.ElevatorL3;
 import frc.robot.commands.ElevatorIO.ElevatorL4;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
@@ -112,7 +113,7 @@ public class RobotContainer {
 
     // private final Coral outtake = new Coral();
 
-    private final Elevator elevator = new Elevator();
+    // private final Elevator elevator = new Elevator();
 
     //private final KrakenElevator krakenElevator = new KrakenElevator();
 
@@ -147,7 +148,7 @@ public class RobotContainer {
         // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
         //NamedCommands.registerCommand("Shoot Coral", new ShootCoral(outtake).withTimeout(1));
-        NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(1));
+        // NamedCommands.registerCommand("L4", new L4(elevator, coral).withTimeout(1));
         NamedCommands.registerCommand("Score", new ShootCoral(coral)
             .withTimeout(.5));
         NamedCommands.registerCommand("Left Align", new AutoAlignToReefLeft(false, drivetrain, 
@@ -168,7 +169,7 @@ public class RobotContainer {
             .withTimeout(1.8)
             .andThen(stopDrivetrain()));
         NamedCommands.registerCommand("Stop Drivetrain", stopDrivetrain().withTimeout(.1));
-        NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1).withTimeout(1.5));
+        // NamedCommands.registerCommand("Home", new ElevatorToZero(elevator, coral, -1).withTimeout(1.5));
         NamedCommands.registerCommand("Grab", new IntakeCoral(coral).withTimeout(2));
         NamedCommands.registerCommand("Field Centric", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         NamedCommands.registerCommand("Station Align", new AutoAlignToStation(false, drivetrain, MaxSpeed, MaxAngularRate)
@@ -202,23 +203,23 @@ public class RobotContainer {
         .onTrue((new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         .andThen(new ShiftRight(drivetrain, MaxSpeed, forwardStraight))));
 
-        new EventTrigger("Scoring Event").onTrue(new L4(elevator, coral)
-            .withTimeout(1.5)
-            .andThen(new ShootCoral(coral))
-            .withTimeout(2)
-            .andThen(new ShiftBack(drivetrain, MaxSpeed))
-            .withTimeout(2.25)
-            .andThen(new ElevatorToZero(elevator, coral, -1)));
+        // new EventTrigger("Scoring Event").onTrue(new L4(elevator, coral)
+        //     .withTimeout(1.5)
+        //     .andThen(new ShootCoral(coral))
+        //     .withTimeout(2)
+        //     .andThen(new ShiftBack(drivetrain, MaxSpeed))
+        //     .withTimeout(2.25)
+        //     .andThen(new ElevatorToZero(elevator, coral, -1)));
 
-        new EventTrigger("Left Align Score")
-                        .onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
-                        .andThen(new L4(elevator, coral)
-                        .withTimeout(1.5)
-                        .andThen(new ShootCoral(coral))
-                        .withTimeout(2)
-                        .andThen(new ShiftBack(drivetrain, MaxSpeed))
-                        .withTimeout(2.25)
-                        .andThen(new ElevatorToZero(elevator, coral, -1))));
+        // new EventTrigger("Left Align Score")
+        //                 .onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
+        //                 .andThen(new L4(elevator, coral)
+        //                 .withTimeout(1.5)
+        //                 .andThen(new ShootCoral(coral))
+        //                 .withTimeout(2)
+        //                 .andThen(new ShiftBack(drivetrain, MaxSpeed))
+        //                 .withTimeout(2.25)
+        //                 .andThen(new ElevatorToZero(elevator, coral, -1))));
 
 
         NamedCommands.registerCommand("Drive Back", drivetrain.applyRequest( () -> {
@@ -251,9 +252,9 @@ public class RobotContainer {
         climber.stopClimber();
     }
 
-    public void stopElevator() {
-        elevator.stop();
-    }
+    // public void stopElevator() {
+    //     elevator.stop();
+    // }
 
     // public void stopKrakenElevator() {
     //     krakenElevator.stop();
@@ -406,7 +407,7 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
         
         // Elevator
-        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.65));
+        buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorIOHome(elevatorIO));
         // buttonBoard.button(OperatorConstants.L4)
         //     .onTrue(new L4(elevator, coral)
         //     .withTimeout(.75)
@@ -423,11 +424,11 @@ public class RobotContainer {
         buttonBoard.button(OperatorConstants.L4)
             .onTrue(new ElevatorL4(elevatorIO)
             .withTimeout(.75)
-            .andThen(new ElevatorToZero(elevator, coral, MaxSpeed)));
+            .andThen(new ElevatorIOHome(elevatorIO)));
         buttonBoard.button(OperatorConstants.L3)
             .onTrue(new ElevatorL3(elevatorIO)
             .withTimeout(.75)
-            .andThen(new ElevatorToZero(elevator, coral, MaxSpeed)));
+            .andThen(new ElevatorIOHome(elevatorIO)));
         
 
         // Algae
@@ -445,7 +446,7 @@ public class RobotContainer {
         
         //buttonBoard.button(8).onTrue(new IntakeWithoutBrake(coral, .5));
 
-        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevator));
+        buttonBoard.button(OperatorConstants.StopAll).onTrue(new StopAll(collector, coral, elevatorIO));
         buttonBoard.button(OperatorConstants.algaeIn).onTrue(new IntakeAndPivot(collector, .7)
             .until( () -> !collector.hasAlgae())
             .andThen(new PivotBack(collector)));
@@ -505,7 +506,7 @@ public class RobotContainer {
         //     .withTimeout(.5));
             
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
-        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
+        // buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
 
         // buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2));

@@ -23,7 +23,7 @@ public class ElevatorIO extends SubsystemBase {
   private ProfiledPIDController pidController = new ProfiledPIDController(8.81, 0, 1.48, new TrapezoidProfile.Constraints(2.45, 2.45));
   private ElevatorFeedforward feedForwardController = new ElevatorFeedforward(0, 1.94, 3.82, 2, 0.020);
 
-  private DigitalInput limitSwitch = new DigitalInput(8);
+  public DigitalInput limitSwitch = new DigitalInput(8);
 
   /** Creates a new ElevatorIO. */
   public ElevatorIO() {
@@ -52,6 +52,10 @@ public class ElevatorIO extends SubsystemBase {
 
   public void stop() {
     m_motor.stopMotor();
+  }
+
+  public void rawSpeed(double speed) {
+    m_motor.set(speed);
   }
 
 
