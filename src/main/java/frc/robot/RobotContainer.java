@@ -460,9 +460,12 @@ public class RobotContainer {
         //     .andThen(new ElevatorToZero(elevator, coral, -.65)));
         buttonBoard.button(OperatorConstants.L4)
             .onTrue(new ElevatorL4(elevatorIO)
+            .until(() -> elevatorIO.atSetpoint())
+            .withTimeout(.1)
             .andThen(new ElevatorIOHome(elevatorIO)));
         buttonBoard.button(OperatorConstants.L3)
             .onTrue(new ElevatorL3(elevatorIO)
+            .until(() -> elevatorIO.atSetpoint())
             .andThen(new ElevatorIOHome(elevatorIO)));
         // buttonBoard.button(OperatorConstants.L4).whileTrue(new ElevatorIOMove(elevatorIO, 1));
         // buttonBoard.button(OperatorConstants.L3).whileTrue(new ElevatorIOMove(elevatorIO, -1));

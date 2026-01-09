@@ -26,8 +26,8 @@ public class ElevatorIO extends SubsystemBase {
   private RelativeEncoder m_encoder = m_motor.getEncoder();
   private SparkMaxConfig m_motorConfig = new SparkMaxConfig();
 
-  private ProfiledPIDController pidController = new ProfiledPIDController(27.72, 0, 0, new TrapezoidProfile.Constraints(100, 100));
-  private ElevatorFeedforward feedForwardController = new ElevatorFeedforward(0, 1.08, 6.87, .11, 0.020);
+  private ProfiledPIDController pidController = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(62.56, 62.56));
+  private ElevatorFeedforward feedForwardController = new ElevatorFeedforward(1, 1.08, 6.87, .11, 0.020);
 
   public DigitalInput limitSwitch = new DigitalInput(8);
 
@@ -38,6 +38,10 @@ public class ElevatorIO extends SubsystemBase {
     m_motorConfig.inverted(true);
     m_motorConfig.idleMode(IdleMode.kBrake);
     m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    m_motorConfig.smartCurrentLimit(60);
+
+    pidController.setTolerance(.3);
   }
 
   @Override
@@ -61,8 +65,8 @@ public class ElevatorIO extends SubsystemBase {
   public void reachGoal(double goal) {
     pidController.setGoal(goal);
     double pidOutput = pidController.calculate(m_encoder.getPosition(), goal);
-    double feedForwardOutput = feedForwardController.calculate(pidController.getSetpoint().velocity);
-    m_motor.setVoltage(pidOutput + feedForwardOutput);
+    // double feedForwardOutput = feedForwardController.calculate(pidController.getSetpoint().velocity);
+    m_motor.setVoltage(pidOutput);
   }
 
   public void stop() {

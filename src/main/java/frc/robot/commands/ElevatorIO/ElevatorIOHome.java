@@ -29,7 +29,7 @@ public class ElevatorIOHome extends Command {
   @Override
   public void execute() {
     if (elevator.limitSwitch.get()) {
-      elevator.rawSpeed(-.39);
+      elevator.rawSpeed(-.2);
     } else {
       elevator.stop();
       elevator.resetEncoder();
