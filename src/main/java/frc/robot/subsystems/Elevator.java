@@ -142,7 +142,7 @@ public class Elevator extends SubsystemBase {
    * Elevates the elevator.
    * @param speed - Positive = Up, Negative = Down
    */
-  public void elevate(double speed) {
+  public void reachGoal(double speed) {
     elevatorMotor.set(speed);
   }
 
