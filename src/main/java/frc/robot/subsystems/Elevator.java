@@ -15,6 +15,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
@@ -32,6 +36,9 @@ public class Elevator extends SubsystemBase {
   
   private RelativeEncoder elevatorEncoding = elevatorMotor.getEncoder();
 
+  private ProfiledPIDController pidController = new ProfiledPIDController(8.81, 0, 1.48, new TrapezoidProfile.Constraints(2.45, 2.45));
+  private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.94, 3.82, .2, 0.020);
+
   //private DutyCycleEncoder bore = new DutyCycleEncoder(0);
   //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
 
@@ -46,9 +53,9 @@ public class Elevator extends SubsystemBase {
     //   .maxAcceleration(6000);
     
     elevatorConfig.closedLoop
-    .p(1)
+    .p(8.81)
     .i(0)
-    .d(0)
+    .d(1.48)
     .outputRange(-1, 1);
 
 
@@ -59,7 +66,6 @@ public class Elevator extends SubsystemBase {
     // .allowedClosedLoopError(.1);
 
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    
 
     elevatorController.setReference(60, ControlType.kCurrent);
 
@@ -124,7 +130,14 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  
+  // revamped
+  public void revampedElevate(double goal) {
+    pidController.setGoal(goal);
+    double pidOutput = pidController.calculate(elevatorEncoding.getPosition());
+    double feedforwardOutput = elevatorFeedforward.calculate(pidController.getSetpoint().velocity);
+    elevatorMotor.setVoltage(pidOutput + feedforwardOutput);
+  }
+
   /**
    * Elevates the elevator.
    * @param speed - Positive = Up, Negative = Down

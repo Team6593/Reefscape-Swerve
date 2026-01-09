@@ -28,7 +28,7 @@ public class L4 extends Command {
   public void initialize() {
     //elevator.changeToCoastMode();
     System.out.println("L4 INIT");
-    elevator.goToSetpoint(-57); // -92 IS THE REAL SETPOINT, -92.62278747558594, OLD -88; -95; -96
+    elevator.revampedElevate(-19); // -92 IS THE REAL SETPOINT, -92.62278747558594, OLD -88; -95; -96
     coral.setL4(true);
   }
 

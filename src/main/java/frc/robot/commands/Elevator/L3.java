@@ -28,7 +28,7 @@ public class L3 extends Command {
   public void initialize() {
     //elevator.changeToCoastMode();
     System.out.println("L3 INIT");
-    elevator.goToSetpoint(-22); // (-36 / 25) * 15
+    elevator.revampedElevate(-7); // (-36 / 25) * 15
     coral.setL4(false);
 
     // newTicks = oldTicks * (newRatio/oldRatio)
