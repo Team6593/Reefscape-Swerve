@@ -6,16 +6,119 @@ package frc.robot;
 
 /** Add your docs here. */
 public final class Constants {
+
+    public static boolean aligning = false;
+
+    // TODO: LLSettings and LLSettings2 setpoint values might have to be reconfigured at comp practice field
+
+
+    public static class LLSettings1 {
+        public static final double TX_VALUE = -12.2;
+        // -87.08
+        // 3.51
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = 1.1;
+        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+        // -0.16
+        // -.29
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.08;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+        // -0.03
+        // -0.30
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.04;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.04;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+        public static final double POSE_VALIDATION_TIME = 1;
+    }
+
+    public static class LLSettings2 {
+        public static final double TX_VALUE = -12.41;
+        
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = -6.3;
+        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = .03;
+
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -.11;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.05;
+
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = -.13;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+
+        public static final double DONT_SEE_TAG_WAIT_TIME = 1;
+        public static final double POSE_VALIDATION_TIME = 1;
+    }
+
+    // public static class LLSettings1 {
+    //     public static final double TX_VALUE = -12.2;
+    //     // -87.08
+    //     // 3.51
+    //     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 2.1; // 1.1
+    //     public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.16
+    //     // -.29
+
+    //     // -0.08
+    //     public static final double X_SETPOINT_REEF_ALIGNMENT = 0.06;
+    //     public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.03
+    //     // -0.30
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.19; // -0.04
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.19;
+    //     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+    //     public static final double POSE_VALIDATION_TIME = 1;
+    // }
+    
+    // public static class LLSettings2 {
+    //     public static final double TX_VALUE = -12.2;
+    //     // -87.08
+    //     // 3.51
+    //     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 1.1;
+    //     public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.16
+    //     // -.29
+    //     public static final double X_SETPOINT_REEF_ALIGNMENT = -0.08;
+    //     public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     // -0.03
+    //     // -0.30
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT = -0.5;
+    //     public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.04;
+    //     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+    //     public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+    //     public static final double POSE_VALIDATION_TIME = 1;
+    // }
+
+    public static class LLSettings3 {
+        public static final double TX_VALUE = -0.09;
+        public static final double ROT_SETPOINT_REEF_ALIGNMENT = -12.06;
+        public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double X_SETPOINT_REEF_ALIGNMENT = -0.09;
+        public static final double X_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.67;
+        public static final double Y_SETPOINT_REEF_ALIGNMENT_RIGHTSIDE = -0.04;
+        public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0;
+        public static final double DONT_SEE_TAG_WAIT_TIME = .5;
+        public static final double POSE_VALIDATION_TIME = 1;
+    }
+
+
     
     public static class OperatorConstants {
-        public static final int L3 = 1;
-        public static final int L2 = 2;
-        public static final int L1 = 3;
-        public static final int StopAll = 6;
+        public static final int L4 = 1;
+        public static final int L3 = 2;
+        public static final int HOME = 3;
+        public static final int StopAll = 11;
+        public static final int algaeIn = 4;
+        public static final int algaeOut = 5;
+        public static final int algaeBack = 6;
+        public static final int intakeCoral = 7;
+        public static final int leftAlign = 8;
+        public static final int shootCoral = 9;
+        public static final int rightAlign = 10;
+        public static final int algaePivot = 12;
     }
 
     public static class ElevatorConstants {
-        public static final int rightElevatorMotorID = 31;
+        public static final int mainElevatorID = 31;
         public static final int leftElevatorMotorID = 32;
         public static final double minTick = 0;
         public static final double maxTick = 250; // grab this immediatly!!
@@ -25,7 +128,7 @@ public final class Constants {
     public static class CoralIntakeConstants {
         public static final int rightCoralMotorID = 21;
         public static final int leftCoralMotorID = 22;
-        public static final int beamBreakID = 23;
+        public static final int beamBreakID = 0;
     }
 
     public static class AlgaeConstants {
@@ -41,8 +144,8 @@ public final class Constants {
 
     public static class LimelightConstants {
         public static final double mountAngleDegrees = 0; // grab later
-        public static final double lensHeightInches = 15.5; // grab later
-        public static final double goalHeightInches = 10.125; // grab later
+        public static final double lensHeightInches = 12.5; // grab later
+        public static final double goalHeightInches = 13.125; // grab later
     }
 
 }

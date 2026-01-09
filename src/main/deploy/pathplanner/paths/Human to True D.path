@@ -1,0 +1,84 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.16667613635865,
+        "y": 1.0235511363586476
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3327257771545904,
+        "y": 1.8437336154427095
+      },
+      "isLocked": false,
+      "linkedName": "Bottom Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 4.05152027027027,
+        "y": 2.918243243243243
+      },
+      "prevControl": {
+        "x": 2.816303982708794,
+        "y": 1.930063433790349
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "True D"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 38.66
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.5,
+      "constraints": {
+        "maxVelocity": 6.0,
+        "maxAcceleration": 9.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Hyper Align Right Event",
+      "waypointRelativePos": 0.697649572649573,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 50.52754015165619
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 141.76617482255293
+  },
+  "useDefaultConstraints": false
+}

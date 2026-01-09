@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.349671052629284,
+        "y": 0.6849662162162156
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.249033161448629,
+        "y": 1.126182432432431
+      },
+      "isLocked": false,
+      "linkedName": "Midway"
+    },
+    {
+      "anchor": {
+        "x": 5.000168918918919,
+        "y": 2.789780405405405
+      },
+      "prevControl": {
+        "x": 5.059561289553881,
+        "y": 2.5469377684769623
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "True F"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Hyper Align Left Event",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 9.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 122.73522627210755
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

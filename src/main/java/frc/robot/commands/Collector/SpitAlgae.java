@@ -10,7 +10,9 @@ import frc.robot.subsystems.Collector;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SpitAlgae extends Command {
   private Collector collector;
-  /** Creates a new SpitAlgae. */
+  /** Command that spits out the algae from the collector. 
+   * @param Collector - Collector object of the subsystem.
+  */
   public SpitAlgae(Collector collector) {
     this.collector = collector;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +26,7 @@ public class SpitAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.intakeAlgae(-.50);
+    collector.intakeAlgae(-.90);
   }
 
   // Called once the command ends or is interrupted.

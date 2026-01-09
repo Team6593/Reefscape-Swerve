@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -37,14 +38,14 @@ public class Collector extends SubsystemBase {
     pivotConfig.idleMode(IdleMode.kBrake);
     topConfig.idleMode(IdleMode.kBrake);
     topConfig.inverted(true);
-    pivotConfig.closedLoop.p(.3).i(0).d(0).outputRange(-.2, .2);
+    pivotConfig.closedLoop.p(.60).i(0).d(0).outputRange(-.6, .6);
     pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     pivotEncoder.setPosition(0);
 
     collectorMotor.configure(topConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     pivotController.setReference(40, ControlType.kCurrent);
-    //topMotorController.setReference(20, ControlType.kCurrent);
+    topMotorController.setReference(20, ControlType.kCurrent);
   }
 
   /**
@@ -72,11 +73,13 @@ public class Collector extends SubsystemBase {
   }
 
   public void pivotToSetpoint() {
-    pivotController.setReference(16.5, ControlType.kPosition);
+
+    // 14.5 before
+    pivotController.setReference(14.25, ControlType.kPosition);
   }
 
   public void pivotBack() {
-    pivotController.setReference(-0.35, ControlType.kPosition);
+    pivotController.setReference(0, ControlType.kPosition);
   }
 
   // public void ToSetpoint(double setpoint) {
@@ -94,8 +97,9 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("switch", limitSwitch.get());
+    SmartDashboard.putBoolean("Collecter Switch", limitSwitch.get());
     SmartDashboard.putNumber("Pivot Encoder", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Intake Voltage", collectorMotor.getBusVoltage());
     // This method will be called once per scheduler run
   }
 }

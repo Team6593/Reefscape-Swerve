@@ -231,9 +231,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
                     // sat test #1
                     // rotation .05 0 0
-                    new PIDConstants(1, 0, 0),
+                    new PIDConstants(6.9, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(.01, 0, 0)
+                    new PIDConstants(2.5, 0, 0)
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
@@ -279,6 +279,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        // log how much amps the entire drive uses
+        double driveStatorCurrent = 0;
+        double driveSupplyCurrent = 0;
+
+        for( int i = 0; i < 4; i++) {
+            driveStatorCurrent += getModule(i).getDriveMotor().getStatorCurrent().getValueAsDouble() +
+        getModule(i).getSteerMotor().getStatorCurrent().getValueAsDouble();
+            
+            driveSupplyCurrent = getModule(i).getDriveMotor().getSupplyCurrent().getValueAsDouble() +
+        getModule(i).getSteerMotor().getSupplyCurrent().getValueAsDouble();
+        }
+
+        SmartDashboard.putNumber("DriveSupUsage", driveSupplyCurrent);
+        SmartDashboard.putNumber("DriveStatUsage", driveStatorCurrent);
+
+
+        SmartDashboard.putNumber("Module 0 Drive Supply", 
+        getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -286,6 +306,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
+
+        SmartDashboard.putNumber("Module 0 Azimuth Encoder", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
@@ -296,6 +319,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        SmartDashboard.putNumber("Module 0 Drive Voltage", getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 0 Steer Voltage", getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 1 Drive Voltage", getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 1 Steer Voltage", getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 2 Drive Voltage", getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 2 Steer Voltage", getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 3 Drive Voltage", getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Module 3 Steer Voltage", getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
 
         double robotSpeeds = Math.sqrt(
             (getState().Speeds.vxMetersPerSecond * getState().Speeds.vxMetersPerSecond)

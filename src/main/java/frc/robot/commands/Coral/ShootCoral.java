@@ -27,12 +27,20 @@ public class ShootCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coral.shootCoral(1);
+    if(coral.isOnL4()) {
+      coral.shootCoral(-.63);
+      System.out.println("L4");
+    } else {
+      System.out.println("NOT L4");
+      coral.shootCoral(-.75);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    coral.stop();
+  }
 
   // Returns true when the command should end.
   @Override

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Rotations;
@@ -13,30 +14,43 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import com.revrobotics.*;
+
+
+// TODO: AUTO FIELD CENTRIC
+
 public class Robot extends TimedRobot {
+
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
 
-  private final boolean kUseLimelight = false;
+  private boolean kUseLimelight = false;
 
   Field2d field = new Field2d();
 
   public Robot() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(field);
+  
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     field.setRobotPose(m_robotContainer.drivetrain.getState().Pose);
+    SmartDashboard.putNumber("PoseY", m_robotContainer.drivetrain.getState().Pose.getY());
+    SmartDashboard.putNumber("PoseX", m_robotContainer.drivetrain.getState().Pose.getX());
+    RobotContainer.limelight.update();
+    
+
     /*
      * This example of adding Limelight is very simple and may not be sufficient for on-field use.
      * Users typically need to provide a standard deviation that scales with the distance to target
@@ -45,6 +59,14 @@ public class Robot extends TimedRobot {
      * This example is sufficient to show that vision integration is possible, though exact implementation
      * of how to use vision should be tuned per-robot and to the team's specification.
      */
+
+    //  if(distanceSensor.isRangeValid()) {
+    //   SmartDashboard.putNumber("Range Onboard", distanceSensor.getRange());
+    //   SmartDashboard.putNumber("Timestamp Onboard", distanceSensor.getTimestamp());
+    // }
+    
+    SmartDashboard.putNumber("Battery", RobotController.getBatteryVoltage());
+
     if (kUseLimelight) {
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       if (llMeasurement != null) {
@@ -54,7 +76,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    //m_robotContainer.coral.disableSensor();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -64,12 +88,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    LimelightHelpers.setPipelineIndex("limelight", 0);
+    m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
-    m_robotContainer.stopElevator();
+    m_robotContainer.stopCollector();
     //m_robotContainer.drivetrain.resetGyro();
     //Pose2d position = new Pose2d(8.785, 5.062, Rotation2d.k180deg);
     //m_robotContainer.drivetrain.resetOdometryForAuto(position);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_robotContainer.fieldCentricTheRobot();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -84,8 +112,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.stopClimber();
     m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
+    kUseLimelight = false;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

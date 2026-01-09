@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.31625,
+        "y": 6.906789772727272
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9328482792894275,
+        "y": 7.350701678935649
+      },
+      "isLocked": false,
+      "linkedName": "Barge Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 1.7391891891891893,
+        "y": 6.683192567567566
+      },
+      "prevControl": {
+        "x": 1.3790700053012819,
+        "y": 6.420916655012497
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Station Rotation End"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 9.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -42.072121769100086
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 40.23635830927382
+  },
+  "useDefaultConstraints": true
+}

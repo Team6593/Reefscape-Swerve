@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -14,61 +15,87 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
 
-  private SparkMax rightMotor = new SparkMax(ElevatorConstants.rightElevatorMotorID, MotorType.kBrushless);
-  private SparkMax leftMotor = new SparkMax(ElevatorConstants.leftElevatorMotorID, MotorType.kBrushless);
-  private SparkClosedLoopController rightController = rightMotor.getClosedLoopController();
-  private SparkClosedLoopController leftController = leftMotor.getClosedLoopController();
+  private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless);
+  private SparkClosedLoopController elevatorController = elevatorMotor.getClosedLoopController();
   
-  private SparkMaxConfig rightConfig = new SparkMaxConfig();
-  private SparkMaxConfig leftConfig = new SparkMaxConfig();
+  private SparkMaxConfig elevatorConfig = new SparkMaxConfig();
   
-  private RelativeEncoder leftEncoder = leftMotor.getEncoder();
-  private RelativeEncoder rightEncoder = rightMotor.getEncoder();
+  private RelativeEncoder elevatorEncoding = elevatorMotor.getEncoder();
+
+  private ProfiledPIDController pidController = new ProfiledPIDController(8.81, 0, 1.48, new TrapezoidProfile.Constraints(2.45, 2.45));
+  private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 1.94, 3.82, .2, 0.020);
+
+  //private DutyCycleEncoder bore = new DutyCycleEncoder(0);
+  //private SparkMax elevatorMotor = new SparkMax(ElevatorConstants.mainElevatorID, MotorType.kBrushless).getAlternateEncoder(bore);
+
+  public DigitalInput limitSwitch = new DigitalInput(8);
 
   /** Creates a new Elevator. */
   public Elevator() {
-    rightConfig.inverted(true).idleMode(IdleMode.kBrake);
-    leftConfig.inverted(false).idleMode(IdleMode.kBrake);
-    leftConfig.follow(ElevatorConstants.rightElevatorMotorID);
+    elevatorConfig.inverted(false).idleMode(IdleMode.kBrake);
+  
+    // elevatorConfig.closedLoop.maxMotion
+    //   .maxVelocity(4000)
+    //   .maxAcceleration(6000);
+    
+    elevatorConfig.closedLoop
+    .p(8.81)
+    .i(0)
+    .d(1.48)
+    .outputRange(-1, 1);
 
-    //rightConfig.follow(ElevatorConstants.leftElevatorMotorID);
 
-    rightConfig.closedLoop
-      .p(.1)
-      .i(0)
-      .d(0)
-      .outputRange(-.2, .2);
-    // leftConfig.closedLoop
-    //   .p(.1)
-    //   .i(0)
-    //   .d(0)
-    //   .outputRange(-.2, .2);
+    //This technically works but dont use it it stalls the motor
+    // elevatorConfig.closedLoop.maxMotion
+    // .maxVelocity(5600)
+    // .maxAcceleration(6500)
+    // .allowedClosedLoopError(.1);
 
-    rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    rightController.setReference(40, ControlType.kCurrent);
-    leftController.setReference(40, ControlType.kCurrent);
+    elevatorController.setReference(60, ControlType.kCurrent);
 
-    rightEncoder.setPosition(0);
-    leftEncoder.setPosition(0);
+    elevatorEncoding.setPosition(0);
 
   }
 
   @Override
   public void periodic() {
+
+    if(!limitSwitch.get()) {
+      resetEncoder();
+    }
+
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Right Encoder Position", rightEncoder.getPosition());
-    SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
+    SmartDashboard.putNumber("Right Motor Temp", elevatorMotor.getMotorTemperature());
+    SmartDashboard.putNumber("Left Motor Temperature", elevatorMotor.getMotorTemperature());
+    SmartDashboard.putBoolean("Elevator Switch", limitSwitch.get());
+    SmartDashboard.putNumber("Elevator Encoder Position", elevatorEncoding.getPosition());
+    //SmartDashboard.putNumber("Left Encoder Position", leftEncoder.getPosition());
+    SmartDashboard.putNumber("Right Motor Output", elevatorMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("Left Motor Output", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("El Right Velocity", elevatorEncoding.getVelocity());
+    //SmartDashboard.putNumber("El Left Velocity", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("El Right Speed", elevatorMotor.getAppliedOutput());
+    //SmartDashboard.putNumber("EL Left Speed", leftMotor.getAppliedOutput());
     //SmartDashboard.putNumber("Right Motor Current", rightMotor.getOutputCurrent());
     //SmartDashboard.putNumber("Left Motor Current", leftMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("Bore Encoder", getBoreEncoder());
   }
 
   /**
@@ -76,7 +103,7 @@ public class Elevator extends SubsystemBase {
    * @return Right encoder position
    */
   public double getRightEncoderReading() {
-    return Math.round(rightEncoder.getPosition());
+    return Math.floor(elevatorEncoding.getPosition());
   }
 
   /**
@@ -84,30 +111,31 @@ public class Elevator extends SubsystemBase {
    * @param setpoint - Desired encoder position.
    */
   public void goToSetpoint(double setpoint) {
-    rightController.setReference(setpoint, ControlType.kPosition);
-    //leftController.setReference(setpoint, ControlType.kPosition);
-  }
-
-  /**
-   * Changes the elevators motors to coast mode.
-   */
-  public void changeToCoastMode() {
-    rightConfig.idleMode(IdleMode.kCoast);
-    leftConfig.idleMode(IdleMode.kCoast);
-
-    rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorController.setReference(setpoint, ControlType.kPosition);
+    //elevatorController.setReference(setpoint, ControlType.kMAXMotionPositionControl);
+    
   }
 
   /**
    * Changes the elevators motors to brake mode.
    */
   public void changeToBrakeMode() {
-    rightConfig.idleMode(IdleMode.kBrake);
-    leftConfig.idleMode(IdleMode.kBrake);
+    elevatorConfig.idleMode(IdleMode.kBrake);
 
-    rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    leftMotor.configure(leftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  public void changeToCoastMode() {
+    elevatorConfig.idleMode(IdleMode.kCoast);
+    elevatorMotor.configure(elevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  // revamped
+  public void revampedElevate(double goal) {
+    pidController.setGoal(goal);
+    double pidOutput = pidController.calculate(elevatorEncoding.getPosition());
+    double feedforwardOutput = elevatorFeedforward.calculate(pidController.getSetpoint().velocity);
+    elevatorMotor.setVoltage(pidOutput + feedforwardOutput);
   }
 
   /**
@@ -115,16 +143,23 @@ public class Elevator extends SubsystemBase {
    * @param speed - Positive = Up, Negative = Down
    */
   public void elevate(double speed) {
-    rightMotor.set(speed);
-    //leftMotor.set(speed);
+    elevatorMotor.set(speed);
   }
 
   /**
    * Stops the elevator.
    */
   public void stop() {
-    rightMotor.set(0);
+    elevatorMotor.set(0);
     //leftMotor.set(0);
   }
+
+  public void resetEncoder() {
+    elevatorEncoding.setPosition(0);
+  }
+
+  // public double getBoreEncoder() {
+  //   return bore.get();
+  // }
 
 }

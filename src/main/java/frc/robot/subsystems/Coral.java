@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,34 +20,61 @@ import frc.robot.Constants.CoralIntakeConstants;
 
 public class Coral extends SubsystemBase {
 
-  private SparkMax rightMotor = new SparkMax(CoralIntakeConstants.rightCoralMotorID, MotorType.kBrushless);
-  private SparkMax leftMotor = new SparkMax(CoralIntakeConstants.leftCoralMotorID, MotorType.kBrushless);
-  private SparkClosedLoopController rightController = rightMotor.getClosedLoopController();
-  private SparkClosedLoopController leftController = leftMotor.getClosedLoopController();
+  private SparkMax intakeMotor = new SparkMax(CoralIntakeConstants.rightCoralMotorID, MotorType.kBrushless);
+  private SparkClosedLoopController rightController = intakeMotor.getClosedLoopController();
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
-  private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
+  private SparkMaxConfig leftConfig = new SparkMaxConfig();
+  //private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.beamBreakID);
+  private boolean l4 = false;
+  //private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
   /** Creates a new Coral. */
   public Coral() {
     rightConfig.inverted(true);
-    rightMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    rightConfig.idleMode(IdleMode.kBrake);
+    leftConfig.idleMode(IdleMode.kBrake);
+
+    intakeMotor.configure(rightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     rightController.setReference(10, ControlType.kCurrent);
-    leftController.setReference(10, ControlType.kCurrent);
+
+    // distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+    // distanceSensor.setAutomaticMode(true);
+    // distanceSensor.setEnabled(true);
+    // distanceSensor.setRangeProfile(RangeProfile.kHighAccuracy);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Outtake BB", beamBrake.get());
+    //SmartDashboard.putBoolean("Outtake BB", beamBrake.get());
+    SmartDashboard.putNumber("Coral Intake voltage", intakeMotor.getBusVoltage());
+    SmartDashboard.putBoolean("Has Coral", hasCoral());
   }
+
+  public boolean isOnL4() {
+    return l4;
+  }
+
+  public void setL4(boolean mode) {
+    l4 = mode;
+  }
+
+  // public void disableSensor() {
+  //   distanceSensor.setAutomaticMode(false);
+  // }
 
   /**
    * Manually intake the coral without a beam brake.
    * @param speed
    */
   public void manualIntakeCoral(double speed) {
-    rightMotor.set(speed);
-    leftMotor.set(speed);
+    intakeMotor.set(-speed);
+  }
+
+  public boolean hasCoral() {
+    return beamBreak.get();
   }
 
   /**
@@ -54,12 +82,10 @@ public class Coral extends SubsystemBase {
    * @param speed
    */
   public void intakeCoral(double speed) {
-    if (beamBrake.get()) {
-      rightMotor.set(speed);
-      leftMotor.set(speed);
-    } else if (!beamBrake.get()) {
-      rightMotor.set(0);
-      leftMotor.set(0);
+    if(hasCoral()) {
+      intakeMotor.set(speed);
+    } else {
+      intakeMotor.stopMotor();
     }
   }
 
@@ -67,17 +93,15 @@ public class Coral extends SubsystemBase {
    * Output the coral
    */
   public void shootCoral(double speed) {
-    if (!beamBrake.get()) {
-      rightMotor.set(speed);
-      leftMotor.set(speed);
-    } else if (beamBrake.get()) {
-      rightMotor.set(0);
-      leftMotor.set(0);
-    }
+    intakeMotor.set(speed);
+  }
+
+
+  public void shootWithoutBrake(double speed) {
+    intakeMotor.set(-speed);
   }
 
   public void stop() {
-    rightMotor.set(0);
-    leftMotor.set(0);
+    intakeMotor.set(0);
   }
 }
