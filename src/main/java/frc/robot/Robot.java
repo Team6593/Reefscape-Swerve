@@ -90,7 +90,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     LimelightHelpers.setPipelineIndex("limelight", 0);
     m_robotContainer.stopClimber();
-    m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
     //m_robotContainer.drivetrain.resetGyro();
     //Pose2d position = new Pose2d(8.785, 5.062, Rotation2d.k180deg);
@@ -113,7 +112,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     m_robotContainer.stopClimber();
-    m_robotContainer.stopElevator();
     m_robotContainer.stopCollector();
     kUseLimelight = false;
     if (m_autonomousCommand != null) {
