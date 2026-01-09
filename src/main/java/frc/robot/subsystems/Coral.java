@@ -25,7 +25,7 @@ public class Coral extends SubsystemBase {
   private SparkMaxConfig rightConfig = new SparkMaxConfig();
   private SparkMaxConfig leftConfig = new SparkMaxConfig();
   //private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
-  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.beamBreakID);
+  public DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.beamBreakID);
   private boolean l4 = false;
   //private DigitalInput beamBrake = new DigitalInput(CoralIntakeConstants.beamBreakID);
 
