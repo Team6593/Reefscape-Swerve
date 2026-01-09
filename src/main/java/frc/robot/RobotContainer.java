@@ -43,6 +43,7 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Coral;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ElevatorIO;
 import frc.robot.subsystems.KrakenElevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightTwo;
@@ -77,6 +78,8 @@ import frc.robot.commands.Elevator.L2;
 import frc.robot.commands.Elevator.L3;
 import frc.robot.commands.Elevator.L4;
 import frc.robot.commands.Elevator.StopElevator;
+import frc.robot.commands.ElevatorIO.ElevatorL3;
+import frc.robot.commands.ElevatorIO.ElevatorL4;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
 import frc.robot.commands.Limelight.AutoAlignToReef;
 import frc.robot.commands.Limelight.AutoAlignToReefLeft;
@@ -133,6 +136,8 @@ public class RobotContainer {
     public static final Limelight limelight = new Limelight();
 
     public static final LimelightTwo limelight_two = new LimelightTwo();
+
+    public static final ElevatorIO elevatorIO = new ElevatorIO();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -402,19 +407,28 @@ public class RobotContainer {
         
         // Elevator
         buttonBoard.button(OperatorConstants.HOME).onTrue(new ElevatorToZero(elevator, coral, -.65));
+        // buttonBoard.button(OperatorConstants.L4)
+        //     .onTrue(new L4(elevator, coral)
+        //     .withTimeout(.75)
+        //     .andThen(new ShootCoral(coral))
+        //     .withTimeout(1)
+        //     .andThen(new ElevatorToZero(elevator, coral, -.65)));
+        // //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
+        // buttonBoard.button(OperatorConstants.L3)
+        //     .onTrue(new L3(elevator, coral)
+        //     .withTimeout(.5)
+        //     .andThen(new ShootCoral(coral))
+        //     .withTimeout(.75)
+        //     .andThen(new ElevatorToZero(elevator, coral, -.65)));
         buttonBoard.button(OperatorConstants.L4)
-            .onTrue(new L4(elevator, coral)
+            .onTrue(new ElevatorL4(elevatorIO)
             .withTimeout(.75)
-            .andThen(new ShootCoral(coral))
-            .withTimeout(1)
-            .andThen(new ElevatorToZero(elevator, coral, -.65)));
-        //buttonBoard.button(OperatorConstants.L3).onTrue(new L3(elevator, coral).withTimeout(2.5));
+            .andThen(new ElevatorToZero(elevator, coral, MaxSpeed)));
         buttonBoard.button(OperatorConstants.L3)
-            .onTrue(new L3(elevator, coral)
-            .withTimeout(.5)
-            .andThen(new ShootCoral(coral))
+            .onTrue(new ElevatorL3(elevatorIO)
             .withTimeout(.75)
-            .andThen(new ElevatorToZero(elevator, coral, -.65)));
+            .andThen(new ElevatorToZero(elevator, coral, MaxSpeed)));
+        
 
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));
