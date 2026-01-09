@@ -136,7 +136,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder();
     }
 
     /**
@@ -161,7 +160,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        configureAutoBuilder();
     }
 
     public void resetOdometryForAuto(Pose2d pose) {
@@ -198,50 +196,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
         if (Utils.isSimulation()) {
             startSimThread();
-        }
-        configureAutoBuilder();
-    }
-
-    private void configureAutoBuilder() {
-        try {
-            var config = RobotConfig.fromGUISettings();
-            AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
-                (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ),
-                new PPHolonomicDriveController(
-                    // test #0
-                    // translation
-                    // P = 10, I = 0, D = 0
-                    // rotation
-                    // P = 7, I = 0, D = 0
-
-                    // test #5
-                    // translation
-                    // P = 1, I = 0, D = 0
-                    // rotation
-                    // P = .2, I = 0, D =0
-                    // PID constants for translation
-
-                    // sat test #1
-                    // rotation .05 0 0
-                    new PIDConstants(6.9, 0, 0),
-                    // PID constants for rotation
-                    new PIDConstants(2.5, 0, 0)
-                ),
-                config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                this // Subsystem for requirements
-            );
-        } catch (Exception ex) {
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
 

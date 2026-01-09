@@ -17,6 +17,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -25,6 +28,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -79,6 +83,7 @@ import frc.robot.commands.Coral.ShootWithoutBrake;
 // import frc.robot.commands.Elevator.L4;
 // import frc.robot.commands.Elevator.StopElevator;
 import frc.robot.commands.ElevatorIO.ElevatorIOHome;
+import frc.robot.commands.ElevatorIO.ElevatorIOMove;
 import frc.robot.commands.ElevatorIO.ElevatorL3;
 import frc.robot.commands.ElevatorIO.ElevatorL4;
 import frc.robot.commands.KrakenElevator.KrakenElevate;
@@ -143,7 +148,39 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
+    RobotConfig config;
+
     public RobotContainer() {
+
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+        }
+
+        AutoBuilder.configure(
+            () -> drivetrain.getState().Pose, 
+            drivetrain::resetPose, 
+            () -> drivetrain.getState().Speeds, 
+            (speeds, feedforwards) -> drivetrain.setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+            ), 
+            new PPHolonomicDriveController(
+                new PIDConstants(5.0, 0.0, 0.0), 
+                new PIDConstants(5.0, 0.0, 0.0)), 
+            config, 
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+            }, 
+            drivetrain);
 
         // Register Commands before AutoBuilder is initialized!
         //NamedCommands.registerCommand("Intake Coral", new IntakeCoral(outtake).withTimeout(2));
@@ -423,13 +460,12 @@ public class RobotContainer {
         //     .andThen(new ElevatorToZero(elevator, coral, -.65)));
         buttonBoard.button(OperatorConstants.L4)
             .onTrue(new ElevatorL4(elevatorIO)
-            .withTimeout(.75)
             .andThen(new ElevatorIOHome(elevatorIO)));
         buttonBoard.button(OperatorConstants.L3)
             .onTrue(new ElevatorL3(elevatorIO)
-            .withTimeout(.75)
             .andThen(new ElevatorIOHome(elevatorIO)));
-        
+        // buttonBoard.button(OperatorConstants.L4).whileTrue(new ElevatorIOMove(elevatorIO, 1));
+        // buttonBoard.button(OperatorConstants.L3).whileTrue(new ElevatorIOMove(elevatorIO, -1));
 
         // Algae
         buttonBoard.button(OperatorConstants.algaeOut).onTrue(new SpitAlgae(collector).withTimeout(.50));

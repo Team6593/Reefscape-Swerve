@@ -23,24 +23,28 @@ public class ElevatorL3 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.reachGoal(-7);
+    elevator.reachGoal(12.6);
+    System.out.println("STARTING RISE");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.reachGoal(-7);
+    elevator.reachGoal(12.6);
+    System.out.println("RUSHING TO L3");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     elevator.stop();
+    System.out.println("END");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return elevator.atSetpoint();
+    // return false;
   }
 }
