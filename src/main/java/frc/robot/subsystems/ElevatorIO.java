@@ -26,8 +26,8 @@ public class ElevatorIO extends SubsystemBase {
   private RelativeEncoder m_encoder = m_motor.getEncoder();
   private SparkMaxConfig m_motorConfig = new SparkMaxConfig();
 
-  private ProfiledPIDController pidController = new ProfiledPIDController(2.25, 0, 0, new TrapezoidProfile.Constraints(62.56, 62.56));
-  private ElevatorFeedforward feedForwardController = new ElevatorFeedforward(4, 1.08, 6.87, .11, 0.020);
+  private ProfiledPIDController pidController = new ProfiledPIDController(2, 0, 0, new TrapezoidProfile.Constraints(62.56, 62.56));
+  private ElevatorFeedforward feedForwardController = new ElevatorFeedforward(6, 1.08, 6.87, .11, 0.020);
 
   public DigitalInput limitSwitch = new DigitalInput(8);
 
@@ -41,7 +41,7 @@ public class ElevatorIO extends SubsystemBase {
 
     m_motorConfig.smartCurrentLimit(60);
 
-    pidController.setTolerance(.4);
+    pidController.setTolerance(.2);
   }
 
   @Override
