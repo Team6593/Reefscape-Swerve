@@ -62,11 +62,18 @@ public class ElevatorIO extends SubsystemBase {
     m_encoder.setPosition(0);
   }
 
-  public void reachGoal(double goal) {
+  public void reachGoalNoFF(double goal) {
     pidController.setGoal(goal);
-    double pidOutput = pidController.calculate(m_encoder.getPosition(), goal);
+    double pidOutput = pidController.calculate(m_encoder.getPosition());
     // double feedForwardOutput = feedForwardController.calculate(pidController.getSetpoint().velocity);
     m_motor.setVoltage(pidOutput);
+  }
+
+  public void reachGoalWithFF(double goal) {
+    pidController.setGoal(goal);
+    double pidOutput = pidController.calculate(m_encoder.getPosition());
+    double feedForwardOutput = feedForwardController.calculate(pidController.getSetpoint().velocity);
+    m_motor.setVoltage(pidOutput + feedForwardOutput);
   }
 
   public void stop() {
@@ -81,5 +88,12 @@ public class ElevatorIO extends SubsystemBase {
     return pidController.atGoal();
   }
 
+  public void setP(double kP) {
+    pidController.setP(kP);
+  }
+
+  public void changeTolerance(double tolerance) {
+    pidController.setTolerance(tolerance);
+  }
 
 }

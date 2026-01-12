@@ -23,13 +23,15 @@ public class ElevatorL4 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.reachGoal(34.2);
+    elevator.changeTolerance(.3);
+    elevator.setP(1.125);
+    elevator.reachGoalWithFF(34);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.reachGoal(34.2);
+    elevator.reachGoalWithFF(34);
   }
 
   // Called once the command ends or is interrupted.

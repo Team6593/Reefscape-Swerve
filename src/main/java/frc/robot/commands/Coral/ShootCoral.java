@@ -28,7 +28,7 @@ public class ShootCoral extends Command {
   @Override
   public void execute() {
     if(coral.isOnL4()) {
-      coral.shootCoral(-.63);
+      coral.shootCoral(-.75);
       System.out.println("L4");
     } else {
       System.out.println("NOT L4");

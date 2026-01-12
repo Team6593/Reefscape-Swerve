@@ -23,14 +23,16 @@ public class ElevatorL3 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.reachGoal(12.6);
+    elevator.changeTolerance(.2);
+    elevator.setP(2);
+    elevator.reachGoalNoFF(12.6);
     System.out.println("STARTING RISE");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.reachGoal(12.6);
+    elevator.reachGoalNoFF(12.6);
     System.out.println("RUSHING TO L3");
   }
 
