@@ -16,6 +16,7 @@ public class ElevatorL4 extends Command {
   public ElevatorL4(ElevatorIO elevator) {
     this.elevator = elevator;
 
+
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -23,15 +24,15 @@ public class ElevatorL4 extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.changeTolerance(.3);
+    elevator.changeTolerance(.2);
     elevator.setP(1.125);
-    elevator.reachGoalWithFF(34);
+    elevator.reachGoalNoFF(30.8);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.reachGoalWithFF(34);
+    elevator.reachGoalNoFF(30.8);
   }
 
   // Called once the command ends or is interrupted.

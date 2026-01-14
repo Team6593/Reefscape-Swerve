@@ -544,7 +544,7 @@ public class RobotContainer {
         //     .withTimeout(.5));
             
         buttonBoard.button(OperatorConstants.intakeCoral).onTrue(new IntakeCoral(coral));
-        // buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1).andThen(new ElevatorToZero(elevator, coral, -1)));
+        buttonBoard.button(OperatorConstants.shootCoral).onTrue(new ShootCoral(coral).withTimeout(1));
 
         // buttonBoard.button(OperatorConstants.leftAlign).onTrue(new AutoAlignToReefLeft(false, drivetrain, MaxSpeed, MaxAngularRate)
         //     .withTimeout(2));

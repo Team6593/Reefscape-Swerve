@@ -24,7 +24,7 @@ public class ElevatorL3 extends Command {
   @Override
   public void initialize() {
     elevator.changeTolerance(.2);
-    elevator.setP(2);
+    elevator.setP(1.75);
     elevator.reachGoalNoFF(12.6);
     System.out.println("STARTING RISE");
   }
